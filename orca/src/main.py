@@ -1,26 +1,32 @@
 import flet as ft
 from database import Database
-
-
-db = Database()
+from views import HomeView
 
 def main(page: ft.Page):
-    page.title = 'teste'
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.title = "Orca Finance"
+    db = Database() # Sua classe do Supabase
 
-    bancos = db.get_bancos()
+    def route_change(route):
+        page.views.clear()
+        
+        # Se a rota for a inicial
+        if page.route == "/":
+            page.views.append(HomeView(page))
+        
+        # Se a rota for Bancos (exemplo)
+        elif page.route == "/bancos":
+            # Aqui você chamaria a BancosView(page, db)
+            pass
+            
+        page.update()
 
-    textos = [ft.TextField(value=banco.nome, text_align=ft.TextAlign.CENTER, width=350) for banco in bancos]
+    def view_pop(view):
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
 
-    page.add(
-        ft.Row(
-            [textos[0]],
-            alignment=ft.MainAxisAlignment.CENTER,
-        ),
-        ft.Row(
-            [textos[1]],
-            alignment=ft.MainAxisAlignment.CENTER,
-        ),
-    )
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route)
 
-ft.app(main)
+ft.app(target=main)
