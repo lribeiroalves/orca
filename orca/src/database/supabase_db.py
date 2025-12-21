@@ -1,0 +1,34 @@
+import os
+from dotenv import load_dotenv
+from supabase import create_client, Client
+from models import Banco
+
+# Carrega as variaveis do .env
+load_dotenv()
+
+class Database:
+    def __init__(self):
+        self.__url = os.getenv('SUPABASE_URL')
+        self.__key = os.getenv('SUPABASE_API_KEY')
+
+        if not self.__url or not self.__key:
+            raise ValueError("Erro: SUPABASE_URL ou SUPABASE_KEY não encontrados no .env")
+
+        # Realiza a conexao com o Supabase
+        self.__client: Client = create_client(self.__url, self.__key)
+
+    def get_bancos(self) -> list[Banco]:
+        try:
+            resposta = self.__client.table('bancos').select('*').execute()
+            # Integracao com o model
+            return [Banco.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar bancos: {err}')
+            return []
+    
+    def add_banco(self, banco: Banco):
+        """Recebe um objeto Banco e salva no Database"""
+        dados = {
+            'nome': banco.nome
+        }
+        return self.__client.table('bancos').insert(dados).execute()
