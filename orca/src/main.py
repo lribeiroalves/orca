@@ -3,8 +3,8 @@ from database import Database
 from views import HomeView
 
 def main(page: ft.Page):
-    page.title = "Orca Finance"
-    db = Database() # Sua classe do Supabase
+    page.title = "Orca App"
+    db = Database()
 
     def route_change(route):
         page.views.clear()
@@ -13,7 +13,7 @@ def main(page: ft.Page):
         if page.route == "/":
             page.views.append(HomeView(page))
         
-        # Se a rota for Bancos (exemplo)
+        # Outras rotas
         elif page.route == "/bancos":
             # Aqui você chamaria a BancosView(page, db)
             pass

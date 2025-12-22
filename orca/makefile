@@ -6,7 +6,7 @@ APP_FILE = src/main.py
 
 # Comando principal: basta digitar 'make' ou 'make run'
 run:
-	flet run --android $(APP_FILE)
+	flet run --android $(APP_FILE) -d
 
 # Atalho para instalar dependências
 install:
