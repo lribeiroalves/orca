@@ -1,5 +1,5 @@
 import flet as ft
-from .custom import MyButton, MyAppBar
+from .aux import MyButton, MyAppBar
 
 def home_view(page: ft.Page):
     botao_fatura = MyButton('Fatura', page, '/fatura')

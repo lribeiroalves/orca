@@ -1,6 +1,6 @@
 import flet as ft
 from database import Database
-from .custom import MyAppBar
+from .aux import MyAppBar
 
 def es_view(page: ft.Page, db: Database):
     
