@@ -1,17 +1,15 @@
 import flet as ft
 from .custom import MyButton, MyAppBar
 
-def HomeView(page: ft.Page):
-    # Retorna a View que sera carregada
-
-    botao_fatura = MyButton('Fatura')
-    botao_bancos = MyButton('Bancos')
-    botao_contas = MyButton('Contas')
-    botao_es = MyButton('Entrada/Saida')
+def home_view(page: ft.Page):
+    botao_fatura = MyButton('Fatura', page, '/fatura')
+    botao_bancos = MyButton('Bancos', page, '/bancos')
+    botao_contas = MyButton('Contas', page, '/contas')
+    botao_es = MyButton('Entrada/Saida', page, '/es')
 
     return ft.View(
-        route="/",
-        appbar=MyAppBar('ORCA - Orcamento Familiar'),
+        route='/',
+        appbar=MyAppBar('ORCA - Orcamento Familiar', page),
 
         controls=[
             ft.Container(

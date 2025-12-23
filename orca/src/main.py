@@ -1,29 +1,37 @@
 import flet as ft
 from database import Database
-from views import HomeView
+from views import *
 
 def main(page: ft.Page):
     page.title = "Orca App"
     db = Database()
 
-    def route_change(route):
-        page.views.clear()
-        
+    def route_change(route):        
         # Se a rota for a inicial
         if page.route == "/":
-            page.views.append(HomeView(page))
+            page.views.append(home_view(page))
         
         # Outras rotas
         elif page.route == "/bancos":
-            # Aqui você chamaria a BancosView(page, db)
-            pass
+            page.views.append(bancos_view(page, db))
+        
+        elif page.route == "/fatura":
+            page.views.append(fatura_view(page, db))
+        
+        elif page.route == "/contas":
+            page.views.append(contas_view(page, db))
+        
+        elif page.route == "/es":
+            page.views.append(es_view(page, db))
             
         page.update()
 
     def view_pop(view):
-        page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
+        if len(page.views) > 2:
+            page.views.pop()
+            top_view = page.views[-1]
+            page.views.pop()
+            page.go(top_view.route)
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
