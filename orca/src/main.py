@@ -9,7 +9,7 @@ def main(page: ft.Page):
     def route_change(route):        
         # Se a rota for a inicial
         if page.route == "/":
-            page.views.append(home_view(page))
+            page.views.append(home_view(page, db))
         
         # Outras rotas
         elif page.route == "/bancos":

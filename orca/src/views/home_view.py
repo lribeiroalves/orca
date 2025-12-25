@@ -1,11 +1,36 @@
 import flet as ft
-from .aux import MyButton, MyAppBar
+from .aux import MyButton, MyAppBar, MyWarnings
+from database import Database
 
-def home_view(page: ft.Page):
+def home_view(page: ft.Page, db: Database):
     botao_fatura = MyButton('Fatura', page, '/fatura')
     botao_bancos = MyButton('Bancos', page, '/bancos')
     botao_contas = MyButton('Contas', page, '/contas')
     botao_es = MyButton('Entrada/Saida', page, '/es')
+    area_erro = ft.Column(horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+
+    def recarregar_pagina(e):
+        page.views.pop()
+        page.views.append(home_view(page, db))
+        page.update()
+
+    def testar_conexao():
+        try:
+            r = db.get_bancos()
+            if r == []:
+                raise Exception()             
+        except:
+            MyWarnings.abrir_banner_conexao(page)
+            botao_bancos.disabled = True
+            botao_contas.disabled = True
+            botao_es.disabled = True
+            botao_fatura.disabled = True
+            area_erro.controls = [
+                ft.Divider(height=30, color='transparent'),
+                ft.ElevatedButton('Tentar Conexao', icon=ft.Icons.REFRESH, on_click=lambda e: recarregar_pagina(e))
+            ]
+    
+    testar_conexao()
 
     return ft.View(
         route='/',
@@ -25,6 +50,8 @@ def home_view(page: ft.Page):
                         ft.Container(col={'xs': 12, 'sm': 4}, content=botao_contas),
                         ft.Container(col={'xs': 12, 'sm': 4}, content=botao_es),
                     ], spacing=20, run_spacing=20),
+                    
+                    area_erro
                 ])
             )
         ],
