@@ -1,10 +1,13 @@
 import flet as ft
 from database import Database
+from models import Banco
 from .aux import MyAppBar
 
 def bancos_view(page: ft.Page, db: Database):
     
     bancos = db.get_bancos()
+    saldos = db.get_saldos()
+    print(saldos)
 
     return ft.View(
         route='/bancos',
