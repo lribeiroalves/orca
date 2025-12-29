@@ -36,11 +36,14 @@ class Database:
         except:
             return None
     
-    def get_saldos(self) -> list[Banco]:
+    def get_saldos(self, last: bool=False) -> list[Banco]:
         try:
-            resposta = self.client.table('saldos').select('id, created_at, bancos(id, nome), saldo').execute()
-            # Integracao com o model
-            return [Saldo.from_json(item) for item in resposta.data]
+            if not last:
+                resposta = self.client.table('saldos').select('id, created_at, bancos(id, nome), saldo').execute()
+                return [Saldo.from_json(item) for item in resposta.data]
+            else:
+                resposta = self.client.rpc('obter_saldos_recentes_com_banco', {}).execute()
+                return [Saldo.from_json_last(item) for item in resposta.data]
         except Exception as err:
             print(f'Erro ao buscar saldos: {err}')
             return []

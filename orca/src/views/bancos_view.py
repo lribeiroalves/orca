@@ -6,7 +6,7 @@ from .aux import MyAppBar
 def bancos_view(page: ft.Page, db: Database):
     
     bancos = db.get_bancos()
-    saldos = db.get_saldos()
+    saldos = db.get_saldos(last=True)
     print(saldos)
 
     return ft.View(
