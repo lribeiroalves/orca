@@ -7,6 +7,7 @@ def home_view(page: ft.Page, db: Database):
     botao_bancos = MyButton('Bancos', page, '/bancos')
     botao_contas = MyButton('Contas', page, '/contas')
     botao_es = MyButton('Entrada/Saida', page, '/es')
+    botao_dash = MyButton('DashBoard', page, '/dash')
     area_erro = ft.Column(horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
     def recarregar_pagina(e):
@@ -25,6 +26,7 @@ def home_view(page: ft.Page, db: Database):
             botao_contas.disabled = True
             botao_es.disabled = True
             botao_fatura.disabled = True
+            botao_dash.disabled = True
             area_erro.controls = [
                 ft.Divider(height=30, color='transparent'),
                 ft.ElevatedButton('Tentar Conexao', icon=ft.Icons.REFRESH, on_click=lambda e: recarregar_pagina(e))
@@ -49,6 +51,7 @@ def home_view(page: ft.Page, db: Database):
                         ft.Container(col={'xs': 12, 'sm': 4}, content=botao_bancos),
                         ft.Container(col={'xs': 12, 'sm': 4}, content=botao_contas),
                         ft.Container(col={'xs': 12, 'sm': 4}, content=botao_es),
+                        ft.Container(col={'xs': 12, 'sm': 4}, content=botao_dash),
                     ], spacing=20, run_spacing=20),
                     
                     area_erro

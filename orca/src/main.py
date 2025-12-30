@@ -23,6 +23,9 @@ def main(page: ft.Page):
         
         elif page.route == "/es":
             page.views.append(es_view(page, db))
+        
+        elif page.route == '/dash':
+            page.views.append(dash_view(page, db))
             
         page.update()
 
