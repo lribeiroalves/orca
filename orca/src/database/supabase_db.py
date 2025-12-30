@@ -34,7 +34,8 @@ class Database:
         }
         try:
             return self.client.table('bancos').insert(dados).execute()
-        except:
+        except Exception as e:
+            print(e)
             return None
     
     def get_saldos(self, last: bool=False) -> list[Banco]:
