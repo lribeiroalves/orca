@@ -54,8 +54,8 @@ def bancos_view(page: ft.Page, db: Database):
             try:
                 banco_id = db.client.table('bancos').select('id').eq('nome', nome_banco.value).execute().data[0].get('id')
                 if banco_id:
-                    novo_saldo = db.add_saldo(banco_id=banco_id, saldo=saldo_inicial.value)
-                    print(novo_saldo)
+                    saldo_formatado = ''.join(c for c in saldo_inicial.value if c.isdigit() or c == '.' or c == ',')
+                    novo_saldo = db.add_saldo(banco_id=banco_id, saldo=saldo_formatado)
                     fechar_popup_saldo(None)
                     recarregar_pagina(None)
                 else:
