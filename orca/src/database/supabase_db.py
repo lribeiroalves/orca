@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from models import Banco, Saldo
+from datetime import datetime
 
 # Carrega as variaveis do .env
 load_dotenv()
@@ -47,3 +48,13 @@ class Database:
         except Exception as err:
             print(f'Erro ao buscar saldos: {err}')
             return []
+    
+    def add_saldo(self, banco_id: int, saldo: float):
+        dados = {
+            'banco_id': banco_id,
+            'saldo': saldo
+        }
+        try:
+            return self.client.table('saldos').insert(dados).execute()
+        except:
+            return None

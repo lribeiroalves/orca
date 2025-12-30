@@ -8,6 +8,50 @@ def bancos_view(page: ft.Page, db: Database):
     saldos = db.get_saldos(last=True)
     total_saldos = sum(s.saldo for s in saldos)
 
+    def recarregar_pagina(e):
+        page.views.pop()
+        page.views.append(bancos_view(page, db))
+        page.update()
+
+    # Formulario de Criacao de um Novo Banco
+    # Campos
+    nome_banco = ft.TextField(label='Nome do Banco')
+    saldo_inicial = ft.TextField(label='Saldo', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER)
+    # Funcao para fechar o pop up
+    def fechar_popup_banco(e):
+        popup_banco.open = False
+        page.update()
+    # Funcao para Acao do Formulario
+    def salvar_novo_banco(e):
+        if not nome_banco.value or not saldo_inicial.value:
+            nome_banco.error_text = 'Por favor, preencha todos os campos'
+            page.update()
+            return
+        
+        novo_banco = db.add_banco(nome_banco.value)
+        novo_saldo = db.add_saldo(novo_banco.data[0].get('id'), float(saldo_inicial.value))
+        fechar_popup_banco(None)
+        recarregar_pagina(None)
+    # Criacao do pop up
+    popup_banco = ft.AlertDialog(
+        title=ft.Text('Adicionar Banco'),
+        content=ft.Column([
+            ft.Text('Insira os detalhes da nova conta abaixo:'),
+            nome_banco,
+            saldo_inicial
+        ], tight=True),
+        actions=[
+            ft.TextButton('Cancelar', on_click=fechar_popup_banco),
+            ft.ElevatedButton('Salvar', on_click=salvar_novo_banco, bgcolor='blue', color='white')
+        ],
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+    # Funcao para abrir formulario
+    def abrir_popup_banco(e):
+        page.dialog = popup_banco
+        popup_banco.open = True
+        page.update()
+
     def formatar_br(valor):
         return f'R$ {valor:,.2f}'.replace(',','X').replace('.', ',').replace('X', '.')
 
@@ -30,10 +74,20 @@ def bancos_view(page: ft.Page, db: Database):
         )
     
     card_total = ft.ResponsiveRow(
-        alignment=ft.MainAxisAlignment.END,
+        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         controls=[
             ft.Container(
-                col={'xs': 10, 'sm': 6, 'md': 6},
+                col={'xs': 6, 'sm': 6, 'md': 3, 'lg': 1},
+                content=ft.FloatingActionButton(
+                    text='Novo Banco',
+                    icon=ft.Icons.ADD,
+                    on_click=abrir_popup_banco,
+                    bgcolor='blue'
+                )
+            ),
+
+            ft.Container(
+                col={'xs': 12, 'sm': 6, 'md': 6, 'lg': 6},
                 content=ft.Card(
                     content=ft.ListTile(
                         leading=ft.Icon(ft.Icons.SUMMARIZE, color=ft.Colors.BLUE_900, size=30),
@@ -46,9 +100,11 @@ def bancos_view(page: ft.Page, db: Database):
                         )
                     ), elevation=4
                 )
-            )
+            ),
         ]
     )
+    # Adicionando o popup a colecao de overview da pagina
+    page.overlay.append(popup_banco)
 
     return ft.View(
         route='/bancos',
