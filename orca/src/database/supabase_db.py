@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
-from models import Banco, Saldo
+from models import Banco, Saldo, Categoria, Fatura, User, Compra
 from datetime import datetime
 
 # Carrega as variaveis do .env
@@ -58,4 +58,100 @@ class Database:
         try:
             return self.client.table('saldos').insert(dados).execute()
         except:
+            return None
+    
+    def get_categorias(self) -> list[Categoria]:
+        try:
+            resposta = self.client.table('categorias_fatura').select('*').order('id', desc=False).execute()
+            # Integracao com o model
+            return [Categoria.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar categorias: {err}')
+            return []
+    
+    def add_categoria(self, categoria: str):
+        dados = {
+            'categoria': categoria
+        }
+        try:
+            return self.client.table('categorias_fatura').insert(dados).execute()
+        except Exception as e:
+            print(e)
+            return None
+    
+    def get_users(self) -> list[User]:
+        try:
+            resposta = self.client.table('users').select('*').order('id', desc=False).execute()
+            # Integracao com o model
+            return [User.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar usuarios: {err}')
+            return []
+    
+    def add_user(self, nome: str):
+        dados = {
+            'nome': nome
+        }
+        try:
+            return self.client.table('users').insert(dados).execute()
+        except Exception as e:
+            print(e)
+            return None
+    
+    def get_faturas(self) -> list[Fatura]:
+        try:
+            resposta = self.client.table('faturas').select('id, mes, ano, status_ok').order('id', desc=False).execute()
+            # Integracao com o model
+            return [Fatura.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar faturas: {err}')
+            return []
+    
+    def add_fatura(self, mes: int, ano: int, status_ok: bool):
+        dados = {
+            'mes': mes,
+            'ano': ano,
+            'status_ok': status_ok
+        }
+        try:
+            return self.client.table('faturas').insert(dados).execute()
+        except Exception as e:
+            print(e)
+            return None
+    
+    def get_compras(self) -> list[Compra]:
+        try:
+            resposta = self.client.table('compras').select("""
+                id,
+                users(id, nome),
+                bancos(id, nome),
+                faturas(id, mes, ano, status_ok),
+                categorias_fatura(id, categoria),
+                descricao,
+                valor_total,
+                valor_parcela,
+                parcela,
+                data_compra
+            """).execute()
+            return [Compra.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar compras: {err}')
+            return []
+    
+    def add_fatura(self, user_id: int, banco_id: int, fatura_id: int, categoria_id: int, descricao: str, valor_total: float, valor_parcela: float, parcela: str, data_compra: datetime):
+        dados = {
+            'user_id': user_id,
+            'banco_id': banco_id,
+            'fatura_id': fatura_id,
+            'categoria_id': categoria_id,
+            'descricao': descricao,
+            'valor_total': valor_total,
+            'valor_parcela': valor_parcela,
+            'parcela': parcela,
+            'data_compra': data_compra
+        }
+        try:
+            return self.client.table('compras').insert(dados).execute()
+        except Exception as e:
+            print(e)
             return None

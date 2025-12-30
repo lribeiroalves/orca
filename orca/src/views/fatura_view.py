@@ -3,6 +3,10 @@ from database import Database
 from .aux import MyAppBar
 
 def fatura_view(page: ft.Page, db: Database):
+
+    categorias = db.get_categorias()
+    for i in categorias:
+        print(i)
     
     return ft.View(
         route='/fatura',
