@@ -100,18 +100,18 @@ class Database:
     
     def get_faturas(self) -> list[Fatura]:
         try:
-            resposta = self.client.table('faturas').select('id, mes, ano, status_ok').order('id', desc=False).execute()
+            resposta = self.client.table('faturas').select('id, mes, ano, fatura_paga').order('id', desc=False).execute()
             # Integracao com o model
             return [Fatura.from_json(item) for item in resposta.data]
         except Exception as err:
             print(f'Erro ao buscar faturas: {err}')
             return []
     
-    def add_fatura(self, mes: int, ano: int, status_ok: bool):
+    def add_fatura(self, mes: int, ano: int, fatura_paga: bool):
         dados = {
             'mes': mes,
             'ano': ano,
-            'status_ok': status_ok
+            'fatura_paga': fatura_paga
         }
         try:
             return self.client.table('faturas').insert(dados).execute()
@@ -125,20 +125,45 @@ class Database:
                 id,
                 users(id, nome),
                 bancos(id, nome),
-                faturas(id, mes, ano, status_ok),
+                faturas(id, mes, ano, fatura_paga),
                 categorias_fatura(id, categoria),
                 descricao,
                 valor_total,
                 valor_parcela,
                 parcela,
                 data_compra
-            """).execute()
+            """).order('data_compra', desc=True).execute()
             return [Compra.from_json(item) for item in resposta.data]
         except Exception as err:
             print(f'Erro ao buscar compras: {err}')
             return []
     
-    def add_fatura(self, user_id: int, banco_id: int, fatura_id: int, categoria_id: int, descricao: str, valor_total: float, valor_parcela: float, parcela: str, data_compra: datetime):
+    def get_compras_filter(self, ano: str, mes: str, banco: str):
+        try:
+            resposta = (
+                self.client.table('compras').select("""
+                    id,
+                    users(id, nome),
+                    bancos!inner(id, nome),
+                    faturas!inner(id, mes, ano, fatura_paga),
+                    categorias_fatura(id, categoria),
+                    descricao,
+                    valor_total,
+                    valor_parcela,
+                    parcela,
+                    data_compra
+                """)
+                .eq('faturas.ano', int(ano))
+                .eq('faturas.mes', int(mes))
+                .eq('bancos.id', banco)
+                .order('data_compra', desc=True).execute()
+            )
+            return [Compra.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar compras: {err}')
+            return []
+    
+    def add_compra(self, user_id: int, banco_id: int, fatura_id: int, categoria_id: int, descricao: str, valor_total: float, valor_parcela: float, parcela: str, data_compra: datetime):
         dados = {
             'user_id': user_id,
             'banco_id': banco_id,
@@ -148,10 +173,23 @@ class Database:
             'valor_total': valor_total,
             'valor_parcela': valor_parcela,
             'parcela': parcela,
-            'data_compra': data_compra
+            'data_compra': data_compra.strftime('%Y-%m-%d')
         }
         try:
             return self.client.table('compras').insert(dados).execute()
+        except Exception as e:
+            print(e)
+            return None
+
+    def popular_compras(self):
+        # import pandas as pd
+        # import pick
+        # dados = 
+
+        try:
+            resposta = self.client.table('compras').insert(dados).execute()
+            print(f'{len(resposta)} registros Salvos com Sucesso.')
+            return resposta
         except Exception as e:
             print(e)
             return None

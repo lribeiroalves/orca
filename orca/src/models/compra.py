@@ -11,6 +11,7 @@ class Compra:
     banco_nome: str
     fatura_id: int
     fatura_str: str
+    fatura_paga: bool
     categoria_id: int
     categoria_nome: str
     descricao: str
@@ -32,6 +33,7 @@ class Compra:
             banco_nome = data.get('bancos')['nome'],
             fatura_id = data.get('faturas')['id'],
             fatura_str = f'{meses[data.get("faturas")["mes"] - 1]} / {data.get("faturas")["ano"]}',
+            fatura_paga = data.get('faturas')['fatura_paga'],
             categoria_id = data.get(data.get('categorias_fatura')['id']),
             categoria_nome = data.get('categorias_fatura')['categoria'],
             descricao = data.get('descricao'),

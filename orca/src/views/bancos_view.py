@@ -70,7 +70,7 @@ def bancos_view(page: ft.Page, db: Database):
                 ft.Text('Novo Banco', size=20, weight='bold'),
                 nome_banco,
                 saldo_inicial,
-                ft.Row([ft.TextButton('Cancelar', on_click=fechar_popup_banco), ft.ElevatedButton('Salvar', on_click=salvar_novo_banco, bgcolor='blue', color='white')], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
+                ft.Row([ft.TextButton('Cancelar', on_click=fechar_popup_banco), ft.ElevatedButton('Salvar', on_click=salvar_novo_banco, bgcolor=ft.Colors.BLUE_900, color='white')], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
             ], tight=True)
         )
     )
@@ -81,7 +81,7 @@ def bancos_view(page: ft.Page, db: Database):
                 ft.Text('Atualizar Saldo', size=20, weight='bold'),
                 nome_banco,
                 saldo_inicial,
-                ft.Row([ft.TextButton('Cancelar', on_click=fechar_popup_saldo), ft.ElevatedButton('Salvar', on_click=salvar_novo_saldo, bgcolor='blue', color='white')], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
+                ft.Row([ft.TextButton('Cancelar', on_click=fechar_popup_saldo), ft.ElevatedButton('Salvar', on_click=salvar_novo_saldo, bgcolor=ft.Colors.BLUE_900, color='white')], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
             ], tight=True)
         )
     )

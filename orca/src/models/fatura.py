@@ -7,7 +7,7 @@ class Fatura:
     mes: int
     mes_str: str
     ano: int
-    status_ok: bool
+    fatura_paga: bool
 
     @classmethod
     def from_json(cls, data:dict):
@@ -19,5 +19,5 @@ class Fatura:
             mes = data.get('mes'),
             mes_str = meses[data.get('mes') - 1],
             ano = data.get('ano'),
-            status_ok = data.get('status_ok')
+            fatura_paga = data.get('fatura_paga')
         )
