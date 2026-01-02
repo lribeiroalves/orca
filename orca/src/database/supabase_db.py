@@ -181,15 +181,16 @@ class Database:
             print(e)
             return None
 
-    def popular_compras(self):
-        # import pandas as pd
-        # import pick
-        # dados = 
+    # def popular_compras(self):
+    #     import pickle
+    #     # Carrega o dicionário do arquivo
+    #     with open('df_c_data_corrigida.pkl', 'rb') as arquivo:
+    #         dados_carregados = pickle.load(arquivo)
 
-        try:
-            resposta = self.client.table('compras').insert(dados).execute()
-            print(f'{len(resposta)} registros Salvos com Sucesso.')
-            return resposta
-        except Exception as e:
-            print(e)
-            return None
+    #     try:
+    #         resposta = self.client.table('compras').insert(dados_carregados).execute()
+    #         print(f'{len(resposta)} registros Salvos com Sucesso.')
+    #         return resposta
+    #     except Exception as e:
+    #         print(e)
+    #         return None

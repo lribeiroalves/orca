@@ -7,7 +7,8 @@ def fatura_view(page: ft.Page, db: Database):
 
     faturas = db.get_faturas()
     bancos = [b for b in db.get_bancos() if b.cartao]
-    anos = [ft.DropdownOption(key=str(f.ano), content=ft.Text(f.ano)) for f in faturas]
+    anos_unicos = sorted(list(set(f.ano for f in faturas)))
+    anos = [ft.DropdownOption(key=str(ano), content=ft.Text(ano)) for ano in anos_unicos]
     meses = []
 
     card_total = ft.Container(visible=False)
@@ -173,8 +174,7 @@ def fatura_view(page: ft.Page, db: Database):
         dd_banco.value = None
         dd_banco.key = 'reset do dd_ano'
         dd_mes.options.clear()
-        dd_mes.options.extend([ft.DropdownOption(key=str(f.mes), text=f.mes_str.upper(), content=ft.Text(f.mes_str.upper())) for f in meses])
-        # habilitar btn_ok
+        dd_mes.options.extend([ft.DropdownOption(key=str(f.mes), text=f.mes_str.upper(), content=ft.Text(f.mes_str.upper(), color='blue' if f.fatura_paga else 'red')) for f in meses])
         habilitar_btn_ok()
         page.update()
     
@@ -266,7 +266,6 @@ def fatura_view(page: ft.Page, db: Database):
                         alignment=ft.alignment.center,
                         width=float('inf')
                     ),
-                    ft.ElevatedButton('Popular Compras', on_click=lambda _: db.popular_compras(), bgcolor=ft.Colors.RED_900)
                 ])
             )
         ],
