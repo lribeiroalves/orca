@@ -79,9 +79,10 @@ class MyPopup:
         return wrapper
 
 class MyBsAddCompra:
-    def __init__(self, page: ft.Page):
+    def __init__(self, p: ft.Page):
+        self.page = p
         self.title = 'Cadastrar Compra'
-        self.txt_data = ft.TextField(label='Data da Compra', read_only=True, on_focus=lambda _: page.open(self.calendar))
+        self.txt_data = ft.TextField(label='Data da Compra', read_only=True, on_focus=self.__open_calendar)
         self.calendar = ft.DatePicker(on_change=self.__on_change_calendar, on_dismiss=self.__on_dismiss_calendar)
         self.txt_parcela = ft.TextField(label='Parcelas', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
         self.txt_valorTotal = ft.TextField(label='Valor Total', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
@@ -134,8 +135,16 @@ class MyBsAddCompra:
             )  
         )
 
+    def __open_calendar(self, e):
+        self.txt_parcela.focus()
+        self.page.open(self.calendar)
+
     def __on_change_calendar(self, e):
-        print(e.control.value)
+        self.txt_data.value = e.control.value.strftime('%d/%m/%Y')
+        self.txt_data.data = e.control.value.strftime('%Y-%m-%d')
+        self.page.update()
 
     def __on_dismiss_calendar(self, e):
-        print('dismiss')
+        self.txt_data.value = None
+        self.txt_data.data = None
+        self.page.update()
