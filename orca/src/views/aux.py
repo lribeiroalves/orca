@@ -1,4 +1,5 @@
 import flet as ft
+from typing import Callable
 
 
 class MyButton(ft.ElevatedButton):
@@ -53,3 +54,88 @@ class MyWarnings:
     @classmethod
     def fechar_banner_conexao(cls, page):
         page.close(cls.banner_conexao)
+    
+
+class MyPopup:
+    def __init__(self, titulo: str, function: Callable, page: ft.Page):
+        self.page = page
+        self.popup = ft.AlertDialog(
+                title=ft.Text('Confirmação'),
+                content=ft.Text(titulo),
+                actions=[
+                    # ft.TextButton('Cancela', on_click=lambda _: self.fechar_popup),
+                    ft.ElevatedButton('Confirma', bgcolor=ft.Colors.BLUE_900, color='white', on_click=self.confirmar_acao(function))
+                ]
+            )
+    
+    def fechar_popup(self, _):
+        self.popup.open = False
+        self.page.update()
+    
+    def confirmar_acao(self, func):
+        def wrapper(e):
+            func(e)
+            self.fechar_popup(None)
+        return wrapper
+
+class MyBsAddCompra:
+    def __init__(self, page: ft.Page):
+        self.title = 'Cadastrar Compra'
+        self.txt_data = ft.TextField(label='Data da Compra', read_only=True, on_focus=lambda _: page.open(self.calendar))
+        self.calendar = ft.DatePicker(on_change=self.__on_change_calendar, on_dismiss=self.__on_dismiss_calendar)
+        self.txt_parcela = ft.TextField(label='Parcelas', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
+        self.txt_valorTotal = ft.TextField(label='Valor Total', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
+        self.txt_valorParcela = ft.TextField(label='Placehoder', read_only=True)
+        self.txt_desc = ft.TextField(label='Descrição', read_only=True)
+
+        self.bs = ft.BottomSheet(
+            ft.Column([
+                ft.Container(
+                    padding=20,
+                    content=ft.Column([
+                        ft.ResponsiveRow(
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                            controls=[
+                                ft.Container(
+                                    col={'xs': 8, 'md': 6},
+                                    content=ft.Text(self.title, size=20, weight='bold')
+                                ),
+                                ft.Container(
+                                    col={'xs': 4, 'md': 4},
+                                    content=ft.ElevatedButton(' Limpar ', on_click=lambda _: print('Limpar'),bgcolor=ft.Colors.BLUE_300, color='white')
+                                ),
+                            ]
+                        ),
+                        ft.Divider(height=15, color='transparent'),
+                        ft.ResponsiveRow(
+                            controls=[
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
+                                    content=self.txt_data
+                                ),
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
+                                    content=self.txt_parcela
+                                ),
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
+                                    content=self.txt_valorTotal
+                                ),
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
+                                    content=self.txt_valorParcela
+                                ),
+                            ]
+                        ),
+                        self.txt_desc,
+
+                    ], tight=True)
+                )], scroll=ft.ScrollMode.AUTO
+            )  
+        )
+
+    def __on_change_calendar(self, e):
+        print(e.control.value)
+
+    def __on_dismiss_calendar(self, e):
+        print('dismiss')

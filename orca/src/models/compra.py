@@ -19,6 +19,7 @@ class Compra:
     valor_parcela: float
     parcela: str
     data_compra: datetime
+    hash_compra: str
 
     @classmethod
     def from_json(cls, data: dict):
@@ -41,4 +42,5 @@ class Compra:
             valor_parcela = data.get('valor_parcela'),
             parcela = data.get('parcela'),
             data_compra = datetime.strptime(data.get('data_compra'), '%Y-%m-%d'),
+            hash_compra = data.get('hash_compra')
         )

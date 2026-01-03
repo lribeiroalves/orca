@@ -119,6 +119,13 @@ class Database:
             print(e)
             return None
     
+    def update_fatura(self, fatura_id: int, status: bool):
+        try:
+            return self.client.table('faturas').update({'fatura_paga': status}).eq('id', fatura_id).execute()
+        except Exception as e:
+            print(e)
+            return None
+
     def get_compras(self) -> list[Compra]:
         try:
             resposta = self.client.table('compras').select("""
@@ -131,7 +138,8 @@ class Database:
                 valor_total,
                 valor_parcela,
                 parcela,
-                data_compra
+                data_compra,
+                hash_compra
             """).order('data_compra', desc=True).execute()
             return [Compra.from_json(item) for item in resposta.data]
         except Exception as err:
@@ -151,11 +159,36 @@ class Database:
                     valor_total,
                     valor_parcela,
                     parcela,
-                    data_compra
+                    data_compra,
+                    hash_compra
                 """)
                 .eq('faturas.ano', int(ano))
                 .eq('faturas.mes', int(mes))
                 .eq('bancos.id', banco)
+                .order('data_compra', desc=True).execute()
+            )
+            return [Compra.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar compras: {err}')
+            return []
+    
+    def get_compras_hash(self, hash:str):
+        try:
+            resposta = (
+                self.client.table('compras').select("""
+                id,
+                users(id, nome),
+                bancos(id, nome),
+                faturas(id, mes, ano, fatura_paga),
+                categorias_fatura(id, categoria),
+                descricao,
+                valor_total,
+                valor_parcela,
+                parcela,
+                data_compra,
+                hash_compra
+            """)
+                .eq('hash_compra', hash)
                 .order('data_compra', desc=True).execute()
             )
             return [Compra.from_json(item) for item in resposta.data]
@@ -180,17 +213,3 @@ class Database:
         except Exception as e:
             print(e)
             return None
-
-    # def popular_compras(self):
-    #     import pickle
-    #     # Carrega o dicionário do arquivo
-    #     with open('df_c_data_corrigida.pkl', 'rb') as arquivo:
-    #         dados_carregados = pickle.load(arquivo)
-
-    #     try:
-    #         resposta = self.client.table('compras').insert(dados_carregados).execute()
-    #         print(f'{len(resposta)} registros Salvos com Sucesso.')
-    #         return resposta
-    #     except Exception as e:
-    #         print(e)
-    #         return None
