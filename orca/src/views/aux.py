@@ -1,5 +1,7 @@
 import flet as ft
 from typing import Callable
+from models import Fatura, Categoria, Banco
+from datetime import datetime
 
 
 class MyButton(ft.ElevatedButton):
@@ -79,15 +81,35 @@ class MyPopup:
         return wrapper
 
 class MyBsAddCompra:
-    def __init__(self, p: ft.Page):
+    def __init__(self, p: ft.Page, faturas: list[Fatura], categorias: list[Categoria], bancos: list[Banco]):
         self.page = p
+
         self.title = 'Cadastrar Compra'
+
         self.txt_data = ft.TextField(label='Data da Compra', read_only=True, on_focus=self.__open_calendar)
-        self.calendar = ft.DatePicker(on_change=self.__on_change_calendar, on_dismiss=self.__on_dismiss_calendar)
+        self.calendar = ft.DatePicker(on_change=self.__on_change_calendar, on_dismiss=self.__on_dismiss_calendar, date_picker_entry_mode=ft.DatePickerEntryMode.CALENDAR_ONLY)
+
         self.txt_parcela = ft.TextField(label='Parcelas', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
-        self.txt_valorTotal = ft.TextField(label='Valor Total', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
+
+        self.reg_str = r"^(|[0-9][0-9]*(,[0-9]{0,2})?)$"
+        self.txt_valorTotal = ft.TextField(label='Valor Total', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = self.reg_str, allow=True, replacement_string=""))
+
+        self.txt_desc = ft.TextField(label='Descrição')
+
+        self.opt_user = [ft.DropdownOption(key='1', content=ft.Text('Lucas'), text='Lucas'), ft.DropdownOption(key='2', content=ft.Text('Selma'), text='Selma'), ft.DropdownOption(key='3', content=ft.Text('Ambos'), text='Ambos')]
+        self.dd_user = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Usuário', options=self.opt_user, expand=True, width=300)
+
+        self.opt_banco = [ft.DropdownOption(key=b.id, content=b.nome, text=b.nome) for b in bancos]
+        self.dd_banco = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Banco', options=self.opt_banco, expand=True, width=300)
+
+        self.opt_cat = [ft.DropdownOption(key=c.id, content=c.categoria, text=c.categoria) for c in categorias]
+        self.dd_cat = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Categoria', options=self.opt_cat, expand=True, width=300)
+
+        self.txt_mesFatura = ft.TextField(label='Mês da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,2}$", allow=True, replacement_string=""), hint_text='Ex: 02', value=datetime.now().strftime('%m'))
+        self.txt_ano_fatura = ft.TextField(label='Ano da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,4}$", allow=True, replacement_string=""), hint_text='Ex: 2025', value=datetime.now().strftime('%Y'))
+
+        
         self.txt_valorParcela = ft.TextField(label='Placehoder', read_only=True)
-        self.txt_desc = ft.TextField(label='Descrição', read_only=True)
 
         self.bs = ft.BottomSheet(
             ft.Column([
@@ -103,7 +125,7 @@ class MyBsAddCompra:
                                 ),
                                 ft.Container(
                                     col={'xs': 4, 'md': 4},
-                                    content=ft.ElevatedButton(' Limpar ', on_click=lambda _: print('Limpar'),bgcolor=ft.Colors.BLUE_300, color='white')
+                                    content=ft.ElevatedButton(' Limpar ', on_click=self.limpar_bs,bgcolor=ft.Colors.BLUE_300, color='white')
                                 ),
                             ]
                         ),
@@ -112,11 +134,19 @@ class MyBsAddCompra:
                             controls=[
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
+                                    content=self.txt_ano_fatura
+                                ),
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
+                                    content=self.txt_mesFatura
+                                ),
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
                                     content=self.txt_data
                                 ),
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
-                                    content=self.txt_parcela
+                                    content=self.dd_banco
                                 ),
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
@@ -124,7 +154,15 @@ class MyBsAddCompra:
                                 ),
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
-                                    content=self.txt_valorParcela
+                                    content=self.txt_parcela
+                                ),
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
+                                    content=self.dd_cat
+                                ),
+                                ft.Container(
+                                    col={'xs':12, 'md': 6},
+                                    content=self.dd_user
                                 ),
                             ]
                         ),
@@ -134,6 +172,19 @@ class MyBsAddCompra:
                 )], scroll=ft.ScrollMode.AUTO
             )  
         )
+
+    def limpar_bs(self, e):
+        self.txt_data.value = None
+        self.txt_desc.value = None
+        self.txt_parcela.value = None
+        self.txt_valorTotal.value = None
+        self.dd_user.key = 'limpar'
+        self.dd_user.value = None
+        self.dd_banco.key = 'limpar'
+        self.dd_banco.value = None
+        self.dd_cat.key = 'limpar'
+        self.dd_cat.value = None
+        self.page.update()
 
     def __open_calendar(self, e):
         self.txt_parcela.focus()

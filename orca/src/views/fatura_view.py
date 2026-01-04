@@ -9,6 +9,7 @@ def fatura_view(page: ft.Page, db: Database):
     ######################################################################################################################
     faturas = db.get_faturas()
     bancos = [b for b in db.get_bancos() if b.cartao]
+    categorias = db.get_categorias()
     anos_unicos = sorted(list(set(f.ano for f in faturas)))
     anos = [ft.DropdownOption(key=str(ano), content=ft.Text(ano)) for ano in anos_unicos]
     meses = []
@@ -404,12 +405,12 @@ def fatura_view(page: ft.Page, db: Database):
         popup_confirma_status.open = False
         page.update()
 
-    popup_confirma_status =  MyPopup('Deseja mesmo alterar o status dessa compra?', lambda e: alterar_status(titulo_fatura), page).popup
+    popup_confirma_status =  MyPopup('Deseja mesmo alterar o status dessa fatura?', lambda e: alterar_status(titulo_fatura), page).popup
 
     # CADASTRAR COMPRA
     ######################################################################################################################
 
-    bs_compra = MyBsAddCompra(page).bs
+    bs_compra = MyBsAddCompra(page, faturas, categorias, bancos).bs
 
     # ADICIONAR POPUPS A PAGINA
     ######################################################################################################################
