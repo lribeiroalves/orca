@@ -97,16 +97,16 @@ class MyBsAddCompra:
         self.txt_desc = ft.TextField(label='Descrição')
 
         self.opt_user = [ft.DropdownOption(key='1', content=ft.Text('Lucas'), text='Lucas'), ft.DropdownOption(key='2', content=ft.Text('Selma'), text='Selma'), ft.DropdownOption(key='3', content=ft.Text('Ambos'), text='Ambos')]
-        self.dd_user = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Usuário', options=self.opt_user, expand=True, width=300)
+        self.dd_user = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Usuário', options=self.opt_user, expand=True, width=500)
 
         self.opt_banco = [ft.DropdownOption(key=b.id, content=b.nome, text=b.nome) for b in bancos]
-        self.dd_banco = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Banco', options=self.opt_banco, expand=True, width=300)
+        self.dd_banco = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Banco', options=self.opt_banco, expand=True, width=500)
 
         self.opt_cat = [ft.DropdownOption(key=c.id, content=c.categoria, text=c.categoria) for c in categorias]
-        self.dd_cat = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Categoria', options=self.opt_cat, expand=True, width=300)
+        self.dd_cat = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Categoria', options=self.opt_cat, expand=True, width=500)
 
         self.txt_mesFatura = ft.TextField(label='Mês da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,2}$", allow=True, replacement_string=""), hint_text='Ex: 02', value=datetime.now().strftime('%m'))
-        self.txt_ano_fatura = ft.TextField(label='Ano da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,4}$", allow=True, replacement_string=""), hint_text='Ex: 2025', value=datetime.now().strftime('%Y'))
+        self.txt_anoFatura = ft.TextField(label='Ano da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,4}$", allow=True, replacement_string=""), hint_text='Ex: 2025', value=datetime.now().strftime('%Y'))
 
         
         self.txt_valorParcela = ft.TextField(label='Placehoder', read_only=True)
@@ -134,7 +134,7 @@ class MyBsAddCompra:
                             controls=[
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
-                                    content=self.txt_ano_fatura
+                                    content=self.txt_anoFatura
                                 ),
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
@@ -184,6 +184,8 @@ class MyBsAddCompra:
         self.dd_banco.value = None
         self.dd_cat.key = 'limpar'
         self.dd_cat.value = None
+        self.txt_mesFatura.value = None
+        self.txt_anoFatura.value = None
         self.page.update()
 
     def __open_calendar(self, e):

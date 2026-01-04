@@ -266,7 +266,7 @@ def fatura_view(page: ft.Page, db: Database):
     # Botoes de Acao
     ######################################################################################################################
     # Cadastrar compra
-    nova_compra = ft.ElevatedButton('Cadastrar Nova Compra', bgcolor=ft.Colors.BLUE_900, color='white', on_click=lambda _: (setattr(bs_compra, 'open', True), page.update()))
+    nova_compra = ft.ElevatedButton('Cadastrar Nova Compra', bgcolor=ft.Colors.BLUE_700, color='white', on_click=lambda _: (setattr(bs_compra, 'open', True), page.update()), col={'xs': 11, 'sm': 11, 'md': 8, 'lg': 8})
     # Alterar Status de Fatura
     btn_altera_status = ft.ElevatedButton('Alterar Status da Fatura', bgcolor=ft.Colors.BLUE_900, color='white', on_click=lambda _: (setattr(popup_confirma_status, 'open', True), page.update()))
 
@@ -274,10 +274,10 @@ def fatura_view(page: ft.Page, db: Database):
         visible=False,
         alignment=ft.MainAxisAlignment.SPACE_AROUND,
         controls=[
-            ft.Container(
-                col={'xs': 12, 'md': 3},
-                content=nova_compra
-            ),
+            # ft.Container(
+            #     col={'xs': 12, 'md': 3},
+            #     content=nova_compra
+            # ),
             ft.Container(
                 col={'xs': 12, 'md': 3},
                 content=btn_altera_status
@@ -450,12 +450,16 @@ def fatura_view(page: ft.Page, db: Database):
                         ]
                     ),
                     ft.Divider(height=10, color='transparent'),
-                    ft.ResponsiveRow(
-                        alignment=ft.MainAxisAlignment.SPACE_EVENLY,
-                        controls=[
-                            btn_limpar,
-                            btn_ok,
-                        ],
+                    ft.Container(
+                        alignment=ft.alignment.center,
+                        content=ft.ResponsiveRow(
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            controls=[
+                                btn_limpar,
+                                btn_ok,
+                                nova_compra,
+                            ],
+                        )
                     ),
                     ft.Divider(height=20, color='grey', thickness=1),
                     titulo_fatura,
