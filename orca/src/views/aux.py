@@ -87,14 +87,14 @@ class MyBsAddCompra:
         self.title = 'Cadastrar Compra'
 
         self.txt_data = ft.TextField(label='Data da Compra', read_only=True, on_focus=self.__open_calendar)
-        self.calendar = ft.DatePicker(on_change=self.__on_change_calendar, on_dismiss=self.__on_dismiss_calendar, date_picker_entry_mode=ft.DatePickerEntryMode.CALENDAR_ONLY)
+        self.calendar = ft.DatePicker(on_change=self.__on_change_calendar, on_dismiss=self.__on_dismiss_calendar, date_picker_entry_mode=ft.DatePickerEntryMode.CALENDAR_ONLY, )
 
         self.txt_parcela = ft.TextField(label='Parcelas', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
 
         self.reg_str = r"^(|[0-9][0-9]*(,[0-9]{0,2})?)$"
         self.txt_valorTotal = ft.TextField(label='Valor Total', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = self.reg_str, allow=True, replacement_string=""))
 
-        self.txt_desc = ft.TextField(label='Descrição')
+        self.txt_desc = ft.TextField(label='Descrição', multiline=True, min_lines=4, max_lines=4, align_label_with_hint=True)
 
         self.opt_user = [ft.DropdownOption(key='1', content=ft.Text('Lucas'), text='Lucas'), ft.DropdownOption(key='2', content=ft.Text('Selma'), text='Selma'), ft.DropdownOption(key='3', content=ft.Text('Ambos'), text='Ambos')]
         self.dd_user = ft.Dropdown(border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Usuário', options=self.opt_user, expand=True, width=500)
@@ -108,7 +108,29 @@ class MyBsAddCompra:
         self.txt_mesFatura = ft.TextField(label='Mês da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,2}$", allow=True, replacement_string=""), hint_text='Ex: 02', value=datetime.now().strftime('%m'))
         self.txt_anoFatura = ft.TextField(label='Ano da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,4}$", allow=True, replacement_string=""), hint_text='Ex: 2025', value=datetime.now().strftime('%Y'))
 
-        
+        self.btn_confirma = ft.ElevatedButton('Cadastrar', bgcolor=ft.Colors.BLUE_900, color='white', elevation=4, col={'xs': 10, 'md': 6}, on_click=self.abrir_confirmacao)
+        self.txt_pos_confirma = ft.Text('Voce confirma o cadastro dessa compra?', col={'xs': 12})
+        self.btn_pos_cancela = ft.ElevatedButton('Cancelar', bgcolor=ft.Colors.RED_900, color='white', elevation=4, col={'xs': 6, 'md': 6}, on_click=self.cancelar_confirmacao)
+        self.btn_pos_confirma = ft.ElevatedButton('Confirmar', bgcolor=ft.Colors.BLUE_900, color='white', elevation=4, col={'xs': 6, 'md': 6}, on_click=self.confirmar_cadastro)
+
+        self.linha_cadastro = ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                self.btn_confirma
+            ],
+            visible=True
+        )
+        self.linha_confirmacao = ft.ResponsiveRow(
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                self.txt_pos_confirma,
+                self.btn_pos_cancela,
+                self.btn_pos_confirma,
+                ft.Divider(height=10, color='transparent')
+            ],
+            visible=False
+        )
+
         self.txt_valorParcela = ft.TextField(label='Placehoder', read_only=True)
 
         self.bs = ft.BottomSheet(
@@ -167,10 +189,12 @@ class MyBsAddCompra:
                             ]
                         ),
                         self.txt_desc,
-
+                        ft.Divider(height=10, thickness=1, color='grey'),
+                        self.linha_cadastro,
+                        self.linha_confirmacao
                     ], tight=True)
                 )], scroll=ft.ScrollMode.AUTO
-            )  
+            )
         )
 
     def limpar_bs(self, e):
@@ -201,3 +225,58 @@ class MyBsAddCompra:
         self.txt_data.value = None
         self.txt_data.data = None
         self.page.update()
+
+    def abrir_confirmacao(self, e):
+        self.linha_cadastro.visible = False
+        self.linha_confirmacao.visible = True
+        self.page.update()
+    
+    def cancelar_confirmacao(self, e):
+        self.linha_cadastro.visible = True
+        self.linha_confirmacao.visible = False
+        self.page.update()
+    
+    def verificar_campos(self) -> bool:
+        error_found = False
+        msg_erro_vazio = "Todos os campos são obrigatórios."
+        campos = [self.txt_anoFatura, self.txt_mesFatura, self.txt_data, self.dd_banco, self.txt_valorTotal, self.txt_parcela, self.dd_cat, self.dd_user, self.txt_desc]
+        
+        for campo in campos:
+            campo.error_text = None
+
+        if int(self.txt_anoFatura.value) < 2020:
+            error_found = True
+            self.txt_anoFatura.error_text = 'O ano da fatura deve ser maior ou igual a 2020'
+        
+        if 1 > int(self.txt_mesFatura.value) or 12 < int(self.txt_mesFatura.value):
+            error_found = True
+            self.txt_mesFatura.error_text = 'O mes da fatura deve ser entre 01 e 12'
+        
+        try:
+            valor_total = float(self.txt_valorTotal.value.replace(',', '.'))
+        except:
+            error_found = True
+            self.txt_valorTotal.error_text = 'O valor da compra precisa ser um valor monetário válido.'
+
+        for campo in campos:
+            if not campo.value:
+                error_found = True
+                campo.error_text = msg_erro_vazio
+
+        self.page.update()
+
+        if error_found:
+            return False
+        
+        return True
+    
+    def confirmar_cadastro(self, e):
+        if self.verificar_campos():
+            self.bs.open = False
+            self.page.update()
+            self.page.open(ft.SnackBar(ft.Text('confirmar e encerrar')))
+        else:
+            pass
+
+    
+    

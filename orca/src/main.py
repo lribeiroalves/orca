@@ -3,8 +3,15 @@ from database import Database
 from views import *
 
 def main(page: ft.Page):
-    page.title = "Orca App"
     db = Database()
+    page.title = "Orca App"
+    page.locale_configuration = ft.LocaleConfiguration(
+        supported_locales=[
+            ft.Locale("pt", "BR"),
+            ft.Locale("en", "US"),
+        ],
+        current_locale=ft.Locale("pt", "BR"),
+    )
 
     def route_change(route):        
         # Se a rota for a inicial
