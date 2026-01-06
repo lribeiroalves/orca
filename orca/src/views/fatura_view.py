@@ -410,7 +410,7 @@ def fatura_view(page: ft.Page, db: Database):
     # CADASTRAR COMPRA
     ######################################################################################################################
 
-    bs_compra = MyBsAddCompra(page, faturas, categorias, bancos).bs
+    bs_compra = MyBsAddCompra(page, faturas, categorias, bancos, db).bs
 
     # ADICIONAR POPUPS A PAGINA
     ######################################################################################################################

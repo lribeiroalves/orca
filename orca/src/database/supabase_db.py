@@ -196,7 +196,7 @@ class Database:
             print(f'Erro ao buscar compras: {err}')
             return []
     
-    def add_compra(self, user_id: int, banco_id: int, fatura_id: int, categoria_id: int, descricao: str, valor_total: float, valor_parcela: float, parcela: str, data_compra: datetime):
+    def add_compra(self, user_id: int, banco_id: int, fatura_id: int, categoria_id: int, descricao: str, valor_total: float, valor_parcela: float, parcela: str, data_compra: datetime, hash_compra: str):
         dados = {
             'user_id': user_id,
             'banco_id': banco_id,
@@ -206,7 +206,8 @@ class Database:
             'valor_total': valor_total,
             'valor_parcela': valor_parcela,
             'parcela': parcela,
-            'data_compra': data_compra.strftime('%Y-%m-%d')
+            'data_compra': data_compra.strftime('%Y-%m-%d'),
+            'hash_compra': hash_compra
         }
         try:
             return self.client.table('compras').insert(dados).execute()

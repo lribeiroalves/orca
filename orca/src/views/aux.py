@@ -1,7 +1,9 @@
 import flet as ft
+from database import Database
 from typing import Callable
 from models import Fatura, Categoria, Banco
 from datetime import datetime
+import uuid
 
 
 class MyButton(ft.ElevatedButton):
@@ -81,17 +83,21 @@ class MyPopup:
         return wrapper
 
 class MyBsAddCompra:
-    def __init__(self, p: ft.Page, faturas: list[Fatura], categorias: list[Categoria], bancos: list[Banco]):
+    def __init__(self, p: ft.Page, faturas: list[Fatura], categorias: list[Categoria], bancos: list[Banco], db: Database):
         self.page = p
 
         self.title = 'Cadastrar Compra'
+
+        self.faturas = faturas
+        self.db = db
 
         self.txt_data = ft.TextField(label='Data da Compra', read_only=True, on_focus=self.__open_calendar)
         self.calendar = ft.DatePicker(on_change=self.__on_change_calendar, on_dismiss=self.__on_dismiss_calendar, date_picker_entry_mode=ft.DatePickerEntryMode.CALENDAR_ONLY, )
 
         self.txt_parcela = ft.TextField(label='Parcelas', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
 
-        self.reg_str = r"^(|[0-9][0-9]*(,[0-9]{0,2})?)$"
+        # self.reg_str = r"^(|-?[0-9][0-9]*(,[0-9]{0,2})?)$"
+        self.reg_str = r"^(|-|(-?[0-9]+(,[0-9]{0,2})?))$"
         self.txt_valorTotal = ft.TextField(label='Valor Total', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = self.reg_str, allow=True, replacement_string=""))
 
         self.txt_desc = ft.TextField(label='Descrição', multiline=True, min_lines=4, max_lines=4, align_label_with_hint=True)
@@ -130,8 +136,6 @@ class MyBsAddCompra:
             ],
             visible=False
         )
-
-        self.txt_valorParcela = ft.TextField(label='Placehoder', read_only=True)
 
         self.bs = ft.BottomSheet(
             ft.Column([
@@ -194,8 +198,14 @@ class MyBsAddCompra:
                         self.linha_confirmacao
                     ], tight=True)
                 )], scroll=ft.ScrollMode.AUTO
-            )
+            ), on_dismiss=self.handle_dismiss,
         )
+
+    def limpar_erros(self):
+        campos = [self.txt_anoFatura, self.txt_mesFatura, self.txt_data, self.dd_banco, self.txt_valorTotal, self.txt_parcela, self.dd_cat, self.dd_user, self.txt_desc]
+        
+        for campo in campos:
+            campo.error_text = None
 
     def limpar_bs(self, e):
         self.txt_data.value = None
@@ -210,6 +220,9 @@ class MyBsAddCompra:
         self.dd_cat.value = None
         self.txt_mesFatura.value = None
         self.txt_anoFatura.value = None
+        self.linha_cadastro.visible = True
+        self.linha_confirmacao.visible = False
+        self.limpar_erros()
         self.page.update()
 
     def __open_calendar(self, e):
@@ -218,7 +231,7 @@ class MyBsAddCompra:
 
     def __on_change_calendar(self, e):
         self.txt_data.value = e.control.value.strftime('%d/%m/%Y')
-        self.txt_data.data = e.control.value.strftime('%Y-%m-%d')
+        self.txt_data.data = e.control.value
         self.page.update()
 
     def __on_dismiss_calendar(self, e):
@@ -235,28 +248,37 @@ class MyBsAddCompra:
         self.linha_cadastro.visible = True
         self.linha_confirmacao.visible = False
         self.page.update()
+
+    def handle_dismiss(self, e):
+        self.linha_cadastro.visible = True
+        self.linha_confirmacao.visible = False
     
-    def verificar_campos(self) -> bool:
+    def verificar_erro_campos(self) -> bool:
         error_found = False
         msg_erro_vazio = "Todos os campos são obrigatórios."
         campos = [self.txt_anoFatura, self.txt_mesFatura, self.txt_data, self.dd_banco, self.txt_valorTotal, self.txt_parcela, self.dd_cat, self.dd_user, self.txt_desc]
         
         for campo in campos:
             campo.error_text = None
-
-        if int(self.txt_anoFatura.value) < 2020:
-            error_found = True
-            self.txt_anoFatura.error_text = 'O ano da fatura deve ser maior ou igual a 2020'
-        
-        if 1 > int(self.txt_mesFatura.value) or 12 < int(self.txt_mesFatura.value):
-            error_found = True
-            self.txt_mesFatura.error_text = 'O mes da fatura deve ser entre 01 e 12'
         
         try:
-            valor_total = float(self.txt_valorTotal.value.replace(',', '.'))
-        except:
+            if int(self.txt_anoFatura.value) < 2022 or int(self.txt_anoFatura.value) > 2035:
+                error_found = True
+                self.txt_anoFatura.error_text = 'O ano da fatura deve ser entre 2022 e 2035'
+            
+            if 1 > int(self.txt_mesFatura.value) or 12 < int(self.txt_mesFatura.value):
+                error_found = True
+                self.txt_mesFatura.error_text = 'O mes da fatura deve ser entre 01 e 12'
+            
+            if float(self.txt_valorTotal.value.replace(',', '.')) == 0:
+                error_found = True
+                self.txt_valorTotal.error_text = 'O valor total da compra precisa ser diferente de 0.'
+            
+            if int(self.txt_parcela.value) < 1:
+                error_found = True
+                self.txt_parcela.error_text = 'O número de parcelas deve ser maior que 0.'
+        except Exception as e:
             error_found = True
-            self.txt_valorTotal.error_text = 'O valor da compra precisa ser um valor monetário válido.'
 
         for campo in campos:
             if not campo.value:
@@ -265,18 +287,25 @@ class MyBsAddCompra:
 
         self.page.update()
 
-        if error_found:
-            return False
-        
-        return True
+        return error_found
     
     def confirmar_cadastro(self, e):
-        if self.verificar_campos():
+        if not self.verificar_erro_campos():
+            hash_str = str(uuid.uuid4())
+            parcelas = int(self.txt_parcela.value)
+            valor_total = float(self.txt_valorTotal.value.replace(',', '.'))
+            valor_parcela = valor_total / parcelas
+            fatura_inicial = [f.id for f in self.faturas if f.mes == int(self.txt_mesFatura.value) and f.ano == int(self.txt_anoFatura.value)][0]
+            # print(fatura_inicial)
+
+            for p in range(parcelas):
+                if int(self.dd_user.value) == 3:
+                    for i in range(2):
+                        self.db.add_compra(user_id=i+1, banco_id=self.dd_banco.value, fatura_id=fatura_inicial+p, categoria_id=self.dd_cat.value, descricao=self.txt_desc.value, valor_total=valor_total, valor_parcela=valor_parcela/2, parcela=f'{p+1}/{parcelas*2}', data_compra=self.txt_data.data, hash_compra=hash_str)
+                else:
+                    self.db.add_compra(user_id=int(self.dd_user.value), banco_id=self.dd_banco.value, fatura_id=fatura_inicial+p, categoria_id=self.dd_cat.value, descricao=self.txt_desc.value, valor_total=valor_total, valor_parcela=valor_parcela, parcela=f'{p+1}/{parcelas}', data_compra=self.txt_data.data, hash_compra=hash_str)
+
             self.bs.open = False
             self.page.update()
-            self.page.open(ft.SnackBar(ft.Text('confirmar e encerrar')))
-        else:
-            pass
-
-    
+            self.page.open(ft.SnackBar(ft.Text('Compra cadastrada com sucesso!')))
     
