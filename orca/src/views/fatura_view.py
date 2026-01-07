@@ -13,6 +13,7 @@ def fatura_view(page: ft.Page, db: Database):
     anos_unicos = sorted(list(set(f.ano for f in faturas)))
     anos = [ft.DropdownOption(key=str(ano), content=ft.Text(ano)) for ano in anos_unicos]
     meses = []
+    compras = []
 
     # Card de Totais
     ######################################################################################################################
@@ -107,12 +108,30 @@ def fatura_view(page: ft.Page, db: Database):
 
     # Tabela de Faturas
     ######################################################################################################################
+    def executar_ordenacao(index: int, ascending: bool):
+        nonlocal compras
+
+        if index == 0:
+            compras.sort(key=lambda x: x.user_id, reverse=not ascending)
+        if index == 1:
+            compras.sort(key=lambda x: x.data_compra, reverse=not ascending)
+        
+        carregar_items_tabela(compras)
+    
+    def ordernar_coluna(e):
+        tabela.sort_column_index = e.column_index
+        tabela.sort_ascending = e.ascending
+        executar_ordenacao(e.column_index, e.ascending)
+        page.update()
+    
     tabela = ft.DataTable(
         visible=False,
         show_checkbox_column=False,
+        sort_column_index=1,
+        sort_ascending=False,
         columns=[
-            ft.DataColumn(ft.Text('User')),
-            ft.DataColumn(ft.Text('Data')),
+            ft.DataColumn(ft.Text('User'), on_sort=ordernar_coluna),
+            ft.DataColumn(ft.Text('Data'), on_sort=ordernar_coluna),
             ft.DataColumn(ft.Text('Categoria')),
             ft.DataColumn(ft.Text('Descrição')),
             ft.DataColumn(ft.Text('Valor Total'), numeric=True),
@@ -131,20 +150,7 @@ def fatura_view(page: ft.Page, db: Database):
     # Filtros Superiores
     ######################################################################################################################
     # Botao OK
-    def filtrar_compras(e):
-        compras = db.get_compras_filter(dd_ano.value, dd_mes.value, dd_banco.value)
-        if not compras:
-            dd_ano.error_text = 'Não foram encontrados resultados'
-            dd_mes.error_text = 'Não foram encontrados resultados'
-            dd_banco.error_text = 'Não foram encontrados resultados'
-            limpar_tela(None)
-            page.update()
-            return
-        titulo_fatura.value = f'Fatura: {compras[0].fatura_str} \nBanco: {compras[0].banco_nome}'.title()
-        titulo_fatura.data = [compras[0].fatura_id, compras[0].fatura_paga]
-        titulo_fatura.visible = True
-        card_total.content = criar_card(compras)
-        card_total.visible = True
+    def carregar_items_tabela(compras: list[Compra]):
         tabela.rows.clear()
         tabela.rows.extend([
             ft.DataRow(
@@ -163,6 +169,23 @@ def fatura_view(page: ft.Page, db: Database):
                 ]
             ) for i, c in enumerate(compras)
         ])
+
+    def filtrar_compras(e):
+        nonlocal compras
+        compras = db.get_compras_filter(dd_ano.value, dd_mes.value, dd_banco.value)
+        if not compras:
+            dd_ano.error_text = 'Não foram encontrados resultados'
+            dd_mes.error_text = 'Não foram encontrados resultados'
+            dd_banco.error_text = 'Não foram encontrados resultados'
+            limpar_tela(None)
+            page.update()
+            return
+        titulo_fatura.value = f'Fatura: {compras[0].fatura_str} \nBanco: {compras[0].banco_nome}'.title()
+        titulo_fatura.data = [compras[0].fatura_id, compras[0].fatura_paga]
+        titulo_fatura.visible = True
+        card_total.content = criar_card(compras)
+        card_total.visible = True
+        carregar_items_tabela(compras=compras)
         tabela.visible=True
         linha_acao.visible = True
         page.update()
@@ -383,13 +406,12 @@ def fatura_view(page: ft.Page, db: Database):
         page.update()
 
     def confirma_exclusao(e):
+        nonlocal compras
         response = db.delete_compra_hash(popup_compra.data.hash_compra)
-        linhas_tabela_remover = [linha for linha in tabela.rows if linha.data == popup_compra.data.hash_compra]
-        try:
-            for linha in linhas_tabela_remover:
-                tabela.rows.remove(linha)
-        except Exception as e:
-            print(e)
+        compras_removidas = [compra for compra in compras if compra.hash_compra == popup_compra.data.hash_compra]
+        for c in compras_removidas:
+            compras.remove(c)
+        carregar_items_tabela(compras)
         tabela.update()
         popup_confirma_exclusao.open = False
         popup_compra.open = False
