@@ -214,3 +214,15 @@ class Database:
         except Exception as e:
             print(e)
             return None
+
+    def delete_compra_hash(self, h:str):
+        try:
+            return (
+                self.client.table('compras')
+                .delete()
+                .eq('hash_compra', h)
+                .execute()
+            )
+        except Exception as e:
+            print(e)
+            return None

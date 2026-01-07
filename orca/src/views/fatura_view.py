@@ -148,6 +148,7 @@ def fatura_view(page: ft.Page, db: Database):
         tabela.rows.clear()
         tabela.rows.extend([
             ft.DataRow(
+                data=c.hash_compra,
                 color= ft.Colors.with_opacity(0.3, ft.Colors.GREY) if i % 2 != 0 else ft.Colors.with_opacity(0.1, ft.Colors.GREY),
                 selected=False,
                 on_select_changed=lambda e, compra=c: abrir_popup_compra(e, compra),
@@ -377,17 +378,23 @@ def fatura_view(page: ft.Page, db: Database):
         txt_valorTotal.value = f'{compra.valor_total:.2f}'.replace('.', ',')
         txt_valorParcela.value = f'{compra.valor_parcela:.2f}'.replace('.', ',')
         page.bottom_sheet = popup_compra
+        popup_compra.data = compra
         popup_compra.open = True
         page.update()
 
     def confirma_exclusao(e):
-        """LÓGICA PARA REMOVER AS PARCELAS DA COMPRA DO BANCO"""
-        tabela.rows.remove(txt_data.data)
+        response = db.delete_compra_hash(popup_compra.data.hash_compra)
+        linhas_tabela_remover = [linha for linha in tabela.rows if linha.data == popup_compra.data.hash_compra]
+        try:
+            for linha in linhas_tabela_remover:
+                tabela.rows.remove(linha)
+        except Exception as e:
+            print(e)
         tabela.update()
         popup_confirma_exclusao.open = False
         popup_compra.open = False
         page.update()
-        print('Excluido com sucesso!')
+        page.open(ft.SnackBar(ft.Text(f'{len(response.data)} linhas excluídas.')))
 
     popup_confirma_exclusao =  MyPopup('Deseja mesmo excluir essa compra?', confirma_exclusao, page).popup
 

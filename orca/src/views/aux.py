@@ -296,12 +296,11 @@ class MyBsAddCompra:
             valor_total = float(self.txt_valorTotal.value.replace(',', '.'))
             valor_parcela = valor_total / parcelas
             fatura_inicial = [f.id for f in self.faturas if f.mes == int(self.txt_mesFatura.value) and f.ano == int(self.txt_anoFatura.value)][0]
-            # print(fatura_inicial)
 
             for p in range(parcelas):
                 if int(self.dd_user.value) == 3:
                     for i in range(2):
-                        self.db.add_compra(user_id=i+1, banco_id=self.dd_banco.value, fatura_id=fatura_inicial+p, categoria_id=self.dd_cat.value, descricao=self.txt_desc.value, valor_total=valor_total, valor_parcela=valor_parcela/2, parcela=f'{p+1}/{parcelas*2}', data_compra=self.txt_data.data, hash_compra=hash_str)
+                        self.db.add_compra(user_id=i+1, banco_id=self.dd_banco.value, fatura_id=fatura_inicial+p, categoria_id=self.dd_cat.value, descricao=self.txt_desc.value, valor_total=valor_total, valor_parcela=valor_parcela/2, parcela=f'{p*2+1+i}/{parcelas*2}', data_compra=self.txt_data.data, hash_compra=hash_str)
                 else:
                     self.db.add_compra(user_id=int(self.dd_user.value), banco_id=self.dd_banco.value, fatura_id=fatura_inicial+p, categoria_id=self.dd_cat.value, descricao=self.txt_desc.value, valor_total=valor_total, valor_parcela=valor_parcela, parcela=f'{p+1}/{parcelas}', data_compra=self.txt_data.data, hash_compra=hash_str)
 
