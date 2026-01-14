@@ -335,3 +335,11 @@ class Database:
         except Exception as e:
             print(e)
             return None
+    
+    def get_password(self):
+        try:
+            resposta = self.client.table('password_hash').select('pass').limit(1).execute()
+            return resposta.data[0].get('pass')
+        except Exception as err:
+            print(f'Erro ao buscar password: {err}')
+            return 'None'

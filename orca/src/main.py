@@ -13,6 +13,9 @@ def main(page: ft.Page):
         current_locale=ft.Locale("pt", "BR"),
     )
 
+    def liberar_acesso(route):
+        page.go(route)
+
     def route_change(route):        
         # Se a rota for a inicial
         if page.route == "/":
@@ -20,6 +23,9 @@ def main(page: ft.Page):
         
         # Outras rotas
         elif page.route == "/bancos":
+            page.views.append(login_view(page, db, lambda r=page.route: liberar_acesso('/bancos-safe')))
+        
+        elif page.route == '/bancos-safe':
             page.views.append(bancos_view(page, db))
         
         elif page.route == "/fatura":
@@ -29,10 +35,19 @@ def main(page: ft.Page):
             page.views.append(contas_view(page, db))
         
         elif page.route == "/es":
+            page.views.append(login_view(page, db, lambda r=page.route: liberar_acesso('/es-safe')))
+        
+        elif page.route == "/es-safe":
             page.views.append(es_view(page, db))
         
         elif page.route == '/dash':
+            page.views.append(login_view(page, db, lambda r=page.route: liberar_acesso('/dash-safe')))
+        
+        elif page.route == '/dash-safe':
             page.views.append(dash_view(page, db))
+        
+        elif page.route == '/login':
+            page.views.append(login_view(page, db, lambda r=route: liberar_acesso('/bancos')))
             
         page.update()
 
@@ -40,6 +55,9 @@ def main(page: ft.Page):
         if len(page.views) > 2:
             page.views.pop()
             top_view = page.views[-1]
+            if top_view.route == '/login':
+                page.views.pop()
+                top_view = page.views[-1]
             page.views.pop()
             page.go(top_view.route)
 
