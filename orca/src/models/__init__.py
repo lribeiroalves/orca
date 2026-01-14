@@ -4,3 +4,5 @@ from .categoria_fatura import Categoria
 from .fatura import Fatura
 from .user import User
 from .compra import Compra
+from .conta import Conta
+from .pagamento import Pagamento

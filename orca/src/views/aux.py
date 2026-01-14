@@ -1,7 +1,7 @@
 import flet as ft
 from database import Database
 from typing import Callable
-from models import Fatura, Categoria, Banco
+from models import Fatura, Categoria, Banco, Conta
 from datetime import datetime
 import uuid
 
@@ -81,6 +81,7 @@ class MyPopup:
             func(e)
             self.fechar_popup(None)
         return wrapper
+
 
 class MyBsAddCompra:
     def __init__(self, p: ft.Page, faturas: list[Fatura], categorias: list[Categoria], bancos: list[Banco], db: Database):
@@ -308,3 +309,193 @@ class MyBsAddCompra:
             self.page.update()
             self.page.open(ft.SnackBar(ft.Text('Compra cadastrada com sucesso!')))
     
+
+class MyBsNovaConta:
+    def __init__(self, page: ft.Page, db: Database, fatura_id: int, carregar_pagina: Callable):
+        self.page = page
+        self.db = db
+        self.fatura_id = fatura_id
+        self.carregar_pagina = carregar_pagina
+
+        self.title = ft.Text('Nova Conta', size=20, weight='bold')
+
+        self.txt_desc = ft.TextField(label='Descrição',)
+        self.check_unico = ft.Checkbox(label='Pagamento Único', value=True, on_change=self.handle_change_unico)
+        self.check_mensal = ft.Checkbox(label='Pagamento Mensal', on_change=self.handle_change_mensal)
+        self.check_anual = ft.Checkbox(label='Pagamento Anual', on_change=self.handle_change_anual)
+        self.txt_mes = ft.TextField(label='Mês do Pagamento', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter(), visible=False)
+
+        self.btn_limpar = ft.TextButton('Limpar', on_click=self.limpar)
+        self.btn_confirma = ft.ElevatedButton('Cadastrar', bgcolor=ft.Colors.BLUE_900, color='white', on_click=self.abrir_confirmacao)
+
+        self.linha_registro = ft.ResponsiveRow(
+            visible=True,
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            controls=[
+                ft.Container(
+                    col={'xs': 6, 'md': 4},
+                    content=self.btn_limpar
+                ),
+                ft.Container(
+                    col={'xs': 6, 'md': 4},
+                    content=self.btn_confirma
+                ),
+            ]
+        )
+
+        self.txt_pos_confirma = ft.Text('Voce confirma o cadastro dessa compra?', col={'xs': 12})
+        self.btn_pos_cancela = ft.ElevatedButton('Cancelar', bgcolor=ft.Colors.RED_900, color='white', elevation=4, col={'xs': 6, 'md': 6}, on_click=self.cancelar_confirmacao)
+        self.btn_pos_confirma = ft.ElevatedButton('Confirmar', bgcolor=ft.Colors.BLUE_900, color='white', elevation=4, col={'xs': 6, 'md': 6}, on_click=self.cadastrar_conta)
+        self.linha_confirmacao = ft.ResponsiveRow(
+            visible=False,
+            alignment=ft.MainAxisAlignment.CENTER,
+            controls=[
+                self.txt_pos_confirma,
+                self.btn_pos_cancela,
+                self.btn_pos_confirma,
+                ft.Divider(height=10, color='transparent')
+            ]
+        )
+
+        self.bs = ft.BottomSheet(
+            on_dismiss=self.handle_dismiss,
+            content=ft.Column(
+                scroll=ft.ScrollMode.AUTO,
+                controls=[
+                    ft.Container(
+                        padding=20,
+                        content=ft.Column(
+                            tight=True,
+                            controls=[
+                                self.title,
+                                ft.ResponsiveRow(
+                                    alignment=ft.MainAxisAlignment.SPACE_AROUND,
+                                    controls=[
+                                        ft.Container(content=self.check_unico, col={'xs': 12, 'md': 4},),
+                                        ft.Container(content=self.check_mensal, col={'xs': 12, 'md': 4},),
+                                        ft.Container(content=self.check_anual, col={'xs': 12, 'md': 4},),
+                                    ]
+                                ),
+                                ft.ResponsiveRow(
+                                    alignment=ft.MainAxisAlignment.END,
+                                    controls=[
+                                        ft.Container(
+                                            col={'xs': 12, 'md': 6},
+                                            content=self.txt_mes
+                                        ),
+                                    ]
+                                ),
+                                self.txt_desc,
+                                self.linha_registro,
+                                self.linha_confirmacao
+                            ]
+                        )
+                    )
+                ]
+            )
+        )
+
+        self.page.overlay.append(self.bs)
+
+    def limpar(self, e):
+        self.txt_desc.value = None
+        self.txt_desc.error_text = None
+        self.check_anual.value = False
+        self.check_mensal.value = False
+        self.check_unico.value = True
+        self.txt_mes.value = None
+        self.txt_mes.visible = False
+        self.txt_mes.error_text = None
+        self.page.update()
+
+    def handle_dismiss(self, e):
+        self.limpar(None)
+    
+    def handle_change_mensal(self, e):
+        if self.check_mensal.value:
+            self.check_unico.value = False
+            self.check_anual.value = False
+            self.txt_mes.value = None
+            self.txt_mes.visible = False
+        else:
+            self.check_unico.value = True
+        self.page.update()
+
+    def handle_change_anual(self, e):
+        if self.check_anual.value:
+            self.check_unico.value = False
+            self.check_mensal.value = False
+            self.txt_mes.visible = True
+        else:
+            self.txt_mes.value = None
+            self.txt_mes.visible = False
+            self.check_unico.value = True
+        
+        self.page.update()
+    
+    def handle_change_unico(self, e):
+        if self.check_unico.value:
+            self.check_mensal.value = False
+            self.check_anual.value = False
+            self.txt_mes.value = None
+            self.txt_mes.visible = False
+        else:
+            self.check_unico.value = True
+        self.page.update()
+    
+    def verificar_erro_campos(self) -> bool:
+        error_found = False
+
+        if self.check_anual.value and not self.txt_mes.value:
+            self.txt_mes.error_text = 'Um valor de 1 a 12 precisa ser inserido.'
+            error_found = True
+        else:
+            self.txt_mes.error_text = None
+
+        if self.txt_mes.value:
+            mes = int(self.txt_mes.value)
+            if mes < 1 or mes > 12:
+                self.txt_mes.error_text = 'O valor "mes" precisa estar entre 1 e 12.'
+                error_found = True
+            else:
+                self.txt_mes.error_text = None
+
+        
+        if not self.txt_desc.value:
+            self.txt_desc.error_text = 'Esse campo é obrigatório.'
+            error_found = True
+        else:
+            self.txt_desc.error_text = None
+        
+        self.page.update()
+        return error_found
+        
+    
+    def abrir_confirmacao(self, e):
+        if not self.verificar_erro_campos():
+            self.linha_registro.visible = False
+            self.linha_confirmacao.visible = True
+            self.page.update()
+    
+    def cancelar_confirmacao(self, e):
+        self.linha_registro.visible = True
+        self.linha_confirmacao.visible = False
+        self.page.update()
+    
+    def cadastrar_conta(self, e):
+        if self.check_unico.value:
+            conta = self.db.get_contas_desc(self.txt_desc.value)
+            if not conta:
+                conta = self.db.add_conta(self.txt_desc.value, False, 0).data[0]
+                conta = Conta.from_json(conta)
+            if conta:
+                pagamento = self.db.add_pagamento(self.fatura_id, conta.id, 0, False)
+        elif self.check_mensal.value:
+            conta = self.db.add_conta(self.txt_desc.value, True, 0)
+        else:
+            conta = self.db.add_conta(self.txt_desc.value, False, int(self.txt_mes.value))
+        self.cancelar_confirmacao(None)
+        self.bs.open = False
+        self.page.update()
+        self.carregar_pagina()
+        self.page.open(ft.SnackBar(ft.Text(f'Compra "{self.txt_desc.value}" Cadastrada com Sucesso')))

@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
-from models import Banco, Saldo, Categoria, Fatura, User, Compra
+from models import Banco, Saldo, Categoria, Fatura, User, Compra, Conta, Pagamento
 from datetime import datetime
 
 # Carrega as variaveis do .env
@@ -101,6 +101,15 @@ class Database:
     def get_faturas(self) -> list[Fatura]:
         try:
             resposta = self.client.table('faturas').select('id, mes, ano, fatura_paga').order('id', desc=False).execute()
+            # Integracao com o model
+            return [Fatura.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar faturas: {err}')
+            return []
+    
+    def get_faturas_data(self, mes: int, ano: int):
+        try:
+            resposta = self.client.table('faturas').select('id, mes, ano, fatura_paga').eq('mes', mes).eq('ano', ano).order('id', desc=False).execute()
             # Integracao com o model
             return [Fatura.from_json(item) for item in resposta.data]
         except Exception as err:
@@ -223,6 +232,106 @@ class Database:
                 .eq('hash_compra', h)
                 .execute()
             )
+        except Exception as e:
+            print(e)
+            return None
+    
+    def get_contas(self) -> list[Conta]:
+        try:
+            resposta = self.client.table('contas').select('*').order('id', desc=False).execute()
+            # Integracao com o model
+            return [Conta.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar contas: {err}')
+            return []
+    
+    def get_contas_or(self, mes: int):
+        try:
+            resposta = (
+                self.client.table('contas')
+                .select('*')
+                .or_(f'mensal.eq.true, anual.eq.{mes}' )
+                .order('id', desc=False)
+                .execute())
+            # Integracao com o model
+            return [Conta.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar contas: {err}')
+            return []
+    
+    def get_contas_desc(self, desc: str):
+        try:
+            resposta = self.client.table('contas').select('*').eq('desc', desc).order('id', desc=False).execute()
+            # Integracao com o model
+            return [Conta.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar contas: {err}')
+            return []
+    
+    def add_conta(self, desc: str, mensal: bool, anual: int):
+        dados = {
+            'desc': desc,
+            'mensal': mensal,
+            'anual': anual
+        }
+        try:
+            return self.client.table('contas').insert(dados).execute()
+        except Exception as e:
+            print(e)
+            return None
+
+    
+    def get_pagamentos(self) -> list[Pagamento]:
+        try:
+            resposta = self.client.table('pagamentos').select("""
+                id,
+                faturas(id, mes, ano),
+                contas(id, desc, mensal, anual),
+                valor,
+                pago
+            """).order('id', desc=False).execute()
+            return [Compra.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar pagamentos: {err}')
+            return []
+    
+    def get_pagamentos_date(self, ano: int, mes: int):
+        try:
+            resposta = (self.client.table('pagamentos').select("""
+                id,
+                faturas!inner(id, mes, ano),
+                contas(id, desc, mensal, anual),
+                valor,
+                pago
+            """)
+            .eq('faturas.ano', ano)
+            .eq('faturas.mes', mes)
+            .order('id', desc=False).execute())
+            return [Pagamento.from_json(item) for item in resposta.data]
+        except Exception as err:
+            print(f'Erro ao buscar pagamentos: {err}')
+            return []
+    
+    def add_pagamento(self, fatura_id: int, conta_id: int, valor: float, pago: bool):
+        dados = {
+            'fatura_id': fatura_id,
+            'conta_id': conta_id,
+            'valor': valor,
+            'pago': pago
+        }
+        try:
+            return self.client.table('pagamentos').insert(dados).execute()
+        except Exception as e:
+            print(e)
+            return None
+    
+    def update_pagamento(self, id: int, valor: float, status: bool):
+        dados = {
+            'valor': valor,
+            'pago': status
+        }
+        try:
+            return self.client.table('pagamentos').update(dados).eq('id', id).execute()
         except Exception as e:
             print(e)
             return None
