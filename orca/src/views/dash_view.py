@@ -1,6 +1,6 @@
 import flet as ft
 from database import Database
-from .aux import MyAppBar
+from .auxiliar import MyAppBar
 
 def dash_view(page: ft.Page, db: Database):
     

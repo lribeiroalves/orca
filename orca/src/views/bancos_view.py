@@ -1,7 +1,7 @@
 import flet as ft
 from database import Database
 from models import Banco
-from .aux import MyAppBar
+from .auxiliar import MyAppBar
 
 def bancos_view(page: ft.Page, db: Database):
     
