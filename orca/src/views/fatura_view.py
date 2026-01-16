@@ -1,7 +1,7 @@
 import flet as ft
 from database import Database
 from models import Compra
-from .auxiliar import MyAppBar, MyPopup, MyBsAddCompra
+from .aux import MyAppBar, MyPopup, MyBsAddCompra
 
 def fatura_view(page: ft.Page, db: Database):
 

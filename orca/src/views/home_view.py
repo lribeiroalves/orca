@@ -1,5 +1,5 @@
 import flet as ft
-from .auxiliar import MyButton, MyAppBar, MyWarnings
+from .aux import MyButton, MyAppBar, MyWarnings
 from database import Database
 
 def home_view(page: ft.Page, db: Database):

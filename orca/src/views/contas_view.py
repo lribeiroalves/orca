@@ -1,6 +1,6 @@
 import flet as ft
 from database import Database
-from .auxiliar import MyAppBar, MyBsNovaConta
+from .aux import MyAppBar, MyBsNovaConta
 from datetime import datetime
 from dotenv import load_dotenv
 import os
