@@ -6,8 +6,8 @@ def home_view(page: ft.Page, db: Database):
     botao_fatura = MyButton('Fatura', page, '/fatura')
     botao_bancos = MyButton('Bancos', page, '/bancos')
     botao_contas = MyButton('Contas', page, '/contas')
-    botao_es = MyButton('Entrada/Saida', page, '/es')
-    botao_dash = MyButton('DashBoard', page, '/dash')
+    botao_es = MyButton('Entrada/Saida', page, '/es', False)
+    botao_dash = MyButton('DashBoard', page, '/dash', False)
     area_erro = ft.Column(horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
     def recarregar_pagina(e):

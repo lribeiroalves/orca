@@ -5,6 +5,7 @@ from views import *
 def main(page: ft.Page):
     db = Database()
     page.title = "Orca App"
+    page.theme_mode = ft.ThemeMode.LIGHT
     page.locale_configuration = ft.LocaleConfiguration(
         supported_locales=[
             ft.Locale("pt", "BR"),

@@ -36,6 +36,8 @@ def login_view(page: ft.Page, db: Database, ao_confirmar=lambda: print('OK')):
 
     def limpar_pin(e):
         nonlocal pin_atual
+        if pin_atual == "":
+            page.on_view_pop(None)
         pin_atual = ""
         atualizar_indicadores()
 

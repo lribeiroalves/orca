@@ -7,9 +7,13 @@ import uuid
 
 
 class MyButton(ft.ElevatedButton):
-    def __init__(self, text: str, page: ft.Page, route: str):
+    def __init__(self, text: str, page: ft.Page, route: str, enable: bool=True):
         super().__init__()
-        self.bgcolor = ft.Colors.BLACK38
+        if enable:
+            self.bgcolor = ft.Colors.BLUE_900
+        else:
+            self.bgcolor = ft.Colors.BLACK38
+            self.disabled = True
         self.color = ft.Colors.WHITE
         self.text = text
         self.on_click = lambda _: page.go(route)
@@ -24,11 +28,14 @@ class MyAppBar(ft.AppBar):
         self.center_title = False
         self.bgcolor = ft.Colors.BLACK87
         self.color = ft.Colors.WHITE
+        self.btn_back = ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.on_view_pop(None))
         self.actions = [
-            ft.IconButton(ft.Icons.ARROW_BACK, on_click=lambda _: page.on_view_pop(None)),
+            self.btn_back,
             ft.IconButton(ft.Icons.HOME_OUTLINED, on_click=lambda _: page.go('/')),
-            ft.IconButton(ft.Icons.PLAY_CIRCLE, on_click=lambda _: print(page.views))
+            ft.Container(width=20)
         ]
+        if len(page.views) < 2:
+            self.btn_back.visible = False
 
 
 class MyWarnings:
