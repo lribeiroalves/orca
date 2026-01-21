@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 from models import Banco, Saldo, Categoria, Fatura, User, Compra, Conta, Pagamento
 from datetime import datetime
+from werkzeug.security import generate_password_hash
 
 # Carrega as variaveis do .env
 load_dotenv()
@@ -343,3 +344,17 @@ class Database:
         except Exception as err:
             print(f'Erro ao buscar password: {err}')
             return 'None'
+    
+    def update_password(self, password: str, id: int):
+        if type(password) == str and len(password) < 7 and len(password) > 3 and password.isdigit() and type(id) == int:
+            dados = {
+                'pass': generate_password_hash(password)
+            }
+            try:
+                return self.client.table('password_hash').update(dados).eq('id', id).execute()
+            except Exception as e:
+                print(e)
+                return None
+        else:
+            print('ERRO')
+            return None
