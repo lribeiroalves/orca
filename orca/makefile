@@ -24,3 +24,6 @@ clean:
 apk:
 	flet build apk src  --project "ORCA Financas"  --org "com.lucas.orca"  --product "ORCA"  --description "Gestao Financeira Familiar"  --clear-cache
 
+# Atalho para abrir o server
+server:
+	python3 -m http.server 8000
