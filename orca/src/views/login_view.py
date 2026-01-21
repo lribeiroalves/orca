@@ -2,9 +2,12 @@ import flet as ft
 from database import Database
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from typing import Callable
 import os
 
-def login_view(page: ft.Page, db: Database, ao_confirmar=lambda: print('OK')):
+def login_view(page: ft.Page, db: Database, ao_confirmar: Callable=lambda: print('OK'), block: bool=True):
+    if not block:
+        ao_confirmar()
     load_dotenv()
     PIN_DIGIT = int(os.getenv('PIN_DIGIT'))
     pin_atual = ""

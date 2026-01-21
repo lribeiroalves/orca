@@ -34,7 +34,7 @@ class MyAppBar(ft.AppBar):
             ft.IconButton(ft.Icons.HOME_OUTLINED, on_click=lambda _: page.go('/')),
             ft.Container(width=20)
         ]
-        if len(page.views) < 2:
+        if len(page.views) < 3:
             self.btn_back.visible = False
 
 

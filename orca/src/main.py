@@ -13,47 +13,51 @@ def main(page: ft.Page):
         ],
         current_locale=ft.Locale("pt", "BR"),
     )
+    possible_routes = [
+        '/',
+        '/bancos',
+        '/fatura',
+        '/contas',
+        '/es',
+        '/dash',
+    ]
+    block = True
 
     def liberar_acesso(route):
-        page.go(route)
+        nonlocal block
+        block = False
+        carregar_pagina(route)
 
-    def route_change(route):        
-        # Se a rota for a inicial
-        if page.route == "/":
-            page.views.append(home_view(page, db))
-        
-        # Outras rotas
-        elif page.route == "/bancos":
-            page.views.append(login_view(page, db, lambda r=page.route: liberar_acesso('/bancos-safe')))
-        
-        elif page.route == '/bancos-safe':
-            page.views.append(bancos_view(page, db))
-        
-        elif page.route == "/fatura":
-            page.views.append(fatura_view(page, db))
-        
-        elif page.route == "/contas":
-            page.views.append(contas_view(page, db))
-        
-        elif page.route == "/es":
-            page.views.append(login_view(page, db, lambda r=page.route: liberar_acesso('/es-safe')))
-        
-        elif page.route == "/es-safe":
-            page.views.append(es_view(page, db))
-        
-        elif page.route == '/dash':
-            page.views.append(login_view(page, db, lambda r=page.route: liberar_acesso('/dash-safe')))
-        
-        elif page.route == '/dash-safe':
-            page.views.append(dash_view(page, db))
-        
-        elif page.route == '/login':
-            page.views.append(login_view(page, db, lambda r=route: liberar_acesso('/bancos')))
-            
+    def carregar_pagina(route):
+        match route:
+            case '/':
+                page.views.append(home_view(page, db))
+            case '/bancos':
+                page.views.append(bancos_view(page, db))
+            case '/contas':
+                page.views.append(contas_view(page, db))
+            case '/fatura':
+                page.views.append(fatura_view(page, db))
+            case '/es':
+                page.views.append(es_view(page, db))
+            case '/dash':
+                page.views.append(bancos_view(page, db))
+        print(f'block: {block}, route: {page.route}, views: {len(page.views)}')
         page.update()
 
+    def route_change(route): 
+        nonlocal block      
+        # Se a rota for a inicial
+        if page.route in possible_routes:
+            if block:
+                page.views.append(login_view(page, db, lambda r=page.route: liberar_acesso(r)))
+            else:
+                carregar_pagina(page.route)
+            
+        page.update() 
+
     def view_pop(view):
-        if len(page.views) > 2:
+        if len(page.views) > 3:
             page.views.pop()
             top_view = page.views[-1]
             if top_view.route == '/login':
