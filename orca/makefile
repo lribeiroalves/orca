@@ -19,3 +19,8 @@ requirements:
 # Atalho para limpar arquivos temporários do Python
 clean:
 	rm -rf __pycache__ .pytest_cache
+
+# Atalho para compilar o apk
+apk:
+	flet build apk src  --project "ORCA Financas"  --org "com.lucas.orca"  --product "ORCA"  --description "Gestao Financeira Familiar"  --clear-cache
+
