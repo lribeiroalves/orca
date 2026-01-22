@@ -339,7 +339,7 @@ class Database:
     
     def get_password(self):
         try:
-            resposta = self.client.table('password_hash').select('pass').limit(1).execute()
+            resposta = self.client.table('chaves').select('pass').limit(1).execute()
             return resposta.data[0].get('pass')
         except Exception as err:
             print(f'Erro ao buscar password: {err}')
@@ -351,10 +351,36 @@ class Database:
                 'pass': generate_password_hash(password)
             }
             try:
-                return self.client.table('password_hash').update(dados).eq('id', id).execute()
+                return self.client.table('chaves').update(dados).eq('id', id).execute()
             except Exception as e:
                 print(e)
                 return None
         else:
             print('ERRO')
+            return None
+    
+    def carregar_versao(self):
+        try:
+            resposta = self.client.table('chaves').select('version').limit(1).execute()
+            return resposta.data[0].get('version')
+        except Exception as err:
+            print(f'Erro ao buscar versao: {err}')
+            return 'None'
+    
+    def get_block_pass(self):
+        try:
+            resposta = self.client.table('chaves').select('block_pass').limit(1).execute()
+            return resposta.data[0].get('block_pass')
+        except Exception as err:
+            print(f'Erro ao buscar versao: {err}')
+            return False
+    
+    def block_pass(self):
+        dados = {
+            'block_pass': False
+        }
+        try:
+            return self.client.table('chaves').update(dados).eq('id', 1).execute()
+        except Exception as e:
+            print(e)
             return None

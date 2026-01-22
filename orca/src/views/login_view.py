@@ -6,11 +6,14 @@ from typing import Callable
 import os
 
 def login_view(page: ft.Page, db: Database, ao_confirmar: Callable=lambda: print('OK'), block: bool=True):
+    unlock_pass = db.get_block_pass() # Se falso, a senha esta bloqueada
     if not block:
         ao_confirmar()
     load_dotenv()
     PIN_DIGIT = int(os.getenv('PIN_DIGIT'))
     pin_atual = ""
+    counter_errors = 0 # contagem de senhas erradas
+    icone_cadeado = ft.Icon(ft.Icons.LOCK_PERSON, size=80, color=ft.Colors.BLUE_900 if unlock_pass else ft.Colors.RED_900)
 
     # Espaços visuais (bolinhas) para o PIN
     indicadores = ft.Row(
@@ -29,13 +32,15 @@ def login_view(page: ft.Page, db: Database, ao_confirmar: Callable=lambda: print
         page.update()
 
     def digitar_numero(e):
-        nonlocal pin_atual
-        if len(pin_atual) < PIN_DIGIT:
-            pin_atual += e.control.text
-            atualizar_indicadores()
-            
-            if len(pin_atual) == PIN_DIGIT:
-                validar_pin()
+        nonlocal unlock_pass
+        if unlock_pass:
+            nonlocal pin_atual
+            if len(pin_atual) < PIN_DIGIT:
+                pin_atual += e.control.text
+                atualizar_indicadores()
+                
+                if len(pin_atual) == PIN_DIGIT:
+                    validar_pin()
 
     def limpar_pin(e):
         nonlocal pin_atual
@@ -45,12 +50,21 @@ def login_view(page: ft.Page, db: Database, ao_confirmar: Callable=lambda: print
         atualizar_indicadores()
 
     def validar_pin():
-        if check_password_hash(db.get_password(), pin_atual):
-            limpar_pin(None)
-            ao_confirmar() # Função que libera o acesso à fatura
-        else:
-            page.open(ft.SnackBar(ft.Text("PIN Incorreto!", color="white"), bgcolor="red"))
-            limpar_pin(None)
+        nonlocal counter_errors
+        nonlocal unlock_pass
+        if unlock_pass:
+            if check_password_hash(db.get_password(), pin_atual):
+                limpar_pin(None)
+                ao_confirmar() # Função que libera o acesso
+            else:
+                page.open(ft.SnackBar(ft.Text("PIN Incorreto!", color="white"), bgcolor="red"))
+                limpar_pin(None)
+                counter_errors += 1
+                if counter_errors >= 10:
+                    db.block_pass()
+                    unlock_pass = False
+                    icone_cadeado.color = ft.Colors.RED_900
+                    page.update()
 
     # Função para criar os botões do teclado de forma padronizada
     def btn_num(num):
@@ -62,6 +76,7 @@ def login_view(page: ft.Page, db: Database, ao_confirmar: Callable=lambda: print
                 padding=25,
                 text_style=ft.TextStyle(size=25, weight="bold"),
             ),
+            disabled=True if not unlock_pass else False
         )
 
     return ft.View(
@@ -69,8 +84,8 @@ def login_view(page: ft.Page, db: Database, ao_confirmar: Callable=lambda: print
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         controls=[
-            ft.Icon(ft.Icons.LOCK_PERSON, size=80, color=ft.Colors.BLUE_900),
-            ft.Text("Área Restrita", size=28, weight="bold"),
+            icone_cadeado,
+            ft.Text("Controle de Acesso", size=28, weight="bold"),
             ft.Text("Digite seu PIN de acesso", color="grey"),
             ft.Container(height=20),
             indicadores,
@@ -85,9 +100,9 @@ def login_view(page: ft.Page, db: Database, ao_confirmar: Callable=lambda: print
                     ft.Row(
                         alignment=ft.MainAxisAlignment.CENTER, 
                         controls=[
-                            ft.IconButton(ft.Icons.BACKSPACE, on_click=limpar_pin, icon_size=30),
+                            ft.IconButton(ft.Icons.BACKSPACE, on_click=limpar_pin, icon_size=30, disabled=True if not unlock_pass else False),
                             btn_num(0),
-                            ft.IconButton(ft.Icons.CHECK_CIRCLE, icon_color="green", icon_size=40, on_click=lambda _: validar_pin())
+                            ft.IconButton(ft.Icons.CHECK_CIRCLE, icon_color="green", icon_size=40, on_click=lambda _: validar_pin(), disabled=True if not unlock_pass else False)
                         ]
                     ),
                 ]

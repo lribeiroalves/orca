@@ -1,6 +1,36 @@
 import flet as ft
 from database import Database
 from views import *
+import os
+from dotenv import load_dotenv
+
+def verificar_versao(page: ft.Page, db: Database) -> bool:
+    load_dotenv()
+    versao_atual = os.getenv('VERSION')
+    if versao_atual == db.carregar_versao():
+        return True
+    else:
+        container_erro = ft.Column(
+            width=page.width,
+            height=page.height,
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            controls=[
+                ft.Container(
+                    padding=30,
+                    content=ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        controls=[
+                            ft.Text('Seu aplicativo precisa ser atualizado, entre em contato com o desenvolvedor.', size=20, weight='bold')
+                        ]
+                    )
+                )
+            ]
+        )
+        page.add(container_erro)
+        page.update()
+        return False
 
 def main(page: ft.Page):
     db = Database()
@@ -13,6 +43,8 @@ def main(page: ft.Page):
         ],
         current_locale=ft.Locale("pt", "BR"),
     )
+    if not verificar_versao(page, db):
+        return
     possible_routes = [
         '/',
         '/bancos',
@@ -42,7 +74,7 @@ def main(page: ft.Page):
                 page.views.append(es_view(page, db))
             case '/dash':
                 page.views.append(bancos_view(page, db))
-        print(f'block: {block}, route: {page.route}, views: {len(page.views)}')
+        # print(f'block: {block}, route: {page.route}, views: {len(page.views)}')
         page.update()
 
     def route_change(route): 
