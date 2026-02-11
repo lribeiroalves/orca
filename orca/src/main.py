@@ -34,6 +34,8 @@ def verificar_versao(page: ft.Page, db: Database) -> bool:
 
 def main(page: ft.Page):
     db = Database()
+    debug_mode = os.getenv('DEBUG_MODE')
+    block = False if debug_mode else True
     page.title = "Orca App"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.locale_configuration = ft.LocaleConfiguration(
@@ -53,7 +55,6 @@ def main(page: ft.Page):
         '/es',
         '/dash',
     ]
-    block = True
 
     def liberar_acesso(route):
         nonlocal block
