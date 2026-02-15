@@ -104,8 +104,7 @@ class MyBsAddCompra:
 
         self.txt_parcela = ft.TextField(label='Parcelas', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.NumbersOnlyInputFilter())
 
-        # self.reg_str = r"^(|-?[0-9][0-9]*(,[0-9]{0,2})?)$"
-        self.reg_str = r"^(|-|(-?[0-9]+(,[0-9]{0,2})?))$"
+        self.reg_str = r"^(|-|(-?[0-9]+([.,][0-9]{0,2})?))$"
         self.txt_valorTotal = ft.TextField(label='Valor Total', prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = self.reg_str, allow=True, replacement_string=""))
 
         self.txt_desc = ft.TextField(label='Descrição', multiline=True, min_lines=4, max_lines=4, align_label_with_hint=True)
@@ -123,7 +122,7 @@ class MyBsAddCompra:
         self.txt_anoFatura = ft.TextField(label='Ano da Fatura', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^[0-9]{0,4}$", allow=True, replacement_string=""), hint_text='Ex: 2025', value=datetime.now().strftime('%Y'))
 
         self.btn_confirma = ft.ElevatedButton('Cadastrar', bgcolor=ft.Colors.BLUE_900, color='white', elevation=4, col={'xs': 10, 'md': 6}, on_click=self.abrir_confirmacao)
-        self.txt_pos_confirma = ft.Text('Voce confirma o cadastro dessa compra?', col={'xs': 12})
+        self.txt_pos_confirma = ft.Text('Voce confirma o cadastro dessa compra?', col={'xs': 12}, visible=False)
         self.btn_pos_cancela = ft.ElevatedButton('Cancelar', bgcolor=ft.Colors.RED_900, color='white', elevation=4, col={'xs': 6, 'md': 6}, on_click=self.cancelar_confirmacao)
         self.btn_pos_confirma = ft.ElevatedButton('Confirmar', bgcolor=ft.Colors.BLUE_900, color='white', elevation=4, col={'xs': 6, 'md': 6}, on_click=self.confirmar_cadastro)
 
@@ -140,7 +139,7 @@ class MyBsAddCompra:
                 self.txt_pos_confirma,
                 self.btn_pos_cancela,
                 self.btn_pos_confirma,
-                ft.Divider(height=10, color='transparent')
+                # ft.Divider(height=10, color='transparent')
             ],
             visible=False
         )
@@ -176,11 +175,11 @@ class MyBsAddCompra:
                                 ),
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
-                                    content=self.txt_data
+                                    content=self.dd_banco
                                 ),
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
-                                    content=self.dd_banco
+                                    content=self.txt_data
                                 ),
                                 ft.Container(
                                     col={'xs':12, 'md': 6},
@@ -205,7 +204,7 @@ class MyBsAddCompra:
                         self.linha_cadastro,
                         self.linha_confirmacao
                     ], tight=True)
-                )], scroll=ft.ScrollMode.AUTO
+                )], scroll=ft.ScrollMode.AUTO,
             ), on_dismiss=self.handle_dismiss,
         )
 
@@ -234,7 +233,7 @@ class MyBsAddCompra:
         self.page.update()
 
     def __open_calendar(self, e):
-        self.txt_parcela.focus()
+        self.txt_valorTotal.focus()
         self.page.open(self.calendar)
 
     def __on_change_calendar(self, e):

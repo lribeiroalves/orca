@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 import os
 from models import Pagamento
 from functools import partial
+import time
+import threading
 
 def contas_view(page: ft.Page, db: Database):
     load_dotenv()
@@ -36,8 +38,22 @@ def contas_view(page: ft.Page, db: Database):
         controls=[tabela_pagamentos],
         alignment=ft.MainAxisAlignment.CENTER,
     )
+
+    lose_focus = True
+    def select_all(e):
+        nonlocal lose_focus
+        if lose_focus:
+            time.sleep(0.1)
+            e.control.blur()
+            time.sleep(0.1)
+            e.control.focus()
+            e.control.selection_start = 0
+            e.control.selection_end = len(str(e.control.value))
+            e.control.update()
+            lose_focus = False
+
     text_valor_total = ft.Text(value=None, size=20)
-    txt_valor_dialogue = ft.TextField(label='Valor', col={'xs': 12, 'md': 5}, prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^(|-|(-?[0-9]+(,[0-9]{0,2})?))$", allow=True, replacement_string=""))
+    txt_valor_dialogue = ft.TextField(label='Valor', on_focus=select_all, col={'xs': 12, 'md': 5}, prefix_text='R$ ', keyboard_type=ft.KeyboardType.NUMBER, input_filter=ft.InputFilter(regex_string = r"^(|-|(-?[0-9]+([.,][0-9]{0,2})?))$", allow=True, replacement_string=""))
     opt_status_dialogue = [ft.DropdownOption(key=False, content=ft.Text('PENDENTE'), text='PENDENTE'), ft.DropdownOption(key=True, content=ft.Text('PAGO'), text='PAGO')]
     drop_status_dialogue = ft.Dropdown(col={'xs': 12, 'md': 5}, border=ft.InputBorder.OUTLINE, enable_filter=False, editable=False, label='Status', expand=True, options=opt_status_dialogue)
     title_dialogue = ft.Text('')
