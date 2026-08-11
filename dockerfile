@@ -43,7 +43,7 @@ COPY . .
 USER appuser
 
 # Porta que a aplicação vai expor
-EXPOSE 55000
+EXPOSE 5000
 
 # Executa o processo usando o formato "exec" (lista)
-CMD ["python", "flask", "run"]
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000"]
