@@ -29,6 +29,7 @@ jobs:
               with:
                 context: .
                 push: true
+                platforms: linux/amd64,linux/arm64
                 tags: ${{ secrets.DOCKERHUB_USERNAME }}/orca:latest
                 # Ativa o cache para os próximos builds ficarem rápidos:
                 cache-from: type=gha
