@@ -1,0 +1,5 @@
+[default]
+TITLE = 'Orçamento Familiar'
+EXTENSIONS = [
+    'app.blueprint.main:init_app'
+]
