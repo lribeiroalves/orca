@@ -3,6 +3,9 @@ import os
 
 from .ext import configuration
 
+def get_base_path():
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def create_app():
     template_dir = os.path.abspath('app/templates')

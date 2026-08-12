@@ -1,0 +1,18 @@
+from flask import Blueprint
+from datetime import datetime
+import os
+
+from .views import *
+from app import get_base_path
+
+base_path = get_base_path()
+
+bp = Blueprint('webui', __name__, static_folder=os.path.join(base_path, 'app', 'blueprint', 'webui', 'content', 'static'), template_folder=os.path.join(base_path, 'app', 'blueprint', 'webui', 'content', 'templates'), static_url_path='/webui/static')
+
+bp.add_url_rule('/', view_func=index)
+bp.add_url_rule('/manifest.json', view_func=serve_manifest)
+bp.add_url_rule('/sw.js', view_func=serve_sw)
+
+def init_app(app):
+    app.register_blueprint(bp)
+    app.jinja_env.globals['datetime'] = datetime
