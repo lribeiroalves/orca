@@ -2,3 +2,4 @@ flask
 dynaconf
 python-dotenv
 flask_sqlalchemy
+flask_migrate
