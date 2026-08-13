@@ -37,6 +37,8 @@ markupsafe==3.0.3
     #   jinja2
     #   mako
     #   werkzeug
+pymysql==1.2.0
+    # via -r requirements.in
 python-dotenv==1.2.2
     # via -r requirements.in
 sqlalchemy==2.0.52
