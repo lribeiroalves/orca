@@ -1,0 +1,12 @@
+header li {
+    font-family: "DM Mono", monospace;
+    font-weight: bold;
+}
+
+.fundo-escuro {
+    background-color: darkblue;
+}
+
+main {
+    background-color: #eee;
+}
