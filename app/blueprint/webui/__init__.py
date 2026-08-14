@@ -9,7 +9,10 @@ base_path = get_base_path()
 
 bp = Blueprint('webui', __name__, static_folder=os.path.join(base_path, 'app', 'blueprint', 'webui', 'content', 'static'), template_folder=os.path.join(base_path, 'app', 'blueprint', 'webui', 'content', 'templates'), static_url_path='/webui/static')
 
-bp.add_url_rule('/', view_func=index)
+bp.add_url_rule('/', view_func=indexView)
+bp.add_url_rule('/tabelas', view_func=tabelasView)
+bp.add_url_rule('/graficos', view_func=graficosView)
+
 bp.add_url_rule('/manifest.json', view_func=serve_manifest)
 bp.add_url_rule('/sw.js', view_func=serve_sw)
 

@@ -5,8 +5,22 @@ from app import get_base_path
 
 base_path = get_base_path()
 
-def index():
+
+def indexView():
     return render_template('index.html')
+
+
+def tabelasView():
+    return render_template('tabelas.html')
+
+
+def graficosView():
+    return render_template('graficos.html')
+
+
+
+
+
 
 # Rota para servir o Manifest na raiz do site
 def serve_manifest():

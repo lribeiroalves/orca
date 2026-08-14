@@ -3,16 +3,16 @@
 {% block title %}
 {% endblock %}
 
-{% block liHome %}white{% endblock %}
-{% block liTabelas %}secondary{% endblock %}
+{% block liHome %}secondary{% endblock %}
+{% block liTabelas %}white{% endblock %}
 {% block liGraficos %}secondary{% endblock %}
 
 {% block link_css %}
-    <link rel="stylesheet" href="{{url_for('webui.static', filename='css/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('webui.static', filename='css/tabelas.css')}}">
 {% endblock %}
 
 {% block main %}
-INDEX
+TABELAS
 {% endblock %}
 
 {% block js %}

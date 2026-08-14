@@ -21,15 +21,16 @@
          <link rel="stylesheet" href="{{url_for('static', filename='css/layout.css')}}">
         {% block link_css %}{% endblock %}
     </head>
-    <body class="d-flex flex-column min-vh-100">
+    <body class="d-flex flex-column">
         <header class="flex-shrink-0">
             <div class="px-3 py-2 fundo-escuro border-bottom">
                 <div class="container">
                     <div class="d-flex flex-wrap">
-                        <a href="/" class="d-flex text-white text-decoration-none align-items-center col-12 col-lg-8 justify-content-center justify-content-lg-start"><img src="{{ url_for('static', filename='images/favicon.svg') }}" alt="Icone" width="40" height="40"> <h5 id="titulo" class="ms-3">{{ config['TITLE'] }}</h5></a>
+                        <a href="/" class="d-flex text-white text-decoration-none align-items-center col-12 col-lg-8 justify-content-center justify-content-lg-start"><img id="logo-header" src="{{ url_for('static', filename='images/favicon.svg') }}" alt="Icone" width="40" height="40"> <h5 id="titulo" class="ms-3">{{ config['TITLE'] }}</h5></a>
                         <ul class="nav col-12 col-lg-4 justify-content-center justify-content-lg-end text-small mt-2 mt-lg-0">
-                            <li> <a href="/" class="nav-link text-white">Home</a> </li>
-                            <li> <a href="#" class="nav-link text-secondary">Relatorios</a> </li>
+                            <li> <a href="/" class="nav-link text-{% block liHome %}{% endblock %}">Home</a> </li>
+                            <li> <a href="{{ url_for('webui.tabelasView') }}" class="nav-link text-{% block liTabelas %}{% endblock %}">Tabelas</a> </li>
+                            <li> <a href="{{ url_for('webui.graficosView') }}" class="nav-link text-{% block liGraficos %}{% endblock %}">Relatorios</a> </li>
                         </ul>
                     </div>
                 </div>
@@ -37,9 +38,9 @@
         </header>
 
         <main id="main" class="flex-grow-1 container-fluid d-flex">
-            <div class="row flex-grow-1">
-                <div class="col-12 col-lg-8 bg-white mx-auto shadow-lg rounded-5 p-3 d-flex flex-column h-100">
-                    <div class="flex-grow-1 overflow-auto position-relative">
+            <div class="row w-100 main-branca mx-auto">
+                <div class="col-12 col-xl-10 bg-white mx-auto shadow-lg rounded-5 p-3 d-flex flex-column h-100 mt-2 mt-lg-5 scroll-content">
+                    <div class="flex-grow-1 overflow-auto position-relative p-3">
                         <div class="position-absolute top-0 start-50 translate-middle-x w-75 mt-2" id="flash-messages">
                             {% with messages = get_flashed_messages() %}
                                 {% if messages %}
@@ -50,8 +51,8 @@
                                         </div>
                                         {% endfor %}
                                     {% endif %}
+                                </div>
                             {% endwith %}
-                        </div>
                         {% block main %}
                         {% endblock  %}
                     </div>

@@ -1,6 +1,13 @@
 header li {
     font-family: "DM Mono", monospace;
     font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+header li:hover {
+    font-weight: bolder;
+    background-color: rgba(230, 230, 255, 0.3);
+    border-radius: 50%;
 }
 
 .fundo-escuro {
@@ -9,4 +16,40 @@ header li {
 
 main {
     background-color: #eee;
+}
+
+body {
+    min-height: 90vh;
+    max-height: 90vh;
+}
+
+.main-branca {
+    max-height: 70vh !important;
+}
+
+/* Modo Paisagem */
+@media (min-width: 480px) and (max-width: 1200px) {
+    footer {
+        display: none;
+    }
+
+    #logo-header, #titulo {
+        display: none;
+    }
+
+    header {
+        max-height: 60px;
+    }
+}
+
+/* Telas Grandes */
+@media (min-width: 480px) {
+  body {
+    min-height: 100vh;
+    max-height: 100vh;
+  }
+
+  .main-branca {
+    max-height: 80vh !important;
+  }
 }
