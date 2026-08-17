@@ -12,7 +12,23 @@
 {% endblock %}
 
 {% block main %}
-INDEX
+<div class="d-flex col-12 justify-content-center mb-lg-5">
+    <h1 class="">{{ config['TITLE'] }}</h1>
+</div>
+<div class="mt-5 pt-lg-5 row">
+    <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
+        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Nova Entrada</a>
+    </div>
+    <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
+        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Nova Saída</a>
+    </div>
+    <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
+        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Novo Saldo</a>
+    </div>
+    <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
+        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Nova Fatura</a>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
