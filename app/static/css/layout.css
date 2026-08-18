@@ -1,6 +1,7 @@
 header li {
     font-family: "DM Mono", monospace;
     font-weight: bold;
+    font-size: x-small;
     transition: all 0.3s ease;
 }
 
@@ -40,6 +41,10 @@ body {
     header {
         max-height: 60px;
     }
+
+    header li {
+        font-size: medium;
+    }
 }
 
 /* Telas Grandes */
@@ -52,4 +57,8 @@ body {
   .main-branca {
     max-height: 80vh !important;
   }
+
+  header li {
+        font-size: medium;
+    }
 }

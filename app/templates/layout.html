@@ -30,6 +30,7 @@
                         <ul class="nav col-12 col-lg-4 justify-content-center justify-content-lg-end text-small mt-2 mt-lg-0">
                             <li> <a href="/" class="nav-link text-{% block liHome %}{% endblock %}">Home</a> </li>
                             <li> <a href="{{ url_for('webui.tabelasView') }}" class="nav-link text-{% block liTabelas %}{% endblock %}">Tabelas</a> </li>
+                            <li> <a href="{{ url_for('webui.faturasView') }}" class="nav-link text-{% block liFaturas %}{% endblock %}">Faturas</a> </li>
                             <li> <a href="{{ url_for('webui.graficosView') }}" class="nav-link text-{% block liGraficos %}{% endblock %}">Relatorios</a> </li>
                         </ul>
                     </div>

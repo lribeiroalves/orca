@@ -14,6 +14,10 @@ def tabelasView():
     return render_template('tabelas.html')
 
 
+def faturasView():
+    return render_template('faturas.html')
+
+
 def graficosView():
     return render_template('graficos.html')
 
