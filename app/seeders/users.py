@@ -7,8 +7,8 @@ from app.ext.database.models import Users
 @click.command('seed-users')
 def seed_users():
     usuarios = [
-        {'nome': 'Lucas'},
-        {'nome': 'Selma'},
+        {'nome': 'lucas'},
+        {'nome': 'selma'},
     ]
 
     add = 0

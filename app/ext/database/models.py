@@ -151,7 +151,8 @@ class Faturas(db.Model):
 
 class Compras(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    valor: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), nullable=False)
+    valor_total: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), nullable=False)
+    valor_parcela: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), nullable=False)
     descricao: Mapped[str] = mapped_column(String(255), nullable=False)
     parcelas: Mapped[int] = mapped_column(nullable=False)
 
