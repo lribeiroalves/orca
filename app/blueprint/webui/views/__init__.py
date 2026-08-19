@@ -2,6 +2,7 @@ from flask import render_template, abort, redirect, url_for, jsonify, flash, req
 import os
 
 from app import get_base_path
+from .forms import FormFiltroTabelas
 
 base_path = get_base_path()
 
@@ -11,7 +12,13 @@ def indexView():
 
 
 def tabelasView():
-    return render_template('tabelas.html')
+    form = FormFiltroTabelas()
+
+    return render_template('tabelas.html', form=form)
+
+
+def filtroTabelasView():
+    return redirect(url_for('webui.tabelasView'))
 
 
 def faturasView():

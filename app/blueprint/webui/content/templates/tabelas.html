@@ -13,7 +13,32 @@
 {% endblock %}
 
 {% block main %}
-
+    <div id="filtro" class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form action="{{ url_for('webui.filtroTabelasView') }}" method="post">
+                    {{ form.csrf_token }}
+                    <div class="col-12">
+                        <div class="form-floating" id="div-user">
+                            {{ form.user(class="form-control") }}
+                            {{ form.user.label }}
+                        </div>
+                        <div class="form-floating" id="div-ano">
+                            {{ form.ano(class="form-control") }}
+                            {{ form.ano.label }}
+                        </div>
+                        <div class="form-floating" id="div-mes">
+                            {{ form.mes(class="form-control") }}
+                            {{ form.mes.label }}
+                        </div>
+                        <div class="col-12">
+                            <button id="submit" class="btn btn-primary" type="submit">Confirmar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block js %}

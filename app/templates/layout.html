@@ -76,7 +76,7 @@
         <script>
             if ('serviceWorker' in navigator) {
                 // Aponta para a rota raiz que criamos no Python
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('/static/js/sw.js')
                 .then(() => console.log("Service Worker ativo na raiz!"))
                 .catch(err => console.error("Erro no Service Worker:", err));
             }
