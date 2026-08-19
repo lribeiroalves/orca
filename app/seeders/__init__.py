@@ -4,6 +4,7 @@ from .entradas import seed_entradas
 from .saidas import seed_saidas
 from .saldos import seed_saldos
 from .faturas import seed_faturas
+from .categorias import seed_categorias
 from .compras import seed_compras
 
 
@@ -15,7 +16,7 @@ def populate_db(app):
 
 def init_app(app):
     if app.config['ENV'] == 'development':
-        for command in [seed_users, seed_bancos, seed_entradas, seed_saidas, seed_saldos, seed_faturas, seed_compras]:
+        for command in [seed_users, seed_bancos, seed_entradas, seed_saidas, seed_saldos, seed_faturas, seed_compras, seed_categorias]:
             app.cli.add_command(command)
 
     populate_db(app)
