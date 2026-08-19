@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import os
+import locale
 
 from .ext import configuration
 
@@ -21,6 +22,11 @@ def create_app():
         })
         response.status_code = 400
         return response
+
+    @app.template_filter()
+    def format_real(value):
+        locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+        return locale.currency(value, grouping=True)
 
     return app
 
