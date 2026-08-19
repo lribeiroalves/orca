@@ -1,4 +1,4 @@
-from sqlalchemy import String, Numeric, Boolean, ForeignKey, CheckConstraint, UniqueConstraint
+from sqlalchemy import String, Numeric, DateTime, Boolean, ForeignKey, CheckConstraint, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from . import db
@@ -146,7 +146,20 @@ class Faturas(db.Model):
             'mes': self.mes,
             'status_paga': self.status_paga
         }
-    
+
+
+class Categorias(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nome: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    def __repr__(self):
+        return f'Categoria(id: {self.id}, nome: {self.nome})'
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nome': self.nome
+        }
 
 
 class Compras(db.Model):
@@ -155,6 +168,7 @@ class Compras(db.Model):
     valor_parcela: Mapped[float] = mapped_column(Numeric(precision=10, scale=2), nullable=False)
     descricao: Mapped[str] = mapped_column(String(255), nullable=False)
     parcelas: Mapped[int] = mapped_column(nullable=False)
+    data: Mapped[DateTime] = mapped_column(DateTime)
 
     # relacoes
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
@@ -163,6 +177,8 @@ class Compras(db.Model):
     banco: Mapped['Bancos'] = relationship('Bancos')
     fatura_id: Mapped[int] = mapped_column(ForeignKey('faturas.id'))
     fatura: Mapped['Faturas'] = relationship('Faturas')
+    categoria_id: Mapped[int] = mapped_column(ForeignKey('categorias.id'))
+    categoria: Mapped['Categorias'] = relationship('Categorias')
 
     def __repr__(self):
         return f'Compra(id: {self.id}, valor: {self.valor}, descricao: {self.descricao}, parcelas: {self.parcelas}, user_id: {self.user_id}, user: {self.user}, banco_id: {self.banco_id}, banco: {self.banco}, fatura_id: {self.fatura_id}, fatura: {self.fatura})'
