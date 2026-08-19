@@ -10,38 +10,94 @@
 
 {% block link_css %}
     <link rel="stylesheet" href="{{url_for('webui.static', filename='css/tabelas.css')}}">
+    <!-- Adicionando FontAwesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}
 
 {% block main %}
-<!-- ABAS DE NAVEGAÇÃO -->
-<ul class="nav nav-tabs nav-fill" id="tabs" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link show active" id="tabEntradas" data-bs-toggle="tab" data-bs-target="#entradas" type="button" role="tab" aria-controls="entradas" aria-selected="true">Entrada</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tabSaidas" data-bs-toggle="tab" data-bs-target="#saidas" type="button" role="tab" aria-controls="saidas" aria-selected="true">Saidas</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tabSaldos" data-bs-toggle="tab" data-bs-target="#saldos" type="button" role="tab" aria-controls="saldos" aria-selected="true">Saldos</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tabResultado" data-bs-toggle="tab" data-bs-target="#resultado" type="button" role="tab" aria-controls="resultado" aria-selected="true">Resultado</button>
-    </li>
-</ul>
-
-<!-- ABA ENTRADAS -->
-<div class="tab-content">
-    <div class="tab-pane fade p-4 show active" id="entradas" role="tabpanel" aria-labelledby="entradasLabel">
-        <div>
-            {% if entradas %}
-                
-            {% endif %}
-            <div class="card" data-bs-toggle="modal" data-bs-target="#modalFiltro" style="cursor: pointer;">
-                <div class="card-body">
-                    <h3 class="text-center">Nova Entrada</h3>
+<div class="pt-1 pt-md-0">
+    <!-- ABAS DE NAVEGAÇÃO -->
+    <ul class="nav nav-tabs nav-fill" id="tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link show active" id="tabEntradas" data-bs-toggle="tab" data-bs-target="#entradas" type="button" role="tab" aria-controls="entradas" aria-selected="true">Entrada</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tabSaidas" data-bs-toggle="tab" data-bs-target="#saidas" type="button" role="tab" aria-controls="saidas" aria-selected="true">Saidas</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tabSaldos" data-bs-toggle="tab" data-bs-target="#saldos" type="button" role="tab" aria-controls="saldos" aria-selected="true">Saldos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tabResultado" data-bs-toggle="tab" data-bs-target="#resultado" type="button" role="tab" aria-controls="resultado" aria-selected="true">Resultado</button>
+        </li>
+    </ul>
+    
+    <!-- ABA ENTRADAS -->
+    <div class="tab-content">
+        <div class="tab-pane fade p-4 show active" id="entradas" role="tabpanel" aria-labelledby="entradasLabel">
+            <div>
+                {% if entradas %}
+    
+                {% endif %}
+                <div class="row justify-content-center">
+                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" data-bs-toggle="modal" data-bs-target="#modalFiltro">Nova Entrada</button>
                 </div>
             </div>
         </div>
+    </div>
+    <!-- ABA SAIDAS -->
+    <div class="tab-content">
+        <div class="tab-pane fade p-4" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
+            <div>
+                {% if saidas %}
+    
+                {% endif %}
+                <div class="row justify-content-center">
+                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" data-bs-toggle="modal" data-bs-target="#modalFiltro">Nova Saida</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ABA SALDOS -->
+    <div class="tab-content">
+        <div class="tab-pane fade p-4" id="saldos" role="tabpanel" aria-labelledby="saldosLabel">
+            <div>
+                {% if saldos %}
+    
+                {% endif %}
+                <div class="row justify-content-center">
+                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" data-bs-toggle="modal" data-bs-target="#modalFiltro">Novo Saldo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ABA SAIDAS -->
+    <div class="tab-content">
+        <div class="tab-pane fade p-4" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
+            <div>
+                {% if saidas %}
+                
+                {% endif %}
+                <div class="row justify-content-center">
+                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" data-bs-toggle="modal" data-bs-target="#modalFiltro">Nova Saida</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ABA RESULTADO   -->
+    <div class="tab-content">
+        <div class="tab-pane fade p-4" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
+            <div>
+                RESULTADO
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTAO FIXO DE FILTROS -->
+    <div class="position-absolute top-0 end-0" data-bs-toggle="modal" data-bs-target="#modalFiltro">
+        <button class="fab" title="Abrir Filtros">
+            <i class="fas fa-filter"></i>
+        </button>
     </div>
 </div>
 
@@ -55,55 +111,54 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                    <div id="filtro" class="col-12 col-lg-8 mx-auto mt-4">
-                        <div class="card p-lg-3 shadow-sm border-0 rounded-3">
-                            <div class="card-body">                
-                                <form action="{{ url_for('webui.filtroTabelasView') }}" method="post">
-                                    {{ form.csrf_token }}
+                <div id="filtro" class="col-12 col-lg-8 mx-auto mt-4">
+                    <div class="card p-lg-3 shadow-sm border-0 rounded-3">
+                        <div class="card-body">                
+                            <form action="{{ url_for('webui.filtroTabelasView') }}" method="post">
+                                {{ form.csrf_token }}
+                                
+                                <!-- Adicionado g-3 para espaçamento (gutters) uniforme -->
+                                <div class="row g-3"> 
                                     
-                                    <!-- Adicionado g-3 para espaçamento (gutters) uniforme -->
-                                    <div class="row g-3"> 
-                                        
-                                        <!-- Ano -->
-                                        <div class="col-12 col-md-6" id="div-ano">
-                                            <div class="form-floating">
-                                                {{ form.ano(class="form-select", id="ano") }}
-                                                {{ form.ano.label(for="ano") }}
-                                            </div>
+                                    <!-- Ano -->
+                                    <div class="col-12 col-md-6" id="div-ano">
+                                        <div class="form-floating">
+                                            {{ form.ano(class="form-select", id="ano") }}
+                                            {{ form.ano.label(for="ano") }}
                                         </div>
-                                        
-                                        <!-- Mês -->
-                                        <div class="col-12 col-md-6" id="div-mes">
-                                            <div class="form-floating">
-                                                {{ form.mes(class="form-select", id="mes") }}
-                                                {{ form.mes.label(for="mes") }}
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Usuário -->
-                                        <div class="col-12" id="div-user">
-                                            <div class="form-floating">
-                                                {{ form.user(class="form-select", id="user") }}
-                                                {{ form.user.label(for="user") }}
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Botão Alinhado à Direita -->
-                                        <div class="col-12 mt-4 d-flex justify-content-end">
-                                            <button id="submit" class="btn btn-primary px-4 py-2" type="submit">
-                                                Confirmar
-                                            </button>
-                                        </div>
-                                        
                                     </div>
-                                </form>
-                            </div>
+                                    
+                                    <!-- Mês -->
+                                    <div class="col-12 col-md-6" id="div-mes">
+                                        <div class="form-floating">
+                                            {{ form.mes(class="form-select", id="mes") }}
+                                            {{ form.mes.label(for="mes") }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Usuário -->
+                                    <div class="col-12" id="div-user">
+                                        <div class="form-floating">
+                                            {{ form.user(class="form-select", id="user") }}
+                                            {{ form.user.label(for="user") }}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Botão Alinhado à Direita -->
+                                    <div class="col-12 mt-4 d-flex justify-content-end">
+                                        <button id="submit" class="btn btn-primary px-4 py-2" type="submit">
+                                            Confirmar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block js %}
