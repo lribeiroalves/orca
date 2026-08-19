@@ -13,29 +13,94 @@
 {% endblock %}
 
 {% block main %}
-    <div id="filtro" class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <form action="{{ url_for('webui.filtroTabelasView') }}" method="post">
-                    {{ form.csrf_token }}
-                    <div class="col-12">
-                        <div class="form-floating" id="div-user">
-                            {{ form.user(class="form-control") }}
-                            {{ form.user.label }}
-                        </div>
-                        <div class="form-floating" id="div-ano">
-                            {{ form.ano(class="form-control") }}
-                            {{ form.ano.label }}
-                        </div>
-                        <div class="form-floating" id="div-mes">
-                            {{ form.mes(class="form-control") }}
-                            {{ form.mes.label }}
-                        </div>
-                        <div class="col-12">
-                            <button id="submit" class="btn btn-primary" type="submit">Confirmar</button>
+<!-- ABAS DE NAVEGAÇÃO -->
+<ul class="nav nav-tabs nav-fill" id="tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link show active" id="tabEntradas" data-bs-toggle="tab" data-bs-target="#entradas" type="button" role="tab" aria-controls="entradas" aria-selected="true">Entrada</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tabSaidas" data-bs-toggle="tab" data-bs-target="#saidas" type="button" role="tab" aria-controls="saidas" aria-selected="true">Saidas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tabSaldos" data-bs-toggle="tab" data-bs-target="#saldos" type="button" role="tab" aria-controls="saldos" aria-selected="true">Saldos</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tabResultado" data-bs-toggle="tab" data-bs-target="#resultado" type="button" role="tab" aria-controls="resultado" aria-selected="true">Resultado</button>
+    </li>
+</ul>
+
+<!-- ABA ENTRADAS -->
+<div class="tab-content">
+    <div class="tab-pane fade p-4 show active" id="entradas" role="tabpanel" aria-labelledby="entradasLabel">
+        <div>
+            {% if entradas %}
+                
+            {% endif %}
+            <div class="card" data-bs-toggle="modal" data-bs-target="#modalFiltro" style="cursor: pointer;">
+                <div class="card-body">
+                    <h3 class="text-center">Nova Entrada</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL FILTRO -->
+<div class="modal fade" id="modalFiltro" tabindex="-1" aria-labelledby="modalFiltroLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header ps-4">
+                <h5 class="modal-title" id="modalFiltroLabel">Filtro de Tabelas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                    <div id="filtro" class="col-12 col-lg-8 mx-auto mt-4">
+                        <div class="card p-lg-3 shadow-sm border-0 rounded-3">
+                            <div class="card-body">                
+                                <form action="{{ url_for('webui.filtroTabelasView') }}" method="post">
+                                    {{ form.csrf_token }}
+                                    
+                                    <!-- Adicionado g-3 para espaçamento (gutters) uniforme -->
+                                    <div class="row g-3"> 
+                                        
+                                        <!-- Ano -->
+                                        <div class="col-12 col-md-6" id="div-ano">
+                                            <div class="form-floating">
+                                                {{ form.ano(class="form-select", id="ano") }}
+                                                {{ form.ano.label(for="ano") }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Mês -->
+                                        <div class="col-12 col-md-6" id="div-mes">
+                                            <div class="form-floating">
+                                                {{ form.mes(class="form-select", id="mes") }}
+                                                {{ form.mes.label(for="mes") }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Usuário -->
+                                        <div class="col-12" id="div-user">
+                                            <div class="form-floating">
+                                                {{ form.user(class="form-select", id="user") }}
+                                                {{ form.user.label(for="user") }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Botão Alinhado à Direita -->
+                                        <div class="col-12 mt-4 d-flex justify-content-end">
+                                            <button id="submit" class="btn btn-primary px-4 py-2" type="submit">
+                                                Confirmar
+                                            </button>
+                                        </div>
+                                        
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

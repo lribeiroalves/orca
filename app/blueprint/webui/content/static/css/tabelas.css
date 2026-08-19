@@ -1,0 +1,8 @@
+@media (max-width: 480px) {
+    #tabs .nav-link {
+        font-size: 0.75rem;       /* Reduz o tamanho da fonte */
+        padding: 0.5rem 0.1rem;   /* Reduz drasticamente o espaçamento lateral */
+        white-space: nowrap;      /* Impede que a palavra quebre em duas linhas */
+        letter-spacing: -0.3px;   /* Aproxima levemente as letras para economizar espaço */
+    }
+}
