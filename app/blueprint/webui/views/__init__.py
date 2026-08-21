@@ -1,5 +1,7 @@
 from flask import render_template, abort, redirect, url_for, jsonify, flash, request, send_from_directory
 import os
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from app.ext.database import db
 from app.ext.database.models import *
@@ -11,15 +13,16 @@ base_path = get_base_path()
 
 def consulta_banco(user=1, ano=1, mes=1) -> dict:
     try:
+        periodo = datetime(ano, mes, 1)
+        prev_periodo = periodo - relativedelta(months=1)
+        next_periodo = periodo + relativedelta(months=1)
+
         entradas = db.session.scalars(db.select(Entradas).where(Entradas.ano == int(ano), Entradas.mes == int(mes), Entradas.user_id == int(user))).all()
         saidas = db.session.scalars(db.select(Saidas).where(Saidas.ano == int(ano), Saidas.mes == int(mes), Saidas.user_id == int(user))).all()
         saldos = db.session.scalars(db.select(Saldos).where(Saldos.ano == int(ano), Saldos.mes == int(mes), Saldos.user_id == int(user))).all()
 
-        ano_ant = int(ano)
-        mes_ant = int(mes) - 1
-        if not mes_ant:
-            mes_ant = 12
-            ano_ant -= 1
+        ano_ant = prev_periodo.year
+        mes_ant = prev_periodo.month
 
         saldos_ant = db.session.scalars(db.select(Saldos).where(Saldos.ano == ano_ant, Saldos.mes == mes_ant, Saldos.user_id == int(user))).all()
 
@@ -57,7 +60,12 @@ def consulta_banco(user=1, ano=1, mes=1) -> dict:
         'values_resultado': values_resultado,
         'labels_saldo': labels_saldos,
         'values_saldo': values_saldos,
-        'user': entradas[0].user.nome
+        'user': entradas[0].user.nome if entradas else None,
+        'user_id': user,
+        'prev_mes': prev_periodo.month,
+        'prev_ano': prev_periodo.year,
+        'next_mes': next_periodo.month,
+        'next_ano': next_periodo.year
     }
 
 
@@ -75,9 +83,9 @@ def tabelasView():
     if req_ano and req_mes and req_user:
         dados = consulta_banco(req_user, req_ano, req_mes)
     else:
-        return render_template('tabelas.html', form=form_filtros)
+        dados = consulta_banco(1, datetime.now().year, datetime.now().month)
 
-    return render_template('tabelas.html', form=form_filtros, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], ano=req_ano, mes=f'{req_mes:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'])
+    return render_template('tabelas.html', form=form_filtros, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'])
 
 
 def filtroTabelasView():
