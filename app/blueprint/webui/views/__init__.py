@@ -80,13 +80,16 @@ def tabelasView():
     req_ano = request.args.get('ano', type=int)
     req_mes = request.args.get('mes', type=int)
     req_user = request.args.get('user', type=int)
+    req_aba = request.args.get('aba', type=str)
+    if not req_aba:
+        req_aba = 'entrada'
 
     if req_ano and req_mes and req_user:
         dados = consulta_banco(req_user, req_ano, req_mes)
     else:
         dados = consulta_banco(1, datetime.now().year, datetime.now().month)
 
-    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'])
+    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
 
 
 def filtroTabelasForm():
@@ -100,11 +103,12 @@ def filtroTabelasForm():
     else:
         flash(form.errors)
 
-    return redirect(url_for('webui.tabelasView', ano=ano, mes=mes, user=user))
+    return redirect(url_for('webui.tabelasView', ano=ano, mes=mes, user=user, aba='entrada'))
 
 
 def entradaSaidaForm():
     form = FormEntradaSaida()
+    aba = ''
 
     if form.validate_on_submit():
         if form.form_name.data == 'entrada':
@@ -115,6 +119,7 @@ def entradaSaidaForm():
                     nova_entrada = Entradas(ano=int(form.ano.data), mes=int(form.mes.data), descricao=form.desc.data, valor=float(form.valor.data.replace(',', '.')), user_id=int(form.user.data))
                     db.session.add(nova_entrada)
                     flash('Entrada registrada com sucesso.')
+                    aba = 'entrada'
                 else:
                     # EDIÇÃO
                     entrada = db.session.scalars(db.select(Entradas).where(Entradas.id == id)).first()
@@ -128,6 +133,7 @@ def entradaSaidaForm():
                         entrada.valor = float(form.valor.data.replace(',', '.'))
                         entrada.user_id = int(form.user.data)
                         flash('Entrada editada com sucesso.')
+                        aba = 'entrada'
                 db.session.commit()
             except Exception as err:
                 flash(f'Erro no Formulario: {err}')
@@ -140,6 +146,7 @@ def entradaSaidaForm():
                     nova_saida = Saidas(ano=int(form.ano.data), mes=int(form.mes.data), descricao=form.desc.data, valor=float(form.valor.data.replace(',', '.')), user_id=int(form.user.data))
                     db.session.add(nova_saida)
                     flash('Saida registrada com sucesso.')
+                    aba = 'saida'
                 else:
                     # EDIÇÃO
                     saida = db.session.scalars(db.select(Saidas).where(Saidas.id == id)).first()
@@ -153,6 +160,7 @@ def entradaSaidaForm():
                         saida.valor = float(form.valor.data.replace(',', '.'))
                         saida.user_id = int(form.user.data)
                         flash('Saida editada com sucesso.')
+                        aba = 'saida'
                 db.session.commit()
             except Exception as err:
                 flash(f'Erro no Formulario: {err}')
@@ -164,7 +172,7 @@ def entradaSaidaForm():
         flash(form.errors)
         return redirect(url_for('webui.indexView'))
 
-    return redirect(url_for('webui.tabelasView', ano=int(form.ano.data), mes=int(form.mes.data), user=int(form.user.data)))
+    return redirect(url_for('webui.tabelasView', ano=int(form.ano.data), mes=int(form.mes.data), user=int(form.user.data), aba=aba))
 
 
 def faturasView():

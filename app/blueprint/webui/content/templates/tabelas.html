@@ -19,22 +19,22 @@
     <!-- ABAS DE NAVEGAÇÃO -->
     <ul class="nav nav-tabs nav-fill" id="tabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link show active" id="tabEntradas" data-bs-toggle="tab" data-bs-target="#entradas" type="button" role="tab" aria-controls="entradas" aria-selected="true">Entrada</button>
+            <button class="nav-link {% if aba == 'entrada' %}show active{% endif %}" id="tabEntradas" data-bs-toggle="tab" data-bs-target="#entradas" type="button" role="tab" aria-controls="entradas" aria-selected="true">Entrada</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tabSaidas" data-bs-toggle="tab" data-bs-target="#saidas" type="button" role="tab" aria-controls="saidas" aria-selected="true">Saidas</button>
+            <button class="nav-link {% if aba == 'saida' %}show active{% endif %}" id="tabSaidas" data-bs-toggle="tab" data-bs-target="#saidas" type="button" role="tab" aria-controls="saidas" aria-selected="true">Saidas</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tabSaldos" data-bs-toggle="tab" data-bs-target="#saldos" type="button" role="tab" aria-controls="saldos" aria-selected="true">Saldos</button>
+            <button class="nav-link {% if aba == 'saldo' %}show active{% endif %}" id="tabSaldos" data-bs-toggle="tab" data-bs-target="#saldos" type="button" role="tab" aria-controls="saldos" aria-selected="true">Saldos</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tabResultado" data-bs-toggle="tab" data-bs-target="#resultado" type="button" role="tab" aria-controls="resultado" aria-selected="true">Resultado</button>
+            <button class="nav-link {% if aba == 'resultado' %}show active{% endif %}" id="tabResultado" data-bs-toggle="tab" data-bs-target="#resultado" type="button" role="tab" aria-controls="resultado" aria-selected="true">Resultado</button>
         </li>
     </ul>
     
     <!-- ABA ENTRADAS -->
     <div class="tab-content">
-        <div class="tab-pane fade p-lg-4 p-2 show active" id="entradas" role="tabpanel" aria-labelledby="entradasLabel">
+        <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'entrada' %}show active{% endif %}" id="entradas" role="tabpanel" aria-labelledby="entradasLabel">
             {% if mes %}
                 <div class="row my-3 justify-content-center">
                     <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }})"></i>
@@ -108,7 +108,7 @@
     </div>
     <!-- ABA SAIDAS -->
     <div class="tab-content">
-        <div class="tab-pane fade p-4" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
+        <div class="tab-pane fade p-4 {% if aba == 'saida' %}show active{% endif %}" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
             <div>
                 {% if saidas %}
                     {{saidas}}
@@ -121,7 +121,7 @@
     </div>
     <!-- ABA SALDOS -->
     <div class="tab-content">
-        <div class="tab-pane fade p-4" id="saldos" role="tabpanel" aria-labelledby="saldosLabel">
+        <div class="tab-pane fade p-4 {% if aba == 'saldo' %}show active{% endif %}" id="saldos" role="tabpanel" aria-labelledby="saldosLabel">
             <div>
                 {% if saldos %}
                     {{ saldos }}
@@ -134,7 +134,7 @@
     </div>
     <!-- ABA RESULTADO   -->
     <div class="tab-content">
-        <div class="tab-pane fade p-4" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
+        <div class="tab-pane fade p-4 {% if aba == 'resultado' %}show active{% endif %}" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
             <div>
                 RESULTADO
             </div>
