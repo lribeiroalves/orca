@@ -45,8 +45,12 @@ markupsafe==3.0.3
     #   wtforms
 pymysql==1.2.0
     # via -r requirements.in
+python-dateutil==2.9.0.post0
+    # via -r requirements.in
 python-dotenv==1.2.2
     # via -r requirements.in
+six==1.17.0
+    # via python-dateutil
 sqlalchemy==2.0.52
     # via
     #   alembic
