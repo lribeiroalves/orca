@@ -75,6 +75,7 @@ function abrirModalInOut(titulo="Inicialização Incorreta", tipo="", id="", use
     $('#formInOutAno').on('input', inputAno);
     $('#formInOutDesc').on('keydown', inputDesc);
     $('#formInOutValor').on('input', inputValor);
+    $('#formInOutValor').trigger('input');
 
     $('#modalEntradaSaida').modal('show');
 }
