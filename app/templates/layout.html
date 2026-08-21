@@ -28,8 +28,8 @@
             <div class="px-3 py-2 fundo-escuro border-bottom">
                 <div class="container">
                     <div class="d-flex flex-wrap">
-                        <a href="/" class="d-flex text-white text-decoration-none align-items-center col-12 col-lg-8 justify-content-center justify-content-lg-start"><img id="logo-header" src="{{ url_for('static', filename='images/favicon.svg') }}" alt="Icone" width="40" height="40"> <h5 id="titulo" class="ms-3">{{ config['TITLE'] }}</h5></a>
-                        <ul class="nav col-12 col-lg-4 justify-content-center justify-content-lg-end text-small mt-2 mt-lg-0">
+                        <a href="/" class="d-flex text-white text-decoration-none align-items-center col-12 col-lg-6 justify-content-center justify-content-lg-start"><img id="logo-header" src="{{ url_for('static', filename='images/favicon.svg') }}" alt="Icone" width="40" height="40"> <h5 id="titulo" class="ms-3">{{ config['TITLE'] }}</h5></a>
+                        <ul class="nav col-12 col-lg-6 justify-content-center justify-content-lg-end text-small mt-2 mt-lg-0">
                             <li> <a href="/" class="nav-link text-{% block liHome %}{% endblock %}">Home</a> </li>
                             <li> <a href="{{ url_for('webui.tabelasView') }}" class="nav-link text-{% block liTabelas %}{% endblock %}">Tabelas</a> </li>
                             <li> <a href="{{ url_for('webui.faturasView') }}" class="nav-link text-{% block liFaturas %}{% endblock %}">Faturas</a> </li>

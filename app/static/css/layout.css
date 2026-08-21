@@ -29,7 +29,7 @@ body {
 }
 
 /* Modo Paisagem */
-@media (min-width: 480px) and (max-width: 1200px) {
+@media (min-width: 480px) and (max-width: 990px) {
     footer {
         display: none;
     }
