@@ -127,7 +127,7 @@ def entradaSaidaForm():
                         entrada.descricao = form.desc.data
                         entrada.valor = float(form.valor.data.replace(',', '.'))
                         entrada.user_id = int(form.user.data)
-                        flash('Entrada editada com suceso.')
+                        flash('Entrada editada com sucesso.')
                 db.session.commit()
             except Exception as err:
                 flash(f'Erro no Formulario: {err}')
@@ -152,7 +152,7 @@ def entradaSaidaForm():
                         saida.descricao = form.desc.data
                         saida.valor = float(form.valor.data.replace(',', '.'))
                         saida.user_id = int(form.user.data)
-                        flash('Saida editada com suceso.')
+                        flash('Saida editada com sucesso.')
                 db.session.commit()
             except Exception as err:
                 flash(f'Erro no Formulario: {err}')
