@@ -18,8 +18,10 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
         <!-- CSS files -->
-         <link rel="stylesheet" href="{{url_for('static', filename='css/layout.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/layout.css')}}">
         {% block link_css %}{% endblock %}
+        <!-- JQUERY -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     </head>
     <body class="d-flex flex-column">
         <header class="flex-shrink-0">

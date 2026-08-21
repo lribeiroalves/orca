@@ -59,7 +59,7 @@
                             {% for linha in entradas %}
                                 <tr>
                                     <td class="text-start fw-medium text-dark">
-                                        {{ linha.descricao|capitalize }}
+                                        {{ linha.descricao }}
                                     </td>
                                     <td class="text-start fw-bold">
                                         {{ linha.valor|format_real }}
@@ -99,7 +99,7 @@
             
             <!-- Botão alinhado ao centro, um pouco menor e mais elegante -->
             <div class="row justify-content-center">
-                <button type="button" class="btn btn-primary col-12 col-md-5 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#modalFiltro">
+                <button id="btnNovaEntrada" type="button" class="btn btn-primary col-12 col-md-5 rounded-pill shadow-sm" onclick="abrirModalInOut('Nova Entrada', 'entrada', '0')">
                     Nova Entrada
                 </button>
             </div>
@@ -114,7 +114,7 @@
                     {{saidas}}
                 {% endif %}
                 <div class="row justify-content-center">
-                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" data-bs-toggle="modal" data-bs-target="#modalFiltro">Nova Saida</button>
+                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" onclick="abrirModalInOut('Nova Saída', 'saida', '0')">Nova Saida</button>
                 </div>
             </div>
         </div>
@@ -150,6 +150,78 @@
 </div>
 
 
+<!-- MODAL ENTRADA/SAIDA -->
+<div class="modal fade" id="modalEntradaSaida" tabindex="-1" aria-labelledby="modalEntradaSaidaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header ps-4">
+                <h5 class="modal-title" id="modalEntradaSaidaLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12 col-lg-10 mx-auto mt-3">
+                    <div class="card p-lg-3 shadow-sm border-0 rounded-3">
+                        <div class="card-body">
+                            <form id="formEntradaSaida" action="{{ url_for('webui.entradaSaidaForm') }}" method="post">
+                                {{ formInOut.csrf_token }}
+                                {{ formInOut.form_name(id="formInOutName") }}
+                                {{ formInOut.idInOut }}
+
+                                <div class="row g-3">
+                                    <div class="col-12 col-lg-6">
+                                        <div class="row g-3">
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formInOut.ano(class="form-control", id="formInOutAno", autocomplete="off") }}
+                                                    {{ formInOut.ano.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formInOut.mes(class="form-select", id="formInOutMes", autocomplete="off") }}
+                                                    {{ formInOut.mes.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formInOut.user(class="form-select", id="formInOutUser", autocomplete="off") }}
+                                                    {{ formInOut.user.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formInOut.valor(class="form-control", id="formInOutValor", autocomplete="off") }}
+                                                    {{ formInOut.valor.label }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    {{ formInOut.desc(class="form-control", id="formInOutDesc", autocomplete="off") }}
+                                                    {{ formInOut.desc.label }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-4 d-flex justify-content-end">
+                                    <button id="formInOutSubmit" class="btn btn-primary px-4 py-2" type="submit">
+                                        Confirmar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- MODAL FILTRO -->
 <div class="modal fade" id="modalFiltro" tabindex="-1" aria-labelledby="modalFiltroLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -159,12 +231,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                <div id="filtro" class="col-12 col-lg-8 mx-auto mt-4">
+                <div id="filtro" class="col-12 col-lg-8 mx-auto mt-3">
                     <div class="card p-lg-3 shadow-sm border-0 rounded-3">
                         <div class="card-body">                
-                            <form id="formFiltro" action="{{ url_for('webui.filtroTabelasView') }}" method="post">
-                                {{ form.csrf_token }}
-                                {{ form.form_name(value="filtros") }}
+                            <form id="formFiltro" action="{{ url_for('webui.filtroTabelasForm') }}" method="post">
+                                {{ form_filtros.csrf_token }}
+                                {{ form_filtros.form_name(value="filtros") }}
                                 
                                 <!-- Adicionado g-3 para espaçamento (gutters) uniforme -->
                                 <div class="row g-3"> 
@@ -172,24 +244,24 @@
                                     <!-- Ano -->
                                     <div class="col-12 col-md-6" id="div-ano">
                                         <div class="form-floating">
-                                            {{ form.ano(class="form-select", id="ano") }}
-                                            {{ form.ano.label(for="ano") }}
+                                            {{ form_filtros.ano(class="form-select", id="ano") }}
+                                            {{ form_filtros.ano.label(for="ano") }}
                                         </div>
                                     </div>
                                     
                                     <!-- Mês -->
                                     <div class="col-12 col-md-6" id="div-mes">
                                         <div class="form-floating">
-                                            {{ form.mes(class="form-select", id="mes") }}
-                                            {{ form.mes.label(for="mes") }}
+                                            {{ form_filtros.mes(class="form-select", id="mes") }}
+                                            {{ form_filtros.mes.label(for="mes") }}
                                         </div>
                                     </div>
                                     
                                     <!-- Usuário -->
                                     <div class="col-12" id="div-user">
                                         <div class="form-floating">
-                                            {{ form.user(class="form-select", id="user") }}
-                                            {{ form.user.label(for="user") }}
+                                            {{ form_filtros.user(class="form-select", id="user") }}
+                                            {{ form_filtros.user.label(for="user") }}
                                         </div>
                                     </div>
                                     
@@ -212,4 +284,5 @@
 
 {% block js %}
 <script src="{{url_for('webui.static', filename='js/filtro_tabela.js')}}"></script>
+<script src="{{url_for('webui.static', filename='js/modalEntradaSaida.js')}}"></script>
 {% endblock %}

@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from app.ext.database import db
 from app.ext.database.models import *
 from app import get_base_path
-from .forms import FormFiltroTabelas
+from .forms import FormFiltroTabelas, FormEntradaSaida
 
 base_path = get_base_path()
 
@@ -75,6 +75,7 @@ def indexView():
 
 def tabelasView():
     form_filtros = FormFiltroTabelas()
+    form_entrada_saida = FormEntradaSaida()
 
     req_ano = request.args.get('ano', type=int)
     req_mes = request.args.get('mes', type=int)
@@ -85,10 +86,10 @@ def tabelasView():
     else:
         dados = consulta_banco(1, datetime.now().year, datetime.now().month)
 
-    return render_template('tabelas.html', form=form_filtros, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'])
+    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'])
 
 
-def filtroTabelasView():
+def filtroTabelasForm():
     form = FormFiltroTabelas()
     ano, mes, user = (None, None, None)
 
@@ -100,6 +101,70 @@ def filtroTabelasView():
         flash(form.errors)
 
     return redirect(url_for('webui.tabelasView', ano=ano, mes=mes, user=user))
+
+
+def entradaSaidaForm():
+    form = FormEntradaSaida()
+
+    if form.validate_on_submit():
+        if form.form_name.data == 'entrada':
+            try:
+                id = int(form.idInOut.data)
+                if not id:
+                    # NOVA ENTRADA
+                    nova_entrada = Entradas(ano=int(form.ano.data), mes=int(form.mes.data), descricao=form.desc.data, valor=float(form.valor.data.replace(',', '.')), user_id=int(form.user.data))
+                    db.session.add(nova_entrada)
+                    flash('Entrada registrada com sucesso.')
+                else:
+                    # EDIÇÃO
+                    entrada = db.session.scalars(db.select(Entradas).where(Entradas.id == id)).first()
+                    if not entrada:
+                        flash('Essa entrada não existe.')
+                        return redirect(url_for('webui.indexView'))
+                    else:
+                        entrada.ano = int(form.ano.data)
+                        entrada.mes = int(form.mes.data)
+                        entrada.descricao = form.desc.data
+                        entrada.valor = float(form.valor.data.replace(',', '.'))
+                        entrada.user_id = int(form.user.data)
+                        flash('Entrada editada com suceso.')
+                db.session.commit()
+            except Exception as err:
+                flash(f'Erro no Formulario: {err}')
+                return redirect(url_for('webui.indexView'))
+        elif form.form_name.data == 'saida':
+            try:
+                id = int(form.idInOut.data)
+                if not id:
+                    # NOVA SAIDA
+                    nova_saida = Saidas(ano=int(form.ano.data), mes=int(form.mes.data), descricao=form.desc.data, valor=float(form.valor.data.replace(',', '.')), user_id=int(form.user.data))
+                    db.session.add(nova_saida)
+                    flash('Saida registrada com sucesso.')
+                else:
+                    # EDIÇÃO
+                    saida = db.session.scalars(db.select(Saidas).where(Saidas.id == id)).first()
+                    if not saida:
+                        flash('Essa saída não existe.')
+                        return redirect(url_for('webui.indexView'))
+                    else:
+                        saida.ano = int(form.ano.data)
+                        saida.mes = int(form.mes.data)
+                        saida.descricao = form.desc.data
+                        saida.valor = float(form.valor.data.replace(',', '.'))
+                        saida.user_id = int(form.user.data)
+                        flash('Saida editada com suceso.')
+                db.session.commit()
+            except Exception as err:
+                flash(f'Erro no Formulario: {err}')
+                return redirect(url_for('webui.indexView'))
+        else:
+            flash('Erro no Formulario')
+            return redirect(url_for('webui.indexView'))
+    else:
+        flash(form.errors)
+        return redirect(url_for('webui.indexView'))
+
+    return redirect(url_for('webui.tabelasView', ano=int(form.ano.data), mes=int(form.mes.data), user=int(form.user.data)))
 
 
 def faturasView():

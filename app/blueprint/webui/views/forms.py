@@ -7,12 +7,28 @@ from app.ext.database import db
 from app.ext.database.models import *
 
 
+class FormEntradaSaida(FlaskForm):
+    user = SelectField('Usuário', choices=[], validators=[DataRequired()])
+    ano = StringField('Ano', validators=[DataRequired()])
+    mes = SelectField('Mês', choices=[('', 'Selecione...'), ('1', 'Janeiro'), ('2', 'Fevereiro'), ('3', 'Março'), ('4', 'Abril'), ('5', 'Maio'), ('6', 'Junho'), ('7', 'Julho'), ('8', 'Agosto'), ('9', 'Setembro'), ('10', 'Outubro'), ('11', 'Novembro'), ('12', 'Dezembro')], validators=[DataRequired()])
+    desc = TextAreaField('Descrição', validators=[DataRequired()], render_kw={'rows': 5, 'style': 'height: 100%;'})
+    valor = StringField('Valor', validators=[DataRequired()])
+    form_name = HiddenField('formInOutName', validators=[DataRequired()])
+    idInOut = HiddenField('idInOut', validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        users = db.session.scalars(db.select(Users)).all()
+        self.user.choices = [(str(u.id), str(u.nome).title()) for u in users]
+        self.user.choices.insert(0, ('', 'Selecione...'))
+
+
 class FormFiltroTabelas(FlaskForm):
     user = SelectField('Usuário', choices=[], validators=[DataRequired()])
     ano = SelectField('Ano', choices=[], validators=[DataRequired()], default=datetime.now().year, validate_choice=False)
     mes = SelectField('Mês', choices=[('', 'Selecione...'), ('1', 'Janeiro'), ('2', 'Fevereiro'), ('3', 'Março'), ('4', 'Abril'), ('5', 'Maio'), ('6', 'Junho'), ('7', 'Julho'), ('8', 'Agosto'), ('9', 'Setembro'), ('10', 'Outubro'), ('11', 'Novembro'), ('12', 'Dezembro')], validators=[DataRequired()], default=datetime.now().month)
     form_name = HiddenField('form_name')
-
+ 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         users = db.session.scalars(db.select(Users)).all()
