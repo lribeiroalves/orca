@@ -108,7 +108,7 @@
     </div>
     <!-- ABA SAIDAS -->
     <div class="tab-content">
-        <div class="tab-pane fade p-4 {% if aba == 'saida' %}show active{% endif %}" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
+        <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'saida' %}show active{% endif %}" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
             {% if mes %}
                 <div class="row my-3 justify-content-center">
                     <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }}, 'saida')"></i>
@@ -179,7 +179,7 @@
     </div>
     <!-- ABA SALDOS -->
     <div class="tab-content">
-        <div class="tab-pane fade p-4 {% if aba == 'saldo' %}show active{% endif %}" id="saldos" role="tabpanel" aria-labelledby="saldosLabel">
+        <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'saldo' %}show active{% endif %}" id="saldos" role="tabpanel" aria-labelledby="saldosLabel">
             <div>
                 {% if saldos %}
                     {{ saldos }}
@@ -192,7 +192,7 @@
     </div>
     <!-- ABA RESULTADO   -->
     <div class="tab-content">
-        <div class="tab-pane fade p-4 {% if aba == 'resultado' %}show active{% endif %}" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
+        <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'resultado' %}show active{% endif %}" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
             <div>
                 RESULTADO
             </div>
