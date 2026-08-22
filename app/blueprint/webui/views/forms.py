@@ -36,6 +36,7 @@ class FormFiltroTabelas(FlaskForm):
     ano = SelectField('Ano', choices=[], validators=[DataRequired()], default=datetime.now().year, validate_choice=False)
     mes = SelectField('Mês', choices=[('', 'Selecione...'), ('1', 'Janeiro'), ('2', 'Fevereiro'), ('3', 'Março'), ('4', 'Abril'), ('5', 'Maio'), ('6', 'Junho'), ('7', 'Julho'), ('8', 'Agosto'), ('9', 'Setembro'), ('10', 'Outubro'), ('11', 'Novembro'), ('12', 'Dezembro')], validators=[DataRequired()], default=datetime.now().month)
     form_name = HiddenField('form_name')
+    tipo = HiddenField('tipo')
  
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

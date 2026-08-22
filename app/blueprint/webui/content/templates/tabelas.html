@@ -37,9 +37,9 @@
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'entrada' %}show active{% endif %}" id="entradas" role="tabpanel" aria-labelledby="entradasLabel">
             {% if mes %}
                 <div class="row my-3 justify-content-center">
-                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }})"></i>
+                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }}, 'entrada')"></i>
                     <h5 class="col-4 text-center">{{ mes }}/{{ ano }}</h5>
-                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData({{ next_mes }}, {{ next_ano }}, {{ user_id }})"></i>
+                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData({{ next_mes }}, {{ next_ano }}, {{ user_id }}, 'entrada')"></i>
                 </div>
             {% endif %}
             {% if entradas %}
@@ -109,13 +109,71 @@
     <!-- ABA SAIDAS -->
     <div class="tab-content">
         <div class="tab-pane fade p-4 {% if aba == 'saida' %}show active{% endif %}" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
-            <div>
-                {% if saidas %}
-                    {{saidas}}
-                {% endif %}
-                <div class="row justify-content-center">
-                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" onclick="abrirModalInOut('Nova Saída', 'saida', '0')">Nova Saida</button>
+            {% if mes %}
+                <div class="row my-3 justify-content-center">
+                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }}, 'saida')"></i>
+                    <h5 class="col-4 text-center">{{ mes }}/{{ ano }}</h5>
+                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData({{ next_mes }}, {{ next_ano }}, {{ user_id }}, 'saida')"></i>
                 </div>
+            {% endif %}
+            {% if saidas %}
+                <!-- Wrapper para rolagem horizontal em telas pequenas -->
+                <div class="table-responsive mb-4">
+                    <!-- Tabela sem bordas pesadas e com alinhamento vertical centralizado -->
+                    <table class="table table-hover align-middle mb-0 text-nowrap">
+                        <thead class="table-light">
+                            <tr>
+                                <!-- Alinhamentos acompanhando o corpo da tabela -->
+                                <th class="col-md-5 text-start text-secondary border-0 rounded-start">Descrição</th>
+                                <th class="col-md-5 text-start text-secondary border-0">Valor</th>
+                                <th class="col-md-2 text-center text-secondary border-0 rounded-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-top-0">
+                            {% for linha in saidas %}
+                                <tr>
+                                    <td class="text-start fw-medium text-dark">
+                                        {{ linha.descricao }}
+                                    </td>
+                                    <td class="text-start fw-bold">
+                                        {{ linha.valor|format_real }}
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm text-primary me-1" title="Editar" onclick="abrirModalInOut('Editar Saída', 'saida', '{{ linha.id }}', '{{ linha.user_id }}', '{{ linha.mes }}', '{{ linha.ano }}', '{{ linha.valor }}', '{{ linha.descricao }}')">
+                                            <i class="fas fa-edit"></i> <span class="d-none d-md-inline ms-1">Editar</span>
+                                        </button>
+                                        <button class="btn btn-sm text-danger" title="Excluir" onclick="formExcluir('{{ linha.id }}', 'saida', '{{ linha.ano }}', '{{ linha.mes }}', '{{ linha.user_id }}')">
+                                            <i class="fas fa-trash"></i> <span class="d-none d-md-inline ms-1">Excluir</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr style="height: 1.5rem; background-color: transparent;">
+                                <td colspan="3" class="border-0"></td>
+                            </tr>
+                        </tbody>
+                        <!-- RODAPÉ COM O TOTAL -->
+                        <tfoot class="table-light">
+                            <tr>
+                                <!-- colspan="3" une as três colunas da tabela em uma só -->
+                                <td colspan="3" class="text-center border-0 py-3 rounded-bottom">
+                                    <span class="fw-bold text-uppercase text-secondary me-2">Total:</span>
+                                    <span class="fw-bolder fs-5">{{ total_saidas|format_real }}</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            {% else %}
+                <!-- Estado Vazio (Empty State) para quando não houver dados -->
+                <div class="text-center py-5 text-muted">
+                    <p>Nenhuma saída encontrada.</p>
+                </div>
+            {% endif %}
+            <div class="row justify-content-center">
+                <button id="btnNovaSaida" type="button" class="btn btn-primary col-12 col-md-5 rounded-pill shadow-sm" onclick="abrirModalInOut('Nova Saida', 'saida', '0')">
+                    Nova Saída
+                </button>
             </div>
         </div>
     </div>
@@ -250,6 +308,7 @@
                             <form id="formFiltro" action="{{ url_for('webui.filtroTabelasForm') }}" method="post">
                                 {{ form_filtros.csrf_token }}
                                 {{ form_filtros.form_name(value="filtros") }}
+                                {{ form_filtros.tipo }}
                                 
                                 <!-- Adicionado g-3 para espaçamento (gutters) uniforme -->
                                 <div class="row g-3"> 

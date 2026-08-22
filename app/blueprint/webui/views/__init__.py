@@ -96,15 +96,17 @@ def tabelasView():
 def filtroTabelasForm():
     form = FormFiltroTabelas()
     ano, mes, user = (None, None, None)
+    aba = 'entrada'
 
     if form.validate_on_submit():
         ano = int(form.ano.data)
         mes = int(form.mes.data)
         user = int(form.user.data)
+        aba = form.tipo.data if form.tipo.data else 'entrada'
     else:
         flash(form.errors)
 
-    return redirect(url_for('webui.tabelasView', ano=ano, mes=mes, user=user, aba='entrada'))
+    return redirect(url_for('webui.tabelasView', ano=ano, mes=mes, user=user, aba=aba))
 
 
 def entradaSaidaForm():
