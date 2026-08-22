@@ -180,14 +180,80 @@
     <!-- ABA SALDOS -->
     <div class="tab-content">
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'saldo' %}show active{% endif %}" id="saldos" role="tabpanel" aria-labelledby="saldosLabel">
-            <div>
+            {% if mes %}
+                <div class="row my-3 justify-content-center">
+                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }}, 'saldo')"></i>
+                    <h5 class="col-4 text-center">{{ mes }}/{{ ano }}</h5>
+                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData({{ next_mes }}, {{ next_ano }}, {{ user_id }}, 'saldo')"></i>
+                </div>
+            {% endif %}
+            {% if saldos %}
+                <!-- Wrapper para rolagem horizontal em telas pequenas -->
+                <div class="table-responsive mb-4">
+                    <!-- Tabela sem bordas pesadas e com alinhamento vertical centralizado -->
+                    <table class="table table-hover align-middle mb-0 text-nowrap">
+                        <thead class="table-light">
+                            <tr>
+                                <!-- Alinhamentos acompanhando o corpo da tabela -->
+                                <th class="col-md-5 text-start text-secondary border-0 rounded-start">Banco</th>
+                                <th class="col-md-5 text-start text-secondary border-0">Valor</th>
+                                <th class="col-md-2 text-center text-secondary border-0 rounded-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-top-0">
+                            {% for linha in saldos %}
+                                <tr>
+                                    <td class="text-start fw-medium text-dark">
+                                        {{ linha.banco.nome|title }}
+                                    </td>
+                                    <td class="text-start fw-bold">
+                                        {{ linha.valor|format_real }}
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm text-primary me-1" title="Editar" onclick="abrirModalSaldos('Editar Saldo', '{{ linha.id }}', '{{ linha.user_id }}', '{{ linha.mes }}', '{{ linha.ano }}', '{{ linha.valor }}', '{{ linha.banco.id }}')">
+                                            <i class="fas fa-edit"></i> <span class="d-none d-md-inline ms-1">Editar</span>
+                                        </button>
+                                        <button class="btn btn-sm text-danger" title="Excluir" onclick="formExcluir('{{ linha.id }}', 'saldo', '{{ linha.ano }}', '{{ linha.mes }}', '{{ linha.user_id }}')">
+                                            <i class="fas fa-trash"></i> <span class="d-none d-md-inline ms-1">Excluir</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr style="height: 1.5rem; background-color: transparent;">
+                                <td colspan="3" class="border-0"></td>
+                            </tr>
+                        </tbody>
+                        <!-- RODAPÉ COM O TOTAL -->
+                        <tfoot class="table-light">
+                            <tr>
+                                <!-- colspan="3" une as três colunas da tabela em uma só -->
+                                <td colspan="3" class="text-center border-0 py-3 rounded-bottom">
+                                    <span class="fw-bold text-uppercase text-secondary me-2">Total:</span>
+                                    <span class="fw-bolder fs-5">{{ total_saldos|format_real }}</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            {% else %}
+                <!-- Estado Vazio (Empty State) para quando não houver dados -->
+                <div class="text-center py-5 text-muted">
+                    <p>Nenhuma saída encontrada.</p>
+                </div>
+            {% endif %}
+            <div class="row justify-content-center">
+                <button id="btnNovoSaldo" type="button" class="btn btn-primary col-12 col-md-5 rounded-pill shadow-sm" onclick="abrirModalSaldos('Nova Saldo', '0')">
+                    Novo Saldo
+                </button>
+            </div>
+            <!-- <div>
                 {% if saldos %}
                     {{ saldos }}
                 {% endif %}
                 <div class="row justify-content-center">
-                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" data-bs-toggle="modal" data-bs-target="#modalFiltro">Novo Saldo</button>
+                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" onclick="abrirModalSaldos('Novo Saldo', '0')">Novo Saldo</button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     <!-- ABA RESULTADO   -->
@@ -218,6 +284,69 @@
         {{ formExcluir.mesExcluir }}
         {{ formExcluir.userExcluir }}
     </form>
+</div>
+
+
+<!-- MODAL SALDOS -->
+<div class="modal fade" id="modalSaldos" tabindex="-1" aria-labelledby="#modalSaldosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header ps-4">
+                <h5 class="modal-title" id="modalSaldosLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12 col-lg-10 mx-auto mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="formSaldo" action="{{ url_for('webui.saldosForm') }}" method="post">
+                                {{ formSaldo.csrf_token }}
+                                {{ formSaldo.idSaldo }}
+
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating">
+                                            {{ formSaldo.mesSaldo(class="form-select", autocomplete="off") }}
+                                            {{ formSaldo.mesSaldo.label }}
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating">
+                                            {{ formSaldo.anoSaldo(class="form-control", autocomplete="off") }}
+                                            {{ formSaldo.anoSaldo.label }}
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating">
+                                            {{ formSaldo.userSaldo(class="form-select", autocomplete="off") }}
+                                            {{ formSaldo.userSaldo.label }}
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating">
+                                            {{ formSaldo.bancoSaldo(class="form-select", autocomplete="off") }}
+                                            {{ formSaldo.bancoSaldo.label }}
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            {{ formSaldo.valorSaldo(class="form-control", autocomplete="off") }}
+                                            {{ formSaldo.valorSaldo.label }}
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-4 d-flex justify-content-end">
+                                        <button id="formSaldoSubmit" class="btn btn-primary px-4 py-2" type="submit">
+                                            Confirmar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -357,5 +486,6 @@
 {% block js %}
 <script src="{{url_for('webui.static', filename='js/filtro_tabela.js')}}"></script>
 <script src="{{url_for('webui.static', filename='js/modalEntradaSaida.js')}}"></script>
+<script src="{{url_for('webui.static', filename='js/modalSaldos.js')}}"></script>
 <script src="{{url_for('webui.static', filename='js/form-excluir.js')}}"></script>
 {% endblock %}

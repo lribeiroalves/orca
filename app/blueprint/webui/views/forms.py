@@ -7,6 +7,25 @@ from app.ext.database import db
 from app.ext.database.models import *
 
 
+class FormSaldos(FlaskForm):
+    userSaldo = SelectField('Usuário', choices=[], validators=[DataRequired()])
+    anoSaldo = StringField('Ano', validators=[DataRequired()])
+    mesSaldo = SelectField('Mês', choices=[('', 'Selecione...'), ('1', 'Janeiro'), ('2', 'Fevereiro'), ('3', 'Março'), ('4', 'Abril'), ('5', 'Maio'), ('6', 'Junho'), ('7', 'Julho'), ('8', 'Agosto'), ('9', 'Setembro'), ('10', 'Outubro'), ('11', 'Novembro'), ('12', 'Dezembro')], validators=[DataRequired()])
+    valorSaldo = StringField('Valor', validators=[DataRequired()])
+    idSaldo = HiddenField('idSaldo', validators=[DataRequired()])
+    bancoSaldo = SelectField('Banco', choices=[], validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        users = db.session.scalars(db.select(Users)).all()
+        self.userSaldo.choices = [(str(u.id), str(u.nome).title()) for u in users]
+        self.userSaldo.choices.insert(0, ('', 'Selecione...'))
+
+        bancos = db.session.scalars(db.select(Bancos)).all()
+        self.bancoSaldo.choices = [(str(b.id), str(b.nome).title()) for b in bancos]
+        self.bancoSaldo.choices.insert(0, ('', 'Selecione...'))
+
+
 class FormExcluir(FlaskForm):
     idExcluir = HiddenField('idExcluir', validators=[DataRequired()])
     tipoExcluir = HiddenField('tipoExcluir', validators=[DataRequired()])

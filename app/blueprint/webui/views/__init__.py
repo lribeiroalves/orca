@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from app.ext.database import db
 from app.ext.database.models import *
 from app import get_base_path
-from .forms import FormFiltroTabelas, FormEntradaSaida, FormExcluir
+from .forms import FormFiltroTabelas, FormEntradaSaida, FormExcluir, FormSaldos
 
 base_path = get_base_path()
 
@@ -77,6 +77,7 @@ def tabelasView():
     form_filtros = FormFiltroTabelas()
     form_entrada_saida = FormEntradaSaida()
     form_excluir = FormExcluir()
+    form_saldos = FormSaldos()
 
     req_ano = request.args.get('ano', type=int)
     req_mes = request.args.get('mes', type=int)
@@ -90,7 +91,7 @@ def tabelasView():
     else:
         dados = consulta_banco(1, datetime.now().year, datetime.now().month)
 
-    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, formExcluir=form_excluir, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
+    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, formExcluir=form_excluir, formSaldo=form_saldos, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
 
 
 def filtroTabelasForm():
@@ -195,18 +196,70 @@ def excluirForm():
                 aba = 'saida'
                 flash('Saida apagada com sucesso.')
             case 'saldo':
-                pass
+                saldo = db.session.scalars(db.select(Saldos).where(Saldos.id == int(form.idExcluir.data))).first()
+                db.session.delete(saldo)
+                aba = 'saldo'
+                flash('Saldo apagado com sucesso.')
             case 'compra':
                 pass
             case _:
                 raise Exception('Houve um Erro de Tipo.')
+
+        db.session.commit()
+        
     except Exception as Err:
         flash(f'Erro: {Err}')
         return redirect(url_for('webui.indexView'))
 
-    db.session.commit()
-
     return redirect(url_for('webui.tabelasView', ano=int(form.anoExcluir.data), mes=int(form.mesExcluir.data), user=int(form.userExcluir.data), aba=aba))
+
+
+def saldosForm():
+    form = FormSaldos()
+    aba='saldo'
+
+    try:
+        if form.validate_on_submit():
+            id = abs(int(form.idSaldo.data))
+            ano = int(form.anoSaldo.data)
+            mes = int(form.mesSaldo.data)
+            user = int(form.userSaldo.data)
+            banco = int(form.bancoSaldo.data)
+            valor = float(form.valorSaldo.data.replace(',', '.'))
+            if not id:
+                # NOVO SALDO
+                novo_saldo = Saldos()
+                novo_saldo.ano = ano
+                novo_saldo.mes = mes
+                novo_saldo.valor = valor
+                novo_saldo.user_id = user
+                novo_saldo.banco_id = banco
+
+                db.session.add(novo_saldo)
+                flash('Novo Saldo Registrado com Sucesso.')
+            else:
+                # EDIÇÃO DE SALDO
+                saldo = db.session.scalars(db.select(Saldos).where(Saldos.id == id)).first()
+                if saldo:
+                    saldo.ano = ano
+                    saldo.mes = mes
+                    saldo.valor = valor
+                    saldo.user_id = user
+                    saldo.banco_id = banco
+
+                    flash('Saldo Editado com suceso.')
+                else:
+                    raise Exception('Saldo não encontrado.')
+
+            db.session.commit()
+        else:
+            raise Exception('Formulário não validado!')
+    except Exception as Err:
+        flash(f'ERRO: {Err}')
+        return redirect(url_for('webui.indexView'))
+
+    return redirect(url_for('webui.tabelasView', ano=int(form.anoSaldo.data), mes=int(form.mesSaldo.data), user=int(form.userSaldo.data), aba=aba))
+
 
 
 def faturasView():

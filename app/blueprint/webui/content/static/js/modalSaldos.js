@@ -1,4 +1,4 @@
-function inputAnoInOut(event) {
+function inputAnoSaldo(event) {
     let valorAtual = $(this).val();
 
     valorAtual = valorAtual.replace(/[^0-9]/g, '');
@@ -21,13 +21,7 @@ function inputAnoInOut(event) {
     }
 };
 
-function inputDescInOut(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-    }
-};
-
-function inputValorInOut(event) {
+function inputValorSaldo(event) {
     let valorAtual = $(this).val();
 
     // Deixa apenas numeros, pontos e virgulas
@@ -59,24 +53,22 @@ function inputValorInOut(event) {
     $(this).val(valorAtual);
 };
 
-function abrirModalInOut(titulo="Inicialização Incorreta", tipo="", id="", user="", mes="", ano="", valor="", desc="") {
-    $('#modalEntradaSaidaLabel').text(titulo);
+function abrirModalSaldos(titulo="Inicialização Incorreta", id="", user="", mes="", ano="", valor="", banco="") {
+    $('#modalSaldosLabel').text(titulo);
 
-    // Campos do formulario
-    $('#idInOut').val(id);
-    $('#formInOutName').val(tipo);
-    $('#formInOutAno').val(ano);
-    $('#formInOutMes').val(mes);
-    $('#formInOutUser').val(user);
-    $('#formInOutValor').val(valor);
-    $('#formInOutDesc').val(desc);
+    // Campos do Form
+    $('#idSaldo').val(id);
+    $('#mesSaldo').val(mes);
+    $('#anoSaldo').val(ano);
+    $('#userSaldo').val(user);
+    $('#bancoSaldo').val(banco);
+    $('#valorSaldo').val(valor);
 
     // binds
-    $('#formInOutAno').on('input', inputAnoInOut);
-    $('#formInOutDesc').on('keydown', inputDescInOut);
-    $('#formInOutValor').on('input', inputValorInOut);
-    $('#formInOutValor').trigger('input');
+    $('#anoSaldo').on('input', inputAnoSaldo);
+    $('#valorSaldo').on('input', inputValorSaldo);
+    $('#valorSaldo').trigger('input');
 
-    $('#modalEntradaSaida').modal('show');
+    // Abrir modal
+    $('#modalSaldos').modal('show');
 }
-
