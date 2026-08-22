@@ -1,4 +1,4 @@
-{%  extends "layout.html" %}
+{% extends "layout.html" %}
 
 {% block title %}
 {% endblock %}
@@ -31,15 +31,18 @@
             <button class="nav-link {% if aba == 'resultado' %}show active{% endif %}" id="tabResultado" data-bs-toggle="tab" data-bs-target="#resultado" type="button" role="tab" aria-controls="resultado" aria-selected="true">Resultado</button>
         </li>
     </ul>
-    
+
     <!-- ABA ENTRADAS -->
     <div class="tab-content">
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'entrada' %}show active{% endif %}" id="entradas" role="tabpanel" aria-labelledby="entradasLabel">
             {% if mes %}
-                <div class="row my-3 justify-content-center">
-                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }}, 'entrada')"></i>
+                <div class="row mt-1 mb-3 justify-content-center">
+                    <div class="col-12">
+                        <h5 class="text-center user-name" onclick="submeterNovaData('{{ mes|int }}', '{{ ano|int }}', '{{ user_id|int }}', 'entrada-p')">{{ user|title }}</h5>
+                    </div>
+                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData('{{ prev_mes }}', '{{ prev_ano }}', '{{ user_id }}', 'entrada')"></i>
                     <h5 class="col-4 text-center">{{ mes }}/{{ ano }}</h5>
-                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData({{ next_mes }}, {{ next_ano }}, {{ user_id }}, 'entrada')"></i>
+                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData('{{ next_mes }}', '{{ next_ano }}', '{{ user_id }}', 'entrada')"></i>
                 </div>
             {% endif %}
             {% if entradas %}
@@ -110,10 +113,13 @@
     <div class="tab-content">
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'saida' %}show active{% endif %}" id="saidas" role="tabpanel" aria-labelledby="saidasLabel">
             {% if mes %}
-                <div class="row my-3 justify-content-center">
-                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }}, 'saida')"></i>
+                <div class="row mt-1 mb-3 justify-content-center">
+                    <div class="col-12">
+                        <h5 class="text-center user-name" onclick="submeterNovaData('{{ mes|int }}', '{{ ano|int }}', '{{ user_id|int }}', 'saida-p')">{{ user|title }}</h5>
+                    </div>
+                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData('{{ prev_mes }}', '{{ prev_ano }}', '{{ user_id }}', 'saida')"></i>
                     <h5 class="col-4 text-center">{{ mes }}/{{ ano }}</h5>
-                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData({{ next_mes }}, {{ next_ano }}, {{ user_id }}, 'saida')"></i>
+                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData('{{ next_mes }}', '{{ next_ano }}', '{{ user_id }}', 'saida')"></i>
                 </div>
             {% endif %}
             {% if saidas %}
@@ -181,10 +187,13 @@
     <div class="tab-content">
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'saldo' %}show active{% endif %}" id="saldos" role="tabpanel" aria-labelledby="saldosLabel">
             {% if mes %}
-                <div class="row my-3 justify-content-center">
-                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData({{ prev_mes }}, {{ prev_ano }}, {{ user_id }}, 'saldo')"></i>
+                <div class="row mt-1 mb-3 justify-content-center">
+                    <div class="col-12">
+                        <h5 class="text-center user-name" onclick="submeterNovaData('{{ mes|int }}', '{{ ano|int }}', '{{ user_id|int }}', 'saldo-p')">{{ user|title }}</h5>
+                    </div>
+                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData('{{ prev_mes }}', '{{ prev_ano }}', '{{ user_id }}', 'saldo')"></i>
                     <h5 class="col-4 text-center">{{ mes }}/{{ ano }}</h5>
-                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData({{ next_mes }}, {{ next_ano }}, {{ user_id }}, 'saldo')"></i>
+                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData('{{ next_mes }}', '{{ next_ano }}', '{{ user_id }}', 'saldo')"></i>
                 </div>
             {% endif %}
             {% if saldos %}
@@ -246,14 +255,6 @@
                     Novo Saldo
                 </button>
             </div>
-            <!-- <div>
-                {% if saldos %}
-                    {{ saldos }}
-                {% endif %}
-                <div class="row justify-content-center">
-                    <button type="button" class="btn btn-outline-primary col-12 col-md-8" onclick="abrirModalSaldos('Novo Saldo', '0')">Novo Saldo</button>
-                </div>
-            </div> -->
         </div>
     </div>
     <!-- ABA RESULTADO   -->

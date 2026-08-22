@@ -26,6 +26,8 @@ def consulta_banco(user=1, ano=1, mes=1) -> dict:
 
         saldos_ant = db.session.scalars(db.select(Saldos).where(Saldos.ano == ano_ant, Saldos.mes == mes_ant, Saldos.user_id == int(user))).all()
 
+        user_nome = db.session.scalars(db.select(Users).where(Users.id == user)).first().nome
+
         total_entradas = 0
         total_saidas = 0
         total_saldos = 0
@@ -60,7 +62,7 @@ def consulta_banco(user=1, ano=1, mes=1) -> dict:
         'values_resultado': values_resultado,
         'labels_saldo': labels_saldos,
         'values_saldo': values_saldos,
-        'user': entradas[0].user.nome if entradas else None,
+        'user': user_nome,
         'user_id': user,
         'prev_mes': prev_periodo.month,
         'prev_ano': prev_periodo.year,
@@ -103,7 +105,15 @@ def filtroTabelasForm():
         ano = int(form.ano.data)
         mes = int(form.mes.data)
         user = int(form.user.data)
-        aba = form.tipo.data if form.tipo.data else 'entrada'
+        aba = form.tipo.data.split('-')
+        
+        if len(aba) > 1 and aba[1] == 'p':
+            usuarios = db.session.scalars(db.select(Users.id)).all()
+            index = usuarios.index(user)
+            user = (index + 1) % len(usuarios) + 1
+
+        aba = aba[0] if aba else 'entrada'
+
     else:
         flash(form.errors)
 
@@ -206,7 +216,7 @@ def excluirForm():
                 raise Exception('Houve um Erro de Tipo.')
 
         db.session.commit()
-        
+
     except Exception as Err:
         flash(f'Erro: {Err}')
         return redirect(url_for('webui.indexView'))
