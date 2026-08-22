@@ -68,7 +68,7 @@
                                         <button class="btn btn-sm text-primary me-1" title="Editar" onclick="abrirModalInOut('Editar Entrada', 'entrada', '{{ linha.id }}', '{{ linha.user_id }}', '{{ linha.mes }}', '{{ linha.ano }}', '{{ linha.valor }}', '{{ linha.descricao }}')">
                                             <i class="fas fa-edit"></i> <span class="d-none d-md-inline ms-1">Editar</span>
                                         </button>
-                                        <button class="btn btn-sm text-danger" title="Excluir">
+                                        <button class="btn btn-sm text-danger" title="Excluir" onclick="formExcluir('{{ linha.id }}', 'entrada', '{{ linha.ano }}', '{{ linha.mes }}', '{{ linha.user_id }}')">
                                             <i class="fas fa-trash"></i> <span class="d-none d-md-inline ms-1">Excluir</span>
                                         </button>
                                     </td>
@@ -147,6 +147,19 @@
             <i class="fas fa-filter"></i>
         </button>
     </div>
+</div>
+
+
+<!-- FORM EXCLUIR -->
+<div id="formulario-excluir" tabindex="-1" aria-hidden="true">
+    <form id="formExcluir" action="{{ url_for('webui.excluirForm') }}" method="post">
+        {{ formExcluir.csrf_token }}
+        {{ formExcluir.idExcluir }}
+        {{ formExcluir.tipoExcluir }}
+        {{ formExcluir.anoExcluir }}
+        {{ formExcluir.mesExcluir }}
+        {{ formExcluir.userExcluir }}
+    </form>
 </div>
 
 
@@ -285,4 +298,5 @@
 {% block js %}
 <script src="{{url_for('webui.static', filename='js/filtro_tabela.js')}}"></script>
 <script src="{{url_for('webui.static', filename='js/modalEntradaSaida.js')}}"></script>
+<script src="{{url_for('webui.static', filename='js/form-excluir.js')}}"></script>
 {% endblock %}

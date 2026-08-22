@@ -13,6 +13,7 @@ bp.add_url_rule('/', view_func=indexView)
 bp.add_url_rule('/tabelas', view_func=tabelasView)
 bp.add_url_rule('/filtro-tabelas', view_func=filtroTabelasForm, methods=['POST'])
 bp.add_url_rule('/entrada-saida', view_func=entradaSaidaForm, methods=['POST'])
+bp.add_url_rule('/excluir', view_func=excluirForm, methods=['POST'])
 bp.add_url_rule('/faturas', view_func=faturasView)
 bp.add_url_rule('/graficos', view_func=graficosView)
 

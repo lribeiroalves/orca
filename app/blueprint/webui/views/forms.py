@@ -7,6 +7,14 @@ from app.ext.database import db
 from app.ext.database.models import *
 
 
+class FormExcluir(FlaskForm):
+    idExcluir = HiddenField('idExcluir', validators=[DataRequired()])
+    tipoExcluir = HiddenField('tipoExcluir', validators=[DataRequired()])
+    anoExcluir = HiddenField('anoExcluir', validators=[DataRequired()])
+    mesExcluir = HiddenField('mesExcluir', validators=[DataRequired()])
+    userExcluir = HiddenField('userExcluir', validators=[DataRequired()])
+
+
 class FormEntradaSaida(FlaskForm):
     user = SelectField('Usuário', choices=[], validators=[DataRequired()])
     ano = StringField('Ano', validators=[DataRequired()])

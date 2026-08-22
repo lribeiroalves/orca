@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 from app.ext.database import db
 from app.ext.database.models import *
 from app import get_base_path
-from .forms import FormFiltroTabelas, FormEntradaSaida
+from .forms import FormFiltroTabelas, FormEntradaSaida, FormExcluir
 
 base_path = get_base_path()
 
@@ -76,6 +76,7 @@ def indexView():
 def tabelasView():
     form_filtros = FormFiltroTabelas()
     form_entrada_saida = FormEntradaSaida()
+    form_excluir = FormExcluir()
 
     req_ano = request.args.get('ano', type=int)
     req_mes = request.args.get('mes', type=int)
@@ -89,7 +90,7 @@ def tabelasView():
     else:
         dados = consulta_banco(1, datetime.now().year, datetime.now().month)
 
-    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
+    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, formExcluir=form_excluir, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
 
 
 def filtroTabelasForm():
@@ -173,6 +174,37 @@ def entradaSaidaForm():
         return redirect(url_for('webui.indexView'))
 
     return redirect(url_for('webui.tabelasView', ano=int(form.ano.data), mes=int(form.mes.data), user=int(form.user.data), aba=aba))
+
+
+def excluirForm():
+    form = FormExcluir()
+    aba = ''
+
+    try:
+        match form.tipoExcluir.data:
+            case 'entrada':
+                entrada = db.session.scalars(db.select(Entradas).where(Entradas.id == int(form.idExcluir.data))).first()
+                db.session.delete(entrada)
+                aba = 'entrada'
+                flash('Entrada apagada com sucesso.')
+            case 'saida':
+                saida = db.session.scalars(db.select(Saidas).where(Saidas.id == int(form.idExcluir.data))).first()
+                db.session.delete(saida)
+                aba = 'saida'
+                flash('Saida apagada com sucesso.')
+            case 'saldo':
+                pass
+            case 'compra':
+                pass
+            case _:
+                raise Exception('Houve um Erro de Tipo.')
+    except Exception as Err:
+        flash(f'Erro: {Err}')
+        return redirect(url_for('webui.indexView'))
+
+    db.session.commit()
+
+    return redirect(url_for('webui.tabelasView', ano=int(form.anoExcluir.data), mes=int(form.mesExcluir.data), user=int(form.userExcluir.data), aba=aba))
 
 
 def faturasView():
