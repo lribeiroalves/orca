@@ -9,12 +9,39 @@
 {% block liGraficos %}secondary{% endblock %}
 
 {% block link_css %}
-    <link rel="stylesheet" href="{{url_for('webui.static', filename='css/graficos.css')}}">
+    <link rel="stylesheet" href="{{url_for('webui.static', filename='css/faturas.css')}}">
 {% endblock %}
 
 {% block main %}
-FATURAS
+<nav id="navFaturas" class="navbar navbar-expand-md navbar-dark rounded-3 col-12 col-md-8 col-lg-4 mx-auto position-relative">
+    <div class="container">
+        <a href="#" class="navbar-brand me-md-5 ms-md-3">Filtrar Faturas</a>
+        <button id="toggle-button" type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#navbarItems" aria-controls="navbarItems" aria-expanded="false" aria-label="Toggle Navbar"><span class="navbar-toggler-icon"></span></button>
+        <div id="navbarItems" class="navbar-collapse collapse">
+            <ul class="navbar-nav ms-lg-5 me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a href="#" id="dropItemsAno" data-url="{{ url_for('webui.faturasRequest') }}" class="me-3 nav-link active dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    </a>
+                    <ul id="anosDropdownMenu" class="dropdown-menu" aria-labelledby="dropItemsAno">
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" id="dropItemsMes" data-url="{{ url_for('webui.faturasRequest') }}" class="me-3 nav-link active dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    </a>
+                    <ul id="mesesDropdownMenu" class="dropdown-menu" aria-labelledby="dropItemsMes">
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="row my-4 mt-lg-5 justify-content-center">
+    <i class="col-2 col-md-3 col-lg-4   text-end bi bi-caret-left-fill arrow" onclick=""></i>
+    <h5 class="col-8 col-md-6 col-lg-4 text-center">{{ 'Agosto' }} / {{ 2026 }}</h5>
+    <i class="col-2 col-md-3 col-lg-4 bi bi-caret-right-fill arrow" onclick=""></i>
+</div>
 {% endblock %}
 
 {% block js %}
+<script src="{{url_for('webui.static', filename='js/filtro_faturas.js')}}"></script>
 {% endblock %}

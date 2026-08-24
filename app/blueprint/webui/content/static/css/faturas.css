@@ -1,0 +1,36 @@
+#navFaturas {
+    background-color: darkblue;
+}
+
+.user-name {
+    font-size: medium;
+    cursor: pointer;
+}
+
+.arrow {
+    color: darkblue;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+#toggle-button {
+    font-size: 0.90rem;
+}
+
+@media (max-width: 600px) {
+    #navbarItems {
+        position: absolute;
+        top: 89%; /* Faz o menu abrir exatamente abaixo da barra superior */
+        left: 0;
+        width: 100%;
+        z-index: 1050; /* Garante que o menu fique por cima dos outros elementos (como a div.row) */
+        
+        /* IMPORTANTE: Como ele vai flutuar, ele precisa ter uma cor de fundo, 
+           senão o texto de trás vai se misturar com o menu. 
+           Coloque a mesma cor que você usa na sua navbar. */
+        background-color: darkblue; 
+        
+        padding: 1rem; /* Adiciona um espaço interno para não ficar colado nas bordas */
+        border-radius: 0 0 8px 8px; /* Arredonda as pontas inferiores (opcional) */
+    }
+}

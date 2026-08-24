@@ -181,15 +181,17 @@ class Compras(db.Model):
     categoria: Mapped['Categorias'] = relationship('Categorias')
 
     def __repr__(self):
-        return f'Compra(id: {self.id}, valor: {self.valor}, descricao: {self.descricao}, parcelas: {self.parcelas}, user_id: {self.user_id}, user: {self.user}, banco_id: {self.banco_id}, banco: {self.banco}, fatura_id: {self.fatura_id}, fatura: {self.fatura})'
+        return f'Compra(id: {self.id}, valor_total: {self.valor_total}, valor_parcela: {self.valor_parcela}, descricao: {self.descricao}, parcelas: {self.parcelas}, user_id: {self.user_id}, user: {self.user}, banco_id: {self.banco_id}, banco: {self.banco}, fatura_id: {self.fatura_id}, fatura: {self.fatura}), data: {self.data}'
 
     def to_dict(self):
         return {
             'id': self.id,
-            'valor': self.valor,
+            'valor_total': self.valor_total,
+            'valor_parcela': self.valor_parcela,
             'descricao': self.descricao,
             'parcelas':self.parcelas,
             'user_id': self.user_id,
             'banco_id': self.banco_id,
-            'fatura_id': self.fatura_id
+            'fatura_id': self.fatura_id,
+            'data': self.data,
         }

@@ -2,6 +2,7 @@ from flask import render_template, abort, redirect, url_for, jsonify, flash, req
 import os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from sqlalchemy import extract
 
 from app.ext.database import db
 from app.ext.database.models import *
@@ -271,9 +272,47 @@ def saldosForm():
     return redirect(url_for('webui.tabelasView', ano=int(form.anoSaldo.data), mes=int(form.mesSaldo.data), user=int(form.userSaldo.data), aba=aba))
 
 
-
 def faturasView():
     return render_template('faturas.html')
+
+
+def faturasRequest():
+    ano = request.args.get('ano')
+    mes = request.args.get('mes')
+    tipo = request.args.get('tipo')
+
+    meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+
+    if not ano or not mes:
+        abort(400)
+    else:
+        try:
+            ano = int(ano)
+            mes= int(mes)
+        except:
+            abort(400)
+
+    faturas = db.session.scalars(db.select(Faturas)).all()
+
+    if faturas:
+        anos = {'anos': list(set([f.ano for f in faturas]))}
+        meses = {'meses': list(set([meses[f.mes - 1] for f in faturas if f.ano == ano]))}
+    else:
+        abort(400)
+
+    resposta = [anos, meses]
+
+    if tipo == 'mes':
+        compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes)).all()
+        resposta += [c.to_dict() for c in compras]
+    elif tipo == 'ano':
+        pass
+    else:
+        abort(400)
+
+    print(resposta)
+
+    return jsonify(resposta)
 
 
 def graficosView():
