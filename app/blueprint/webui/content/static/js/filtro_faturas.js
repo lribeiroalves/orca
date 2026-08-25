@@ -1,10 +1,11 @@
 function construirDropdown(anos, meses) {
-
+    meses_nomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    
     // Dropdown Anos
     let anosContent = '';
     for (let i = 0; i < anos.length; i++) {
         anosContent += `<li>
-                            <a id="ano${anos[i]}" href="#" class="dropdown-item">${anos[i]}</a>
+                            <a id="ano${anos[i]}" href="#" class="dropdown-item" data-ano="${anos[i]}">${anos[i]}</a>
                         </li>`
     }
     $('#anosDropdownMenu').html(anosContent);
@@ -13,49 +14,21 @@ function construirDropdown(anos, meses) {
     let mesesContent = '';
     for (let i = 0; i < meses.length; i++) {
         mesesContent += `<li>
-                            <a id="mes${meses[i]}" href="#" class="dropdown-item">${meses[i]}</a>
+                            <a id="mes${meses[i]}" href="#" class="dropdown-item" data-mes="${meses_nomes.indexOf(`${meses[i]}`)+1}">${meses[i]}</a>
                         </li>`
     }
     $('#mesesDropdownMenu').html(mesesContent);
 }
 
-function capitalizar(str) {
-  if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-
-// Execução assim que a página é carregada
-$(function() {
-    url = $('#dropItemsMes').data('url');
-    now = new Date();
-    year = now.getFullYear();
-    meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-    month = now.getMonth() + 1;
-    mes_nome = meses[month - 1]
-    
-
-    parametros = {
-        ano: year,
-        mes: 1,
-        tipo: 'mes'
-    };
-
-    $('#dropItemsAno').text(year);
-    $('#dropItemsMes').text(mes_nome);
-    $('#identificadorFatura').text(`${mes_nome} / ${year}`)
-
-
-    $.get(url, parametros, function(resposta) {
-        console.log(resposta);
-        construirDropdown(resposta['anos'], resposta['meses']);
-
+function construirTabela(resposta) {
+    if (resposta['dados']){
+        $('#contentCompras').show();
+        $('#no-contentCompras').hide();
         let valTotalFatura = 'R$ ' + parseFloat(resposta['total_fatura']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
         $('#cardTotalGeral').text(valTotalFatura);
-
+    
         let user_html = ''
         for (let [index, user] of Object.entries(resposta['users'])) {
-            console.log(resposta['total_por_usuario'][index-1]);
             let valorUsuario = 'R$ ' + parseFloat(resposta['total_por_usuario'][index-1]).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             user_html += `
             <div>
@@ -65,7 +38,7 @@ $(function() {
             `
         }
         $('#containerTotaisUsuarios').html(user_html);
-
+    
         let tableContent = '';
         
         for (let item of resposta['dados']) {
@@ -73,7 +46,7 @@ $(function() {
             let valTotalFormatado = parseFloat(item['valor_total']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             let valParcelaFormatado = parseFloat(item['valor_parcela']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             let userName = item['user_name'].charAt(0).toUpperCase() + item['user_name'].slice(1);
-
+    
             tableContent += `
             <tr>
                 <td class="text-start">
@@ -101,6 +74,69 @@ $(function() {
             </tr>`;
         };
         $('#tableBodyFaturas').html(tableContent);
+    } else {
+        $('#contentCompras').hide();
+        $('#no-contentCompras').show();
+    }
+}
+
+function capitalizar(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+
+function atualizarFatura(ano, mes, tipo) {
+    meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+
+    parametros = {
+        ano: ano,
+        mes: mes,
+        tipo: tipo
+    };
+
+    url = $('#dropItemsMes').data('url');
+    return $.get(url, parametros, function(resposta) {
+        construirDropdown(resposta['anos'], resposta['meses']);
+        if (tipo === "mes"){
+            construirTabela(resposta);
+        }
+
+        $('#dropItemsAno').text(ano);
+        $('#dropItemsMes').text('Selecione...');
+        if (tipo === "mes") {
+            $('#dropItemsMes').text(resposta['meses'][0]);
+            $('#identificadorFatura').text(`${meses[mes-1]} / ${ano}`);
+        }
+    });    
+}
+
+
+// Execução assim que a página é carregada
+$(function() {
+    now = new Date();
+    year = now.getFullYear();
+    month = now.getMonth() + 1;
+
+    $('#mesesDropdownMenu').on('click', '.dropdown-item', function(evento) {
+        evento.preventDefault();
+
+        const mes = $(this).data("mes");
+        const ano = $('#dropItemsAno').text();
+        atualizarFatura(ano, mes, 'mes');
+
     });
 
+    $('#anosDropdownMenu').on('click', '.dropdown-item', function(evento) {
+        evento.preventDefault();
+
+        const mes = month;
+        const ano = $(this).data("ano");
+        atualizarFatura(ano, mes, 'ano');
+    });
+
+    atualizarFatura(year, month, 'mes').done(function() {
+        $('#dropItemsAno').text('Selecione...');
+        $('#dropItemsMes').text('Selecione...');
+    });
 });

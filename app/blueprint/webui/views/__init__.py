@@ -338,17 +338,18 @@ def faturasRequest():
             compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes)).all()
             quantidade_usuarios = len(list(set([c.user_id for c in compras])))
 
-            lista_cores = gerar_cores_aleatorias(quantidade_usuarios)
+            if compras:
+                lista_cores = gerar_cores_aleatorias(quantidade_usuarios)
 
-            users = {}
-            for c in compras:
-                if c.user_id in users.keys():
-                    next
-                users[c.user_id] = [c.user.nome, lista_cores[c.user_id - 1][0], lista_cores[c.user_id - 1][1]]
-            resposta['users'] = users
-            resposta['total_fatura'] = sum([c.valor_parcela for c in compras])
-            resposta['total_por_usuario'] = [sum([c.valor_parcela for c in compras if c.user_id == u]) for u in users]
-            resposta['dados'] = [c.to_dict() for c in compras]
+                users = {}
+                for c in compras:
+                    if c.user_id in users.keys():
+                        next
+                    users[c.user_id] = [c.user.nome, lista_cores[c.user_id - 1][0], lista_cores[c.user_id - 1][1]]
+                resposta['users'] = users
+                resposta['total_fatura'] = sum([c.valor_parcela for c in compras])
+                resposta['total_por_usuario'] = [sum([c.valor_parcela for c in compras if c.user_id == u]) for u in users]
+                resposta['dados'] = [c.to_dict() for c in compras]
 
         elif tipo == 'ano':
             pass
