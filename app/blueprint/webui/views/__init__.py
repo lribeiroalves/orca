@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract
+import random
 
 from app.ext.database import db
 from app.ext.database.models import *
@@ -292,28 +293,34 @@ def faturasRequest():
         except:
             abort(400)
 
+    resposta = {}
+
     faturas = db.session.scalars(db.select(Faturas)).all()
 
     if faturas:
-        anos = {'anos': list(set([f.ano for f in faturas]))}
-        meses = {'meses': list(set([meses[f.mes - 1] for f in faturas if f.ano == ano]))}
+        resposta['anos'] = list(set([f.ano for f in faturas]))
+        resposta['meses'] = list(set([meses[f.mes - 1] for f in faturas if f.ano == ano]))
+
+        if tipo == 'mes':
+            compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes)).all()
+            users = {}
+            for c in compras:
+                if c.user_id in users.keys():
+                    next
+                users[c.user_id] = [c.user.nome, f'rgb({random.randint(0, 156)}, {random.randint(0, 156)}, {random.randint(0, 156)})']
+            resposta['users'] = users
+            resposta['total_fatura'] = sum([c.valor_parcela for c in compras])
+            resposta['total_por_usuario'] = [sum([c.valor_parcela for c in compras if c.user_id == u]) for u in users]
+            resposta['dados'] = [c.to_dict() for c in compras]
+
+        elif tipo == 'ano':
+            pass
+        else:
+            abort(400)
     else:
         abort(400)
-
-    resposta = [anos, meses]
-
-    if tipo == 'mes':
-        compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes)).all()
-        resposta += [c.to_dict() for c in compras]
-    elif tipo == 'ano':
-        pass
-    else:
-        abort(400)
-
-    print(resposta)
 
     return jsonify(resposta)
-
 
 def graficosView():
     return render_template('graficos.html')

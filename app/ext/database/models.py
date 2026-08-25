@@ -191,7 +191,9 @@ class Compras(db.Model):
             'descricao': self.descricao,
             'parcelas':self.parcelas,
             'user_id': self.user_id,
+            'user_name': self.user.nome,
             'banco_id': self.banco_id,
             'fatura_id': self.fatura_id,
             'data': self.data,
+            'categoria': self.categoria.nome
         }
