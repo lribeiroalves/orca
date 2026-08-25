@@ -138,5 +138,6 @@ $(function() {
     atualizarFatura(year, month, 'mes').done(function() {
         $('#dropItemsAno').text('Selecione...');
         $('#dropItemsMes').text('Selecione...');
+        $('#mesesDropdownMenu').html("");
     });
 });
