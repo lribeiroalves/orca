@@ -6,7 +6,10 @@ from app.ext.database.models import Faturas
 @click.command('seed-faturas')
 def seed_faturas():
     faturas = [
-        {'ano': 2026, 'mes': 1, 'status_paga': False}
+        {'ano': 2026, 'mes': 1, 'status_paga': False},
+        {'ano': 2026, 'mes': 2, 'status_paga': False},
+        {'ano': 2027, 'mes': 4, 'status_paga': False},
+        {'ano': 2027, 'mes': 8, 'status_paga': False},
     ]
 
     add = 0
