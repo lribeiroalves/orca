@@ -1,5 +1,6 @@
 from sqlalchemy import String, Numeric, DateTime, Boolean, ForeignKey, CheckConstraint, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Optional
 
 from . import db
 
@@ -169,6 +170,7 @@ class Compras(db.Model):
     descricao: Mapped[str] = mapped_column(String(255), nullable=False)
     parcelas: Mapped[int] = mapped_column(nullable=False)
     data: Mapped[DateTime] = mapped_column(DateTime)
+    hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     # relacoes
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
@@ -181,7 +183,7 @@ class Compras(db.Model):
     categoria: Mapped['Categorias'] = relationship('Categorias')
 
     def __repr__(self):
-        return f'Compra(id: {self.id}, valor_total: {self.valor_total}, valor_parcela: {self.valor_parcela}, descricao: {self.descricao}, parcelas: {self.parcelas}, user_id: {self.user_id}, user: {self.user}, banco_id: {self.banco_id}, banco: {self.banco}, fatura_id: {self.fatura_id}, fatura: {self.fatura}), data: {self.data}'
+        return f'Compra(id: {self.id}, valor_total: {self.valor_total}, valor_parcela: {self.valor_parcela}, descricao: {self.descricao}, parcelas: {self.parcelas}, user_id: {self.user_id}, user: {self.user}, banco_id: {self.banco_id}, banco: {self.banco}, fatura_id: {self.fatura_id}, fatura: {self.fatura}), data: {self.data}, hash: {self.hash}'
 
     def to_dict(self):
         return {
@@ -195,5 +197,6 @@ class Compras(db.Model):
             'banco_id': self.banco_id,
             'fatura_id': self.fatura_id,
             'data': self.data,
-            'categoria': self.categoria.nome
+            'categoria': self.categoria.nome,
+            'hash': self.hash,
         }
