@@ -4,6 +4,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract
 import random
+import colorsys
 
 from app.ext.database import db
 from app.ext.database.models import *
@@ -277,6 +278,38 @@ def faturasView():
     return render_template('faturas.html')
 
 
+def gerar_cores_aleatorias(n):
+    if not n:
+        return []
+
+    cores = []
+
+    matiz_inicial = random.random()
+
+    salto = 1.0 / n
+
+    for i in range(n):
+        matiz = (matiz_inicial + i*salto) % 1.0
+        saturacao = 0.8
+        brilho = 0.9
+
+        r_float, g_float, b_float = colorsys.hsv_to_rgb(matiz, saturacao, brilho)
+        r = int(r_float * 255)
+        g = int(g_float * 255)
+        b = int(b_float * 255)
+
+        luminosidade = (r * 299 + g * 587 + b * 114) / 1000
+
+        cor_formatada = f'rgb({r}, {g}, {b})'
+        cor_texto = "black" if luminosidade > 128 else "white"
+
+        cores.append([cor_formatada, cor_texto])
+
+    random.shuffle(cores)
+    return cores
+
+
+
 def faturasRequest():
     ano = request.args.get('ano')
     mes = request.args.get('mes')
@@ -303,11 +336,15 @@ def faturasRequest():
 
         if tipo == 'mes':
             compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes)).all()
+            quantidade_usuarios = len(list(set([c.user_id for c in compras])))
+
+            lista_cores = gerar_cores_aleatorias(quantidade_usuarios)
+
             users = {}
             for c in compras:
                 if c.user_id in users.keys():
                     next
-                users[c.user_id] = [c.user.nome, f'rgb({random.randint(0, 156)}, {random.randint(0, 156)}, {random.randint(0, 156)})']
+                users[c.user_id] = [c.user.nome, lista_cores[c.user_id - 1][0], lista_cores[c.user_id - 1][1]]
             resposta['users'] = users
             resposta['total_fatura'] = sum([c.valor_parcela for c in compras])
             resposta['total_por_usuario'] = [sum([c.valor_parcela for c in compras if c.user_id == u]) for u in users]

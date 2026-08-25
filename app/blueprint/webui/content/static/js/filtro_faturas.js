@@ -77,7 +77,7 @@ $(function() {
             tableContent += `
             <tr>
                 <td class="text-start">
-                    <span id=user-tabela class="badge" style="background-color: ${resposta['users'][item['user_id']][1]}">${userName}</span>
+                    <span id=user-tabela class="badge" style="background-color: ${resposta['users'][item['user_id']][1]}; color: ${resposta['users'][item['user_id']][2]}">${userName}</span>
                 </td>
                 <td class="text-start text-muted text-nowrap">
                     ${dataFormatada}
