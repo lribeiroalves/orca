@@ -84,6 +84,9 @@ function construirTabela(resposta) {
                 <td class="text-center text-muted">
                     <small>${`${item['parcelas']}`.slice(0, -2)} / ${Number(`${item['parcelas']}`.slice(-2))}</small>
                 </td>
+                <td class="text-center text-capitalize">
+                    ${item['banco']}
+                </td>
             </tr>`;
         };
         $('#tableBodyFaturas').html(tableContent);
