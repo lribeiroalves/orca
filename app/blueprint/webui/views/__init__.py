@@ -347,6 +347,14 @@ def faturasRequest():
                         next
                     users[c.user_id] = [c.user.nome, lista_cores[c.user_id - 1][0], lista_cores[c.user_id - 1][1]]
                 resposta['users'] = users
+                bancos = {}
+                for c in compras:
+                    if c.banco_id in bancos.keys():
+                        next
+                    bancos[c.banco_id] =[c.banco.nome]
+                for b in bancos:
+                    bancos[b].append(sum([c.valor_parcela for c in compras if c.banco_id == b]))
+                resposta['bancos'] = bancos
                 resposta['total_fatura'] = sum([c.valor_parcela for c in compras])
                 resposta['total_por_usuario'] = [sum([c.valor_parcela for c in compras if c.user_id == u]) for u in users]
                 resposta['dados'] = [c.to_dict() for c in compras]

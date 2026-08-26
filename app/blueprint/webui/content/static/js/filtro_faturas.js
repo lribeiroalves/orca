@@ -22,6 +22,7 @@ function construirDropdown(anos, meses) {
 
 function construirTabela(resposta) {
     if (resposta['dados']){
+        console.log(resposta['bancos'])
         $('#contentCompras').show();
         $('#no-contentCompras').hide();
         let valTotalFatura = 'R$ ' + parseFloat(resposta['total_fatura']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -31,13 +32,25 @@ function construirTabela(resposta) {
         for (let [index, user] of Object.entries(resposta['users'])) {
             let valorUsuario = 'R$ ' + parseFloat(resposta['total_por_usuario'][index-1]).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             user_html += `
-            <div>
+            <div class="card-dash rounded p-2">
                 <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>${capitalizar(user[0])}</span>
-                <span class="d-block fw-bold fs-5 text-dark">${valorUsuario}</span>
+                <span class="d-block fw-bold  text-dark">${valorUsuario}</span>
             </div>
             `
         }
         $('#containerTotaisUsuarios').html(user_html);
+
+        let banco_html = ''
+        for (let [index, banco] of Object.entries(resposta['bancos'])) {
+            let valorBanco = 'R$ ' + parseFloat(banco[1]).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            banco_html += `
+            <div class="card-dash rounded p-2">
+                <span class="d-block text-muted small"><i class="bi bi-bank me-1"></i>${capitalizar(banco[0])}</span>
+                <span class="d-block fw-bold  text-dark">${valorBanco}</span>
+            </div>
+            `
+        }
+        $('#containerTotaisBancos').html(banco_html);
     
         let tableContent = '';
         

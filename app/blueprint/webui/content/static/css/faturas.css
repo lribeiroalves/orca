@@ -34,3 +34,12 @@
         border-radius: 0 0 8px 8px; /* Arredonda as pontas inferiores (opcional) */
     }
 }
+
+.card-dash {
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.card-dash:hover {
+    background-color: lightskyblue;
+}

@@ -47,7 +47,7 @@
     <!-- PAINEL DE RESUMO (DASHBOARD) -->
     <div class="row g-3 mb-4">
         <!-- Card do Total Geral -->
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-lg-3">
             <div class="card border-0 shadow-sm h-100 bg-primary text-white rounded-3">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <h6 class="card-title opacity-75 mb-1">Total da Fatura</h6>
@@ -56,29 +56,51 @@
                 </div>
             </div>
         </div>
-    
-        <!-- Card de Resumo por Usuário -->
-        <div class="col-12 col-md-8">
-            <div class="card border-0 shadow-sm h-100 bg-white rounded-3">
-                <div class="card-body">
-                    <h6 class="card-title text-secondary mb-3">Resumo por Usuário</h6>
-                    <!-- O flex-wrap garante que os nomes vão descendo de linha se não couberem na tela -->
-                    <div class="d-flex flex-wrap gap-4" id="containerTotaisUsuarios">
-    
-                        <!-- Exemplo Usuário 1 -->
-                        <div>
-                            <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Lucas</span>
-                            <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
+
+        <div class="col-12 col-lg-9 ms-auto">
+            <div class="row g-3">
+                <!-- Card de Resumo por Banco -->
+                <div class="col-12 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100 bg-white rounded-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-secondary mb-3">Resumo por Banco</h6>
+                            <!-- O flex-wrap garante que os nomes vão descendo de linha se não couberem na tela -->
+                            <div class="d-flex flex-wrap gap-4" id="containerTotaisBancos">
+                                <!-- Exemplo Usuário 1 -->
+                                <div>
+                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Lucas</span>
+                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
+                                </div>
+                                <!-- Exemplo Usuário 2 -->
+                                <div>
+                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Selma</span>
+                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
+                                </div>
+                                <!-- O JS pode fazer um append() de novos blocos aqui dentro dependendo de quantos usuários existirem -->
+                            </div>
                         </div>
-    
-                        <!-- Exemplo Usuário 2 -->
-                        <div>
-                            <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Selma</span>
-                            <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
+                    </div>
+                </div>
+                <!-- Card de Resumo por Usuário -->
+                <div class="col-12 col-lg-8">
+                    <div class="card border-0 shadow-sm h-100 bg-white rounded-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-secondary mb-3">Resumo por Usuário</h6>
+                            <!-- O flex-wrap garante que os nomes vão descendo de linha se não couberem na tela -->
+                            <div class="d-flex flex-wrap gap-4" id="containerTotaisUsuarios">
+                                <!-- Exemplo Usuário 1 -->
+                                <div>
+                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Lucas</span>
+                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
+                                </div>
+                                <!-- Exemplo Usuário 2 -->
+                                <div>
+                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Selma</span>
+                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
+                                </div>
+                                <!-- O JS pode fazer um append() de novos blocos aqui dentro dependendo de quantos usuários existirem -->
+                            </div>
                         </div>
-    
-                        <!-- O JS pode fazer um append() de novos blocos aqui dentro dependendo de quantos usuários existirem -->
-    
                     </div>
                 </div>
             </div>

@@ -195,6 +195,7 @@ class Compras(db.Model):
             'user_id': self.user_id,
             'user_name': self.user.nome,
             'banco_id': self.banco_id,
+            'banco': self.banco.nome,
             'fatura_id': self.fatura_id,
             'data': self.data,
             'categoria': self.categoria.nome,
