@@ -43,3 +43,7 @@
 .card-dash:hover {
     background-color: lightskyblue;
 }
+
+.ativo {
+    background-color: lightskyblue !important;
+}

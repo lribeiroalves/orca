@@ -1,3 +1,10 @@
+let bancoSelected;
+let userSelected;
+
+function selectUser() {
+    $('#containerTotaisUsuarios .card-dash').html('teste')
+}
+
 function construirDropdown(anos, meses) {
     meses_nomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     
@@ -35,7 +42,7 @@ function construirTabela(resposta) {
         for (let [index, user] of Object.entries(resposta['users'])) {
             let valorUsuario = 'R$ ' + parseFloat(resposta['total_por_usuario'][index-1]).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             user_html += `
-            <div class="card-dash rounded p-2">
+            <div class="card-dash rounded p-2" data-select="false">
                 <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>${capitalizar(user[0])}</span>
                 <span class="d-block fw-bold  text-dark">${valorUsuario}</span>
             </div>
@@ -47,7 +54,7 @@ function construirTabela(resposta) {
         for (let [index, banco] of Object.entries(resposta['bancos'])) {
             let valorBanco = 'R$ ' + parseFloat(banco[1]).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             banco_html += `
-            <div class="card-dash rounded p-2">
+            <div class="card-dash rounded p-2" data-select="false">
                 <span class="d-block text-muted small"><i class="bi bi-bank me-1"></i>${capitalizar(banco[0])}</span>
                 <span class="d-block fw-bold  text-dark">${valorBanco}</span>
             </div>
@@ -152,6 +159,22 @@ $(function() {
         const mes = month;
         const ano = $(this).data("ano");
         atualizarFatura(ano, mes, 'ano');
+    });
+
+    $('#containerTotaisUsuarios').on('click', ' .card-dash', function(event) {
+        let possui_classe = $(this).hasClass('ativo');
+        $('#containerTotaisUsuarios .card-dash').removeClass('ativo');
+        if (!possui_classe) {
+            $(this).addClass('ativo');
+        }
+    });
+
+    $('#containerTotaisBancos').on('click', ' .card-dash', function(event) {
+        let possui_classe = $(this).hasClass('ativo');
+        $('#containerTotaisBancos .card-dash').removeClass('ativo');
+        if (!possui_classe) {
+            $(this).addClass('ativo');
+        }
     });
 
     atualizarFatura(year, month, 'mes').done(function() {
