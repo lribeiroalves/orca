@@ -151,18 +151,83 @@ function atualizarFatura(ano, mes, tipo) {
     });    
 }
 
+function calc_data(mes, ano) {
+    let next_mes, next_ano, prev_mes, prev_ano;
+
+    if (mes == 12) {
+        next_mes = 1;
+        next_ano = ano + 1;
+    } else {
+        next_mes = mes + 1;
+        next_ano = ano;
+    }
+
+    if (mes == 1) {
+        prev_mes = 12;
+        prev_ano = ano - 1;
+    } else {
+        prev_mes = mes - 1;
+        prev_ano = ano;
+    }
+
+    return [prev_mes, prev_ano, next_mes, next_ano];
+}
+
 
 // Execução assim que a página é carregada
 $(function() {
-    now = new Date();
-    year = now.getFullYear();
-    month = now.getMonth() + 1;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(month, year);
+
+    $('#arrowLeft').attr({'data-mes': prev_mes, 'data-ano': prev_ano});
+    $('#arrowRight').attr({'data-mes': next_mes, 'data-ano': next_ano});
+
+    $('#arrowLeft').on('click', function(evento) {
+        const mes = $(this).data("mes");
+        const ano = $(this).data("ano");
+        let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
+        $('#arrowLeft').data('mes', prev_mes);
+        $('#arrowLeft').data('ano', prev_ano);
+        $('#arrowRight').data('mes', next_mes);
+        $('#arrowRight').data('ano', next_ano);
+        userSelected = null;
+        bancoSelected = null;
+        atualizarFatura(ano, mes, 'mes').done(function() {
+            $('#dropItemsAno').text('Selecione...');
+            $('#dropItemsMes').text('Selecione...');
+            $('#mesesDropdownMenu').html("");
+        });
+    });
+
+    $('#arrowRight').on('click', function(evento) {
+        const mes = $(this).data("mes");
+        const ano = $(this).data("ano");
+        let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
+        $('#arrowLeft').data('mes', prev_mes);
+        $('#arrowLeft').data('ano', prev_ano);
+        $('#arrowRight').data('mes', next_mes);
+        $('#arrowRight').data('ano', next_ano);
+        userSelected = null;
+        bancoSelected = null;
+        atualizarFatura(ano, mes, 'mes').done(function() {
+            $('#dropItemsAno').text('Selecione...');
+            $('#dropItemsMes').text('Selecione...');
+            $('#mesesDropdownMenu').html("");
+        });
+    });
 
     $('#mesesDropdownMenu').on('click', '.dropdown-item', function(evento) {
         evento.preventDefault();
 
         const mes = $(this).data("mes");
         const ano = $('#dropItemsAno').text();
+        let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
+        $('#arrowLeft').data('mes', prev_mes);
+        $('#arrowLeft').data('ano', prev_ano);
+        $('#arrowRight').data('mes', next_mes);
+        $('#arrowRight').data('ano', next_ano);
         userSelected = null;
         bancoSelected = null;
         atualizarFatura(ano, mes, 'mes');
