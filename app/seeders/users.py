@@ -9,6 +9,7 @@ def seed_users():
     usuarios = [
         {'nome': 'lucas'},
         {'nome': 'selma'},
+        {'nome': 'ribeiro'}
     ]
 
     add = 0

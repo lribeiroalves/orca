@@ -12,6 +12,9 @@ function construirDropdown(anos, meses) {
 
     // Dropdown Meses
     let mesesContent = '';
+    console.log(meses);
+    meses.sort((a, b) => meses_nomes.indexOf(a) - meses_nomes.indexOf(b));
+    console.log(meses);
     for (let i = 0; i < meses.length; i++) {
         mesesContent += `<li>
                             <a id="mes${meses[i]}" href="#" class="dropdown-item" data-mes="${meses_nomes.indexOf(`${meses[i]}`)+1}">${meses[i]}</a>

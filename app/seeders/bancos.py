@@ -9,6 +9,8 @@ def seed_bancos():
         {'nome': 'mercado pago'},
         {'nome': 'sofisa'},
         {'nome': 'banco do brasil'},
+        {'nome': 'rico'},
+        {'nome': 'c6'}
     ]
 
     add = 0
