@@ -40,7 +40,7 @@
     <h5 id="identificadorFatura" class="col-8 col-md-6 col-lg-4 text-center"></h5>
     <i class="col-2 col-md-3 col-lg-4 bi bi-caret-right-fill arrow" onclick=""></i>
 </div>
-<div id="no-contentCompras" class="col-12">
+<div id="no-contentCompras" class="col-12 hidden-message" aria-hidden="true">
     <h5 class="text-center">Nenhuma compra nessa fatura.</h5>
 </div>
 <div id="contentCompras" class="col-12">
@@ -106,24 +106,29 @@
             </div>
         </div>
     </div>
-    <div class="table-responsive mb-4 shadow-sm rounded bg-white">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light text-nowrap">
-                <tr>
-                    <th class="text-start border-0 py-3">Usuário</th>
-                    <th class="text-start border-0 py-3">Data</th>
-                    <th class="text-start border-0 py-3">Categoria</th>
-                    <th class="text-start border-0 py-3">Descrição</th>
-                    <th class="text-end border-0 py-3">Valor Total</th>
-                    <th class="text-end border-0 py-3">Valor Parcela</th>
-                    <th class="text-center border-0 py-3">Parcela</th>
-                    <th class="text-center border-0 py-3">Banco</th>
-                </tr>
-            </thead>
-            <tbody id="tableBodyFaturas" class="border-top-0">
-                <!-- Renderizado pelo JS -->
-            </tbody>
-        </table>
+    <div id="div-noTable" class="col-12 hidden-message mt-5" aria-hidden="true">
+        <h5 class="text-center">Nenhuma compra para esse filtro.</h5>
+    </div>
+    <div id="div-table" class="col-12">
+        <div class="table-responsive mb-4 shadow-sm rounded bg-white">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-nowrap">
+                    <tr>
+                        <th class="text-start border-0 py-3">Usuário</th>
+                        <th class="text-start border-0 py-3">Data</th>
+                        <th class="text-start border-0 py-3">Categoria</th>
+                        <th class="text-start border-0 py-3">Descrição</th>
+                        <th class="text-end border-0 py-3">Valor Total</th>
+                        <th class="text-end border-0 py-3">Valor Parcela</th>
+                        <th class="text-center border-0 py-3">Parcela</th>
+                        <th class="text-center border-0 py-3">Banco</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBodyFaturas" class="border-top-0">
+                    <!-- Renderizado pelo JS -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

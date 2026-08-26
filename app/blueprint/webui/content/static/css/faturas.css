@@ -45,5 +45,9 @@
 }
 
 .ativo {
-    background-color: lightskyblue !important;
+    background-color: rgb(105, 176, 220) !important;
+}
+
+.hidden-message {
+    display: none;
 }
