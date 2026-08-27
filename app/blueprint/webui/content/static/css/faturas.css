@@ -17,7 +17,7 @@
     font-size: 0.90rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     #navbarItems {
         position: absolute;
         top: 89%; /* Faz o menu abrir exatamente abaixo da barra superior */
@@ -41,7 +41,7 @@
 }
 
 .card-dash:hover {
-    background-color: lightskyblue;
+    background-color: rgb(167, 221, 255);
 }
 
 .ativo {
