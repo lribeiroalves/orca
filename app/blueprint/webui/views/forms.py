@@ -7,6 +7,18 @@ from app.ext.database import db
 from app.ext.database.models import *
 
 
+class FormCompra(FlaskForm):
+    userCompra = SelectField('Usuário', choices=[], validators=[DataRequired()])
+    bancoCompra = SelectField('Banco', choices=[], validators=[DataRequired()])
+    faturaCompra = SelectField('Fatura', choices=[], validators=[DataRequired()])
+    valorCompra = StringField('Valor', validators=[DataRequired()])
+    parcelaCompra = StringField('Parcelas', validators=[DataRequired()])
+    categoriaCompra = SelectField('Categoria', choices=[], validators=[DataRequired()])
+    descCompra = TextAreaField('Descrição', validators=[DataRequired()], render_kw={'rows': 5, 'style': 'height: 100%;'})
+    dataCompra = StringField('Valor', validators=[DataRequired()])
+    hashCompra = HiddenField('hashCompra', validators=[])
+
+
 class FormSaldos(FlaskForm):
     userSaldo = SelectField('Usuário', choices=[], validators=[DataRequired()])
     anoSaldo = StringField('Ano', validators=[DataRequired()])
