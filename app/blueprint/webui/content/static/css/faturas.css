@@ -51,3 +51,14 @@
 .hidden-message {
     display: none;
 }
+
+.add-compra {
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.nova-compra {
+    color: white;
+    font-size: medium;
+}
