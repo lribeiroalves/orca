@@ -9,7 +9,7 @@ import colorsys
 from app.ext.database import db
 from app.ext.database.models import *
 from app import get_base_path
-from .forms import FormFiltroTabelas, FormEntradaSaida, FormExcluir, FormSaldos
+from .forms import FormFiltroTabelas, FormEntradaSaida, FormExcluir, FormSaldos, FormCompra
 
 base_path = get_base_path()
 
@@ -275,7 +275,8 @@ def saldosForm():
 
 
 def faturasView():
-    return render_template('faturas.html')
+    form_compra = FormCompra()
+    return render_template('faturas.html', formCompra=form_compra)
 
 
 def gerar_cores_aleatorias(n):

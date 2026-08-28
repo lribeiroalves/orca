@@ -32,7 +32,7 @@
                     </ul>
                 </li>
             </ul>
-            <div class="d-flex justify-content-end add-compra">
+            <div id="btnNovaCompra" class="d-flex justify-content-end add-compra">
                 <h5 class="d-inline d-md-none me-3 mt-auto" style="font-size: medium !important;">Nova Compra</h5>
                 <i class="bi bi-plus-square-fill me-2 mt-auto"></i>
             </div>
@@ -135,8 +135,101 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL NOVA COMPRA -->
+<div class="modal fade" id="modalNovaCompra" aria-labelledby="modalNovaCompraLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header ps-4">
+                <h5 class="modal-title" id="modalNovaCompraLabel">Nova Compra</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12 col-lg-10 mx-auto mt-3">
+                    <div class="card p-lg-3 shadow-sm border-0 rounded-3">
+                        <div class="card-body">
+                            <form id="formNovaCompra" action="#" method="post">
+                                <!-- FORMULARIO -->
+                                {{ formCompra.csrf_token }}
+                                {{ formCompra.hashCompra }}
+
+                                <div class="row g-3">
+                                    <div class="col-12 col-lg-6">
+                                        <!-- QUADRO ESQUERDA -->
+                                        <div class="row g-3">
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formCompra.userCompra(class="form-select", autocomplete="off") }}
+                                                    {{ formCompra.userCompra.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formCompra.bancoCompra(class="form-select", autocomplete="off") }}
+                                                    {{ formCompra.bancoCompra.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formCompra.dataCompra(class="form-control", autocomplete="off") }}
+                                                    {{ formCompra.dataCompra.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formCompra.faturaCompra(class="form-select", autocomplete="off") }}
+                                                    {{ formCompra.faturaCompra.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formCompra.valorCompra(class="form-control", autocomplete="off") }}
+                                                    {{ formCompra.valorCompra.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-floating">
+                                                    {{ formCompra.parcelaCompra(class="form-control", autocomplete="off") }}
+                                                    {{ formCompra.parcelaCompra.label }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <!-- QUADRO DIREITA -->
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    {{ formCompra.categoriaCompra(class="form-control", autocomplete="off") }}
+                                                    {{ formCompra.categoriaCompra.label }}
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-floating">
+                                                    {{ formCompra.descCompra(class="form-control", autocomplete="off") }}
+                                                    {{ formCompra.descCompra.label }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-4 d-flex justify-content-end">
+                                    <button id="formInOutSubmit" class="btn btn-primary px-4 py-2" type="submit">
+                                        Confirmar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
 <script src="{{url_for('webui.static', filename='js/filtro_faturas.js')}}"></script>
+<script src="{{url_for('webui.static', filename='js/modalNovaCompra.js')}}"></script>
 {% endblock %}

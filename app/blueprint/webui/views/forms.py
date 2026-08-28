@@ -10,13 +10,27 @@ from app.ext.database.models import *
 class FormCompra(FlaskForm):
     userCompra = SelectField('Usuário', choices=[], validators=[DataRequired()])
     bancoCompra = SelectField('Banco', choices=[], validators=[DataRequired()])
-    faturaCompra = SelectField('Fatura', choices=[], validators=[DataRequired()])
+    faturaCompra = SelectField('Fatura', description='Aguardando a data da compra.', choices=[('', '...')], validators=[DataRequired()])
     valorCompra = StringField('Valor', validators=[DataRequired()])
     parcelaCompra = StringField('Parcelas', validators=[DataRequired()])
     categoriaCompra = SelectField('Categoria', choices=[], validators=[DataRequired()])
     descCompra = TextAreaField('Descrição', validators=[DataRequired()], render_kw={'rows': 5, 'style': 'height: 100%;'})
-    dataCompra = StringField('Valor', validators=[DataRequired()])
-    hashCompra = HiddenField('hashCompra', validators=[])
+    dataCompra = StringField('Data da Compra', validators=[DataRequired()])
+    hashCompra = HiddenField('hashCompra', validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            users = db.session.scalars(db.select(Users)).all()
+            self.userCompra.choices = [(str(u.id), str(u.nome).title()) for u in users]
+            self.userCompra.choices.insert(0, ('', 'Selecione...'))
+
+            bancos = db.session.scalars(db.select(Bancos)).all()
+            self.bancoCompra.choices = [(str(b.id), str(b.nome).title()) for b in bancos]
+            self.bancoCompra.choices.insert(0, ('', 'Selecione...'))
+
+            categorias = db.session.scalars(db.select(Categorias)).all()
+            self.categoriaCompra.choices = [(str(c.id), str(c.nome).title()) for c in categorias]
+            self.categoriaCompra.choices.insert(0, ('', 'Selecione...'))
 
 
 class FormSaldos(FlaskForm):
