@@ -369,6 +369,18 @@ def faturasRequest():
 
     return jsonify(resposta)
 
+
+def comprasForm():
+    form = FormCompra()
+
+    if form.validate_on_submit():
+        print(form.data)
+    else:
+        print(form.errors)
+
+    return ''
+
+
 def graficosView():
     return render_template('graficos.html')
 

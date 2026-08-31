@@ -166,12 +166,40 @@ function inputDataCompra(event) {
 
 
 $(function() {
+    $('#valorCompra').on('input', inputValorCompra);
+    $('#parcelaCompra').on('input', inputParcelaCompra);
+    $('#descCompra').on('keydown', inputDescCompra);
+    $('#dataCompra').on('input keydown', inputDataCompra);
+
     $('#btnNovaCompra').on('click', function(event) {
         $('#modalNovaCompra').modal('show');
-
-        $('#valorCompra').on('input', inputValorCompra);
-        $('#parcelaCompra').on('input', inputParcelaCompra);
-        $('#descCompra').on('keydown', inputDescCompra);
-        $('#dataCompra').on('input keydown', inputDataCompra);
+        $('#hashCompra').val(0);
     })
+
+    $('#formNovaCompra').on('submit', function(event) {
+        event.preventDefault();
+
+        const dadosFormulario = $(this).serialize();
+        const url = $(this).attr('action');
+
+        const btn = $('#formCompraSubmit');
+        const textoOriginal = btn.text();
+        btn.prop('disabled', true).text('Enviando...');
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: dadosFormulario,
+            success: function(resposta) {
+                alert(resposta);
+            },
+            error: function(erro) {
+                console.error("Erro na requisição:", erro);
+                alert("Ocorreu um erro ao salvar a compra. Tente novamente.");
+            },
+            complete: function() {
+                btn.prop('disabled', false).text(textoOriginal);
+            }
+        });
+    });
 });

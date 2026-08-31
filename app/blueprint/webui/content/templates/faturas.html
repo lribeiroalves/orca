@@ -148,7 +148,7 @@
                 <div class="col-12 col-lg-10 mx-auto mt-3">
                     <div class="card p-lg-3 shadow-sm border-0 rounded-3">
                         <div class="card-body">
-                            <form id="formNovaCompra" action="#" method="post">
+                            <form id="formNovaCompra" action="{{ url_for('webui.comprasForm') }}" method="post">
                                 <!-- FORMULARIO -->
                                 {{ formCompra.csrf_token }}
                                 {{ formCompra.hashCompra }}
@@ -215,7 +215,7 @@
                                 </div>
 
                                 <div class="col-12 mt-4 d-flex justify-content-end">
-                                    <button id="formInOutSubmit" class="btn btn-primary px-4 py-2" type="submit">
+                                    <button id="formCompraSubmit" class="btn btn-primary px-4 py-2" type="submit">
                                         Confirmar
                                     </button>
                                 </div>

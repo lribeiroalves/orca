@@ -10,7 +10,7 @@ from app.ext.database.models import *
 class FormCompra(FlaskForm):
     userCompra = SelectField('Usuário', choices=[], validators=[DataRequired()])
     bancoCompra = SelectField('Banco', choices=[], validators=[DataRequired()])
-    faturaCompra = SelectField('Fatura', description='Aguardando a data da compra.', choices=[('', '...')], validators=[DataRequired()])
+    faturaCompra = SelectField('Fatura', description='Aguardando a data da compra.', choices=[('', '...')], validators=[DataRequired()], validate_choice=False)
     valorCompra = StringField('Valor', validators=[DataRequired()])
     parcelaCompra = StringField('Parcelas', validators=[DataRequired()])
     categoriaCompra = SelectField('Categoria', choices=[], validators=[DataRequired()])
