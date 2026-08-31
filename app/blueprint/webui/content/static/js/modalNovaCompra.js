@@ -141,9 +141,22 @@ function inputDataCompra(event) {
                 const mesSeguinte = faturaSeguinte.getUTCMonth() + 1;
                 const anoSeguinte = faturaSeguinte.getUTCFullYear();
                 const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                const options = `
+                                <option value="${anoAnterior}${mesAnterior}">${meses[(mesAnterior-1) % 12]} - ${anoAnterior}</option>
+                                <option value="${anoAtual}${mesAtual}">${meses[(mesAtual-1) % 12]} - ${anoAtual}</option>
+                                <option value="${anoSeguinte}${mesSeguinte}">${meses[(mesSeguinte-1) % 12]} - ${anoSeguinte}</option>
+                                `;
 
+                $('#faturaCompra').empty().append(options);
+
+                if (data.getUTCDate() >= 15) {
+                    $('#faturaCompra option:last').prop('selected', true);
+                } else {
+                    $('#faturaCompra option').eq(1).prop('selected', true);
+                }
             } catch (error) {
                 this.setCustomValidity(error.message);
+                $('#faturaCompra').empty().append('<option value="">Data Inválida!</option>');
             }
         }
     }
