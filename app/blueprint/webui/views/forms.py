@@ -24,7 +24,7 @@ class FormCompra(FlaskForm):
             self.userCompra.choices = [(str(u.id), str(u.nome).title()) for u in users]
             self.userCompra.choices.insert(0, ('', 'Selecione...'))
 
-            bancos = db.session.scalars(db.select(Bancos)).all()
+            bancos = db.session.scalars(db.select(Bancos).where(Bancos.cartao == True)).all()
             self.bancoCompra.choices = [(str(b.id), str(b.nome).title()) for b in bancos]
             self.bancoCompra.choices.insert(0, ('', 'Selecione...'))
 

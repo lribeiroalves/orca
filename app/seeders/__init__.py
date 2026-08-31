@@ -10,12 +10,6 @@ from .categorias import seed_categorias
 from .compras import seed_compras
 
 
-def populate_db(app):
-    with app.app_context():
-        seed_users.callback()
-        seed_bancos.callback()
-
-
 @click.command('populate-development')
 def populate_development():
     try:
@@ -35,7 +29,5 @@ def init_app(app):
     if app.config['ENV'] == 'development':
         for command in [seed_users, seed_bancos, seed_entradas, seed_saidas, seed_saldos, seed_faturas, seed_compras, seed_categorias, populate_development]:
             app.cli.add_command(command)
-
-    populate_db(app)
 
     

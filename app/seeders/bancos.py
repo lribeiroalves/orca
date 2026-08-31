@@ -5,12 +5,12 @@ from app.ext.database.models import Bancos
 @click.command('seed-bancos')
 def seed_bancos():
     bancos = [
-        {'nome': 'nubank'},
-        {'nome': 'mercado pago'},
-        {'nome': 'sofisa'},
-        {'nome': 'banco do brasil'},
-        {'nome': 'rico'},
-        {'nome': 'c6'}
+        {'nome': 'nubank', 'cartao': True},
+        {'nome': 'mercado pago', 'cartao': False},
+        {'nome': 'sofisa', 'cartao': False},
+        {'nome': 'banco do brasil', 'cartao': False},
+        {'nome': 'rico', 'cartao': False},
+        {'nome': 'c6', 'cartao': True}
     ]
 
     add = 0

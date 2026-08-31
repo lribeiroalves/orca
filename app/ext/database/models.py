@@ -82,6 +82,7 @@ class Saidas(db.Model):
 class Bancos(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     nome: Mapped[str] = mapped_column(String(255), nullable=False)
+    cartao: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True, default=False)
 
     def __repr__(self):
         return f'Banco(id: {self.id}, nome: {self.nome})'
