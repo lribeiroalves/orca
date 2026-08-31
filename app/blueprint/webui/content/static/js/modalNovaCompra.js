@@ -1,5 +1,164 @@
+function inputValorCompra(event) {
+    let valorAtual = $(this).val();
+
+    // Deixa apenas numeros, pontos e virgulas
+    valorAtual = valorAtual.replace(/[^0-9.,]/g, '');
+
+    // Troca pontos por virgulas
+    valorAtual = valorAtual.replace(/\./g, ',');
+
+    const partes = valorAtual.split(',');
+
+    // Nao aceita que o primeiro char seja virgula
+    if (partes[0].length === 0) {
+        $(this).val('');
+        return;
+    }
+
+    // Nao aceita que tenha mais de uma virgula
+    if (partes.length > 2) {
+        valorAtual = partes[0] + ',' + partes.slice(1).join('').replace(/,/g, '');
+    }
+
+    // aceita apenas 2 digitos apos a virgula
+    const partesFinais = valorAtual.split(',');
+    if (partesFinais.length === 2) {
+        let decimais = partesFinais[1].substring(0, 2);
+        valorAtual = partesFinais[0] + ',' + decimais;
+    }
+
+    $(this).val(valorAtual);
+};
+
+
+function inputParcelaCompra(event) {
+    let valorAtual = $(this).val();
+
+    valorAtual = valorAtual.replace(/[^0-9]/g, '');
+
+    if (valorAtual.length > 2) {
+        valorAtual = valorAtual.substring(0, 2);
+    }
+
+    $(this).val(valorAtual);
+
+    // Validações
+    let msg = 'O número de parcelas deve ser entre 1 e 99.';
+    let valorInt = parseInt(valorAtual, 10);
+    if (valorInt < 1 || valorInt > 99) {
+        this.setCustomValidity(msg);
+    } else {
+        this.setCustomValidity("");
+    }
+};
+
+function inputDescCompra(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+    }
+};
+
+
+function alterarMes(dataOriginal, mesesParaAdicionar) {
+    // 1. Cria uma cópia da data para não modificar a original
+    const novaData = new Date(dataOriginal.getTime());
+    
+    // 2. Trava o dia no dia 1 usando UTC para evitar problemas de fuso horário
+    novaData.setUTCDate(1);
+    
+    // 3. Altera o mês usando UTC (o JS corrige o ano automaticamente aqui)
+    novaData.setUTCMonth(novaData.getUTCMonth() + mesesParaAdicionar);
+    
+    return novaData;
+}
+
+
+function inputDataCompra(event) {
+    let valorAtual = $(this).val();
+
+    if (event.type == 'keydown') {
+        if (event.key === '/') {
+            event.preventDefault();
+        } else if (event.key == 'Backspace') {
+            if (valorAtual.slice(-1) === '/') {
+                valorAtual = valorAtual.slice(0, -1);
+            }
+        }
+    } else if (event.type == 'input') {
+        // Deixa apenas numeros e barras
+        valorAtual = valorAtual.replace(/[^0-9/]/g, '');
+    
+        // separa por barras quando dia e mes tem 2 caracteres
+        if (valorAtual.length === 2 || valorAtual.length === 5){
+            valorAtual += '/';
+        }
+        
+        // garante que o ano tenha no maximo 4 caracteres
+        partes = valorAtual.split('/');
+        if (partes.length === 3 && partes[2].length > 3) {
+            valorAtual = valorAtual.substring(0, 10);
+        }
+        
+        if (valorAtual.length === 10) {
+            try {
+                // 1. Divide a string "dd/mm/yyyy" pelas barras
+                const partes = valorAtual.split('/'); // Ex: ["25", "10", "2026"]
+                
+                // 2. Garante que a string tinha o formato esperado com 3 partes
+                if (partes.length !== 3) {
+                    throw new Error('Formato incorreto. Use DD/MM/YYYY.');
+                }
+
+                // 3. Monta no formato ISO: "YYYY-MM-DD"
+                const stringFormatada = `${partes[2]}-${partes[1]}-${partes[0]}`;
+                
+                // 4. Cria a data com a string corrigida
+                const data = new Date(stringFormatada);
+
+                // 5. Verifica se o JavaScript aceitou a data
+                if (isNaN(data.getTime())) {
+                    throw new Error('Data inválida.');
+                }
+
+                // O código abaixo garante que o dia/mês digitados são exatamente os reais.
+                const diaDigitado = parseInt(partes[0], 10);
+                const mesDigitado = parseInt(partes[1], 10);
+                // data.getUTCDate evita problemas de fuso horário na validação
+                if (data.getUTCDate() !== diaDigitado || (data.getUTCMonth() + 1) !== mesDigitado) {
+                    throw new Error('Data não existe no calendário.');
+                }
+
+                // Se passou em tudo, limpa o erro de validação
+                this.setCustomValidity("");
+
+                // Construção dos choices de faturas
+                const faturaAnterior = alterarMes(data, -1);
+                const faturaSeguinte = alterarMes(data, 1);
+                const mesAtual = data.getUTCMonth() + 1;
+                const anoAtual = data.getUTCFullYear();
+                const mesAnterior = faturaAnterior.getUTCMonth() + 1;
+                const anoAnterior = faturaAnterior.getUTCFullYear();
+                const mesSeguinte = faturaSeguinte.getUTCMonth() + 1;
+                const anoSeguinte = faturaSeguinte.getUTCFullYear();
+                const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+            } catch (error) {
+                this.setCustomValidity(error.message);
+            }
+        }
+    }
+
+    $(this).val(valorAtual);
+};
+
+
 $(function() {
     $('#btnNovaCompra').on('click', function(event) {
         $('#modalNovaCompra').modal('show');
+
+        $('#valorCompra').on('input', inputValorCompra);
+        $('#parcelaCompra').on('input', inputParcelaCompra);
+        $('#descCompra').on('keydown', inputDescCompra);
+        $('#dataCompra').on('input keydown', inputDataCompra);
     })
 });
