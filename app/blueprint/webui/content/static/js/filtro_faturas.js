@@ -145,9 +145,13 @@ export function atualizarFatura(ano, mes, tipo) {
         $('#dropItemsAno').text(ano);
         $('#dropItemsMes').text('Selecione...');
         if (tipo === "mes") {
-            console.log(mes, resposta['meses'])
             $('#dropItemsMes').text(meses[mes-1]);
             $('#identificadorFatura').text(`${meses[mes-1]} / ${ano}`);
+            let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
+            $('#arrowLeft').data('mes', prev_mes);
+            $('#arrowLeft').data('ano', prev_ano);
+            $('#arrowRight').data('mes', next_mes);
+            $('#arrowRight').data('ano', next_ano);
         }
     });    
 }
@@ -188,11 +192,6 @@ $(function() {
     $('#arrowLeft').on('click', function(evento) {
         const mes = $(this).data("mes");
         const ano = $(this).data("ano");
-        let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
-        $('#arrowLeft').data('mes', prev_mes);
-        $('#arrowLeft').data('ano', prev_ano);
-        $('#arrowRight').data('mes', next_mes);
-        $('#arrowRight').data('ano', next_ano);
         userSelected = null;
         bancoSelected = null;
         atualizarFatura(ano, mes, 'mes').done(function() {
@@ -205,11 +204,6 @@ $(function() {
     $('#arrowRight').on('click', function(evento) {
         const mes = $(this).data("mes");
         const ano = $(this).data("ano");
-        let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
-        $('#arrowLeft').data('mes', prev_mes);
-        $('#arrowLeft').data('ano', prev_ano);
-        $('#arrowRight').data('mes', next_mes);
-        $('#arrowRight').data('ano', next_ano);
         userSelected = null;
         bancoSelected = null;
         atualizarFatura(ano, mes, 'mes').done(function() {
@@ -224,11 +218,6 @@ $(function() {
 
         const mes = $(this).data("mes");
         const ano = $('#dropItemsAno').text();
-        let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
-        $('#arrowLeft').data('mes', prev_mes);
-        $('#arrowLeft').data('ano', prev_ano);
-        $('#arrowRight').data('mes', next_mes);
-        $('#arrowRight').data('ano', next_ano);
         userSelected = null;
         bancoSelected = null;
         atualizarFatura(ano, mes, 'mes');
