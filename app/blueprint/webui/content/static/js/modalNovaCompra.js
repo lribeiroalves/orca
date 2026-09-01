@@ -158,6 +158,10 @@ function inputDataCompra(event) {
                 this.setCustomValidity(error.message);
                 $('#faturaCompra').empty().append('<option value="">Data Inválida!</option>');
             }
+        } else if (valorAtual.length === 0) {
+            $('#faturaCompra').empty().append('<option value="">...</option>');
+        } else {
+            $('#faturaCompra').empty().append('<option value="">Data Incompleta!</option>');
         }
     }
 
@@ -174,6 +178,8 @@ $(function() {
     $('#btnNovaCompra').on('click', function(event) {
         $('#modalNovaCompra').modal('show');
         $('#hashCompra').val(0);
+        $('#formNovaCompra')[0].reset();
+        $('#faturaCompra').empty().append('<option value="">...</option>');
     })
 
     $('#formNovaCompra').on('submit', function(event) {
@@ -191,10 +197,11 @@ $(function() {
             method: 'POST',
             data: dadosFormulario,
             success: function(resposta) {
+                console.log(resposta)
                 alert(resposta);
             },
             error: function(erro) {
-                console.error("Erro na requisição:", erro);
+                console.log("Erro na requisição:", erro);
                 alert("Ocorreu um erro ao salvar a compra. Tente novamente.");
             },
             complete: function() {

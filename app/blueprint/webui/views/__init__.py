@@ -5,6 +5,8 @@ from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract
 import random
 import colorsys
+import hashlib
+import json
 
 from app.ext.database import db
 from app.ext.database.models import *
@@ -370,15 +372,84 @@ def faturasRequest():
     return jsonify(resposta)
 
 
+def consulta_fatura(ano, mes, acrescimo):
+    data = datetime(ano, mes, 1) + relativedelta(months=acrescimo)
+    fatura = db.session.scalars(db.select(Faturas).where(Faturas.ano == data.year, Faturas.mes == data.month)).first()
+
+    if fatura:
+        return fatura.id
+    else:
+        nova_fatura = Faturas()
+        nova_fatura.mes = data.month
+        nova_fatura.ano = data.year
+
+        db.session.add(nova_fatura)
+        db.session.flush()
+
+        return nova_fatura.id
+
+
 def comprasForm():
     form = FormCompra()
 
-    if form.validate_on_submit():
-        print(form.data)
-    else:
-        print(form.errors)
+    try:
+        if form.validate_on_submit():
+            dados = {
+            'user': int(form.userCompra.data),
+            'banco': int(form.bancoCompra.data),
+            'categoria': int(form.categoriaCompra.data),
+            'data': datetime.strptime(form.dataCompra.data, '%d/%m/%Y'),
+            'mes_fatura': int(form.faturaCompra.data[4:]),
+            'ano_fatura': int(form.faturaCompra.data[:4]),
+            'valor': float(form.valorCompra.data.replace(',', '.')),
+            'parcelas': int(form.parcelaCompra.data),
+            'desc': form.descCompra.data,
+            'hash': form.hashCompra.data,
+            }
 
-    return ''
+            if dados['hash'] == '0':
+                # Nova Compra
+                string_padronizada = json.dumps(dados, sort_keys=True, default=str)
+                hash = hashlib.sha256(string_padronizada.encode('utf-8')).hexdigest()
+
+                if db.session.scalars(db.select(Compras).where(Compras.hash == hash)).first():
+                    raise Exception('Essa compra já existe!')
+                else:
+                    for i in range(dados['parcelas']):
+                        fatura = consulta_fatura(dados['ano_fatura'], dados['mes_fatura'], i)
+                        print(fatura)
+
+                        if fatura:
+                            pass
+                            # nova_compra = Compras()
+                            # nova_compra.valor_total = dados['valor']
+                            # nova_compra.valor_parcela = dados['valor'] / dados['parcelas']
+                            # nova_compra.descricao = dados['desc']
+                            # nova_compra.parcelas = int(f'{i+1}{dados['parcelas']:02}')
+                            # nova_compra.data = dados['data']
+                            # nova_compra.hash = hash
+                            # nova_compra.user_id = dados['user']
+                            # nova_compra.banco_id = dados['banco']
+                            # nova_compra.categoria_id = dados['categoria']
+                            # nova_compra.fatura_id = fatura
+                        else:
+                            raise Exception('Não foi possível verificar a fatura!')
+            else:
+                # Editar Compra
+                pass
+            
+            return jsonify({
+                'status': 'success',
+                'message': 'Operação realizada com sucesso.'
+            })
+        else:
+            raise Exception('Formulário não validado.')
+    except Exception as err:
+        print(err)
+        return jsonify({
+            'status': 'error',
+            'mensagem': f'{err}'
+        })
 
 
 def graficosView():
