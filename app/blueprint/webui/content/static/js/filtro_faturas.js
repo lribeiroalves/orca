@@ -4,7 +4,7 @@ let dados_global;
 let users_global;
 
 function construirDropdown(anos, meses) {
-    meses_nomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const meses_nomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     
     // Dropdown Anos
     let anosContent = '';
@@ -126,16 +126,16 @@ function capitalizar(str) {
 }
 
 
-function atualizarFatura(ano, mes, tipo) {
-    meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+export function atualizarFatura(ano, mes, tipo) {
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
-    parametros = {
+    const parametros = {
         ano: ano,
         mes: mes,
         tipo: tipo
     };
 
-    url = $('#dropItemsMes').data('url');
+    const url = $('#dropItemsMes').data('url');
     return $.get(url, parametros, function(resposta) {
         construirDropdown(resposta['anos'], resposta['meses']);
         if (tipo === "mes"){

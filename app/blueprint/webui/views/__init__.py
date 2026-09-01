@@ -415,27 +415,26 @@ def comprasForm():
                 if db.session.scalars(db.select(Compras).where(Compras.hash == hash)).first():
                     raise Exception('Essa compra já existe!')
                 else:
-                    pass
-                    # for i in range(dados['parcelas']):
-                    #     fatura = consulta_fatura(dados['ano_fatura'], dados['mes_fatura'], i)
+                    for i in range(dados['parcelas']):
+                        fatura = consulta_fatura(dados['ano_fatura'], dados['mes_fatura'], i)
 
-                    #     if fatura:
-                    #         nova_compra = Compras()
-                    #         nova_compra.valor_total = dados['valor']
-                    #         nova_compra.valor_parcela = dados['valor'] / dados['parcelas']
-                    #         nova_compra.descricao = dados['desc']
-                    #         nova_compra.parcelas = int(f'{i+1}{dados['parcelas']:02}')
-                    #         nova_compra.data = dados['data']
-                    #         nova_compra.hash = hash
-                    #         nova_compra.user_id = dados['user']
-                    #         nova_compra.banco_id = dados['banco']
-                    #         nova_compra.categoria_id = dados['categoria']
-                    #         nova_compra.fatura_id = fatura
-                    #         db.session.add(nova_compra)
-                    #     else:
-                    #         raise Exception('Não foi possível verificar a fatura!')
+                        if fatura:
+                            nova_compra = Compras()
+                            nova_compra.valor_total = dados['valor']
+                            nova_compra.valor_parcela = dados['valor'] / dados['parcelas']
+                            nova_compra.descricao = dados['desc']
+                            nova_compra.parcelas = int(f'{i+1}{dados['parcelas']:02}')
+                            nova_compra.data = dados['data']
+                            nova_compra.hash = hash
+                            nova_compra.user_id = dados['user']
+                            nova_compra.banco_id = dados['banco']
+                            nova_compra.categoria_id = dados['categoria']
+                            nova_compra.fatura_id = fatura
+                            db.session.add(nova_compra)
+                        else:
+                            raise Exception('Não foi possível verificar a fatura!')
                     
-                    # db.session.commit()
+                    db.session.commit()
             else:
                 # Editar Compra
                 pass

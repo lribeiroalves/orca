@@ -1,3 +1,5 @@
+import { atualizarFatura } from "./filtro_faturas.js";
+
 function inputValorCompra(event) {
     let valorAtual = $(this).val();
 
@@ -94,7 +96,7 @@ function inputDataCompra(event) {
         }
         
         // garante que o ano tenha no maximo 4 caracteres
-        partes = valorAtual.split('/');
+        const partes = valorAtual.split('/');
         if (partes.length === 3 && partes[2].length > 3) {
             valorAtual = valorAtual.substring(0, 10);
         }
@@ -198,8 +200,8 @@ $(function() {
             data: dadosFormulario,
             success: function(resposta) {
                 if (resposta.status === 'success') {
-
-                    alert('Sucesso!');
+                    atualizarFatura(resposta.ano, resposta.mes, 'mes');
+                    $('#modalNovaCompra').modal('hide');
                 } else if (resposta.status === 'error') {
 
                     alert('Houve um erro!')

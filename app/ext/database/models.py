@@ -171,7 +171,7 @@ class Compras(db.Model):
     descricao: Mapped[str] = mapped_column(String(255), nullable=False)
     parcelas: Mapped[int] = mapped_column(nullable=False)
     data: Mapped[DateTime] = mapped_column(DateTime)
-    hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, unique=True)
+    hash: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     # relacoes
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
