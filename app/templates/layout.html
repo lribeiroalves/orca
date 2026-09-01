@@ -24,9 +24,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     </head>
     <body class="d-flex flex-column">
-        <header class="flex-shrink-0">
+        <header class="flex-shrink-0 position-relative">
             <div class="px-3 py-2 fundo-escuro border-bottom">
-                <div class="container">
+                <div id="nav-container" class="container">
                     <div class="d-flex flex-wrap">
                         <a href="/" class="d-flex text-white text-decoration-none align-items-center col-12 col-lg-6 justify-content-center justify-content-lg-start"><img id="logo-header" src="{{ url_for('static', filename='images/favicon.svg') }}" alt="Icone" width="40" height="40"> <h5 id="titulo" class="ms-3">{{ config['TITLE'] }}</h5></a>
                         <ul class="nav col-12 col-lg-6 justify-content-center justify-content-lg-end text-small mt-2 mt-lg-0">
@@ -37,6 +37,9 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+            <div class="position-absolute top-50 end-0 translate-middle">
+                <a class="d-lg-inline d-none" href="{{ url_for('admin.index') }}"><i class="bi bi-gear-fill config-gear fs-4 me-3"></i></a>
             </div>
         </header>
 
@@ -64,11 +67,14 @@
         </main>
 
         <footer class="flex-shrink-0 container-fluid text-center mt-auto fixed-bottom pt-2 pb-2 fundo-escuro text-small text-white w-100">
-          <div class="align-items-center">
-            <a href="/" class="text-decoration-none lh-1">
-                <img class="me-2" src="{{url_for('static', filename='images/favicon.svg')}}" alt="App Logo" width="25px" height="25px" style="border-radius: 25px;">
-            </a>
-            <span class=""><strong>{{config['TITLE']}}</strong> - {{ datetime.now().strftime('%d/%m/%Y') }}</span>
+          <div class="row">
+              <div class="align-items-center col-10 col-lg-12">
+                <a href="/" class="text-decoration-none lh-1">
+                    <img class="me-2" src="{{url_for('static', filename='images/favicon.svg')}}" alt="App Logo" width="25px" height="25px" style="border-radius: 25px;">
+                </a>
+                <span class=""><strong>{{config['TITLE']}}</strong> - {{ datetime.now().strftime('%d/%m/%Y') }}</span>
+            </div>
+            <a class="col-2 ps-3 d-inline d-lg-none" href="{{ url_for('admin.index') }}"><i class="bi bi-gear-fill config-gear"></i></a>
           </div>
         </footer>
 

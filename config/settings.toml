@@ -3,6 +3,7 @@ TITLE = 'Orçamento Familiar'
 EXTENSIONS = [
     'app.ext.database:init_app',
     'app.ext.migration:init_app',
+    'app.ext.admin:init_app',
     'app.seeders:init_app',
 
     'app.blueprint.webui:init_app'

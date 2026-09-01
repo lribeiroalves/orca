@@ -47,6 +47,12 @@ body {
     }
 }
 
+@media (min-width: 990px) and (max-width: 1100px) {
+    #nav-container {
+        padding-right: 80px;
+    }
+}
+
 /* Telas Grandes */
 @media (min-width: 480px) {
   body {
@@ -61,4 +67,9 @@ body {
   header li {
         font-size: medium;
     }
+}
+
+.config-gear {
+    text-decoration: none;
+    color: white;
 }
