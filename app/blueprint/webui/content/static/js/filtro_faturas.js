@@ -145,7 +145,8 @@ export function atualizarFatura(ano, mes, tipo) {
         $('#dropItemsAno').text(ano);
         $('#dropItemsMes').text('Selecione...');
         if (tipo === "mes") {
-            $('#dropItemsMes').text(resposta['meses'][0]);
+            console.log(mes, resposta['meses'])
+            $('#dropItemsMes').text(meses[mes-1]);
             $('#identificadorFatura').text(`${meses[mes-1]} / ${ano}`);
         }
     });    
