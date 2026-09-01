@@ -197,8 +197,15 @@ $(function() {
             method: 'POST',
             data: dadosFormulario,
             success: function(resposta) {
-                console.log(resposta)
-                alert(resposta);
+                if (resposta.status === 'success') {
+
+                    alert('Sucesso!');
+                } else if (resposta.status === 'error') {
+
+                    alert('Houve um erro!')
+                } else {
+                    alert('O servidor nao respondeu corretamente.')
+                }
             },
             error: function(erro) {
                 console.log("Erro na requisição:", erro);
