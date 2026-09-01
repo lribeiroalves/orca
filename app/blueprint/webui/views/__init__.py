@@ -281,17 +281,19 @@ def faturasView():
     return render_template('faturas.html', formCompra=form_compra)
 
 
-def gerar_cores_aleatorias(n):
-    if not n:
+def gerar_cores_aleatorias(usuarios):
+    if not usuarios:
         return []
 
-    cores = []
+    n = len(usuarios)
+
+    cores = {}
 
     matiz_inicial = random.random()
 
     salto = 1.0 / n
 
-    for i in range(n):
+    for i, id in enumerate(usuarios):
         matiz = (matiz_inicial + i*salto) % 1.0
         saturacao = 0.8
         brilho = 0.9
@@ -306,9 +308,8 @@ def gerar_cores_aleatorias(n):
         cor_formatada = f'rgb({r}, {g}, {b})'
         cor_texto = "black" if luminosidade > 128 else "white"
 
-        cores.append([cor_formatada, cor_texto])
-
-    random.shuffle(cores)
+        cores[id] = [cor_formatada, cor_texto]
+        
     return cores
 
 
@@ -339,16 +340,16 @@ def faturasRequest():
 
         if tipo == 'mes':
             compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes)).all()
-            quantidade_usuarios = len(list(set([c.user_id for c in compras])))
+            usuarios = list(set([c.user_id for c in compras]))
 
             if compras:
-                lista_cores = gerar_cores_aleatorias(quantidade_usuarios)
+                lista_cores = gerar_cores_aleatorias(usuarios)
 
                 users = {}
                 for c in compras:
                     if c.user_id in users.keys():
                         next
-                    users[c.user_id] = [c.user.nome, lista_cores[c.user_id - 1][0], lista_cores[c.user_id - 1][1]]
+                    users[c.user_id] = [c.user.nome, lista_cores[c.user_id][0], lista_cores[c.user_id][1]]
                 resposta['users'] = users
                 bancos = {}
                 for c in compras:

@@ -88,8 +88,10 @@ function construirDashboard(resposta) {
         $('#cardTotalGeral').text(valTotalFatura);
     
         let user_html = ''
+        let counter = 0;
         for (let [index, user] of Object.entries(resposta['users'])) {
-            let valorUsuario = 'R$ ' + parseFloat(resposta['total_por_usuario'][index-1]).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            let valorUsuario = 'R$ ' + parseFloat(resposta['total_por_usuario'][counter]).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            counter ++;
             user_html += `
             <div class="card-dash rounded p-2" data-user="${index}">
                 <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>${capitalizar(user[0])}</span>
