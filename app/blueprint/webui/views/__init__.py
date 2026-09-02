@@ -456,6 +456,10 @@ def comprasForm():
         })
 
 
+def requestCompras():
+    return ''
+
+
 def graficosView():
     return render_template('graficos.html')
 

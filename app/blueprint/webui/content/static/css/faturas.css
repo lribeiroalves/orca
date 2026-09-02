@@ -62,3 +62,7 @@
     color: white;
     font-size: medium;
 }
+
+#tableBodyFaturas tr {
+    cursor: pointer;
+}

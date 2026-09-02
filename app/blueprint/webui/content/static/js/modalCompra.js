@@ -179,10 +179,36 @@ $(function() {
 
     $('#btnNovaCompra').on('click', function(event) {
         $('#modalCompra').modal('show');
+        $('#modalCompraLabel').text($(this).data('titulo'));
         $('#hashCompra').val(0);
         $('#formCompra')[0].reset();
         $('#faturaCompra').empty().append('<option value="">...</option>');
+        $('#tabelaCompra').hide();
     })
+
+    $('#tableBodyFaturas').on('click', 'tr', function(event) {
+        $('#tabelaCompra').show();
+        $('#modalCompraLabel').text($(this).data('titulo'));
+        $('#modalCompra').modal('show');
+
+        const hash = $(this).data('hash');
+        const url = $('#tableBodyFaturas').data('url');
+        
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {hash: hash},
+            success: function(resposta) {
+
+            },
+            error: function(resposta) {
+
+            },
+            complete: function() {
+                
+            }
+        })
+    });
 
     $('#formCompra').on('submit', function(event) {
         event.preventDefault();

@@ -32,7 +32,7 @@
                     </ul>
                 </li>
             </ul>
-            <div id="btnNovaCompra" class="d-flex justify-content-end add-compra">
+            <div id="btnNovaCompra" class="d-flex justify-content-end add-compra"  data-titulo="Nova Entrada">
                 <h5 class="d-inline d-md-none me-3 mt-auto" style="font-size: medium !important;">Nova Compra</h5>
                 <i class="bi bi-plus-square-fill me-2 mt-auto"></i>
             </div>
@@ -55,7 +55,6 @@
             <div class="card border-0 shadow-sm h-100 bg-primary text-white rounded-3">
                 <div class="card-body d-flex flex-column justify-content-center">
                     <h6 class="card-title opacity-75 mb-1">Total da Fatura</h6>
-                    <!-- ID para você injetar o valor depois com JS -->
                     <h3 class="card-text mb-0" id="cardTotalGeral"></h3>
                 </div>
             </div>
@@ -68,19 +67,7 @@
                     <div class="card border-0 shadow-sm h-100 bg-white rounded-3">
                         <div class="card-body">
                             <h6 class="card-title text-secondary mb-3">Resumo por Banco</h6>
-                            <!-- O flex-wrap garante que os nomes vão descendo de linha se não couberem na tela -->
                             <div class="d-flex flex-wrap gap-4" id="containerTotaisBancos">
-                                <!-- Exemplo Usuário 1 -->
-                                <div>
-                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Lucas</span>
-                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
-                                </div>
-                                <!-- Exemplo Usuário 2 -->
-                                <div>
-                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Selma</span>
-                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
-                                </div>
-                                <!-- O JS pode fazer um append() de novos blocos aqui dentro dependendo de quantos usuários existirem -->
                             </div>
                         </div>
                     </div>
@@ -90,19 +77,7 @@
                     <div class="card border-0 shadow-sm h-100 bg-white rounded-3">
                         <div class="card-body">
                             <h6 class="card-title text-secondary mb-3">Resumo por Usuário</h6>
-                            <!-- O flex-wrap garante que os nomes vão descendo de linha se não couberem na tela -->
                             <div class="d-flex flex-wrap gap-4" id="containerTotaisUsuarios">
-                                <!-- Exemplo Usuário 1 -->
-                                <div>
-                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Lucas</span>
-                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
-                                </div>
-                                <!-- Exemplo Usuário 2 -->
-                                <div>
-                                    <span class="d-block text-muted small"><i class="bi bi-person-fill me-1"></i>Selma</span>
-                                    <span class="d-block fw-bold fs-5 text-dark">R$ 0,00</span>
-                                </div>
-                                <!-- O JS pode fazer um append() de novos blocos aqui dentro dependendo de quantos usuários existirem -->
                             </div>
                         </div>
                     </div>
@@ -128,7 +103,7 @@
                         <th class="text-center border-0 py-3">Banco</th>
                     </tr>
                 </thead>
-                <tbody id="tableBodyFaturas" class="border-top-0">
+                <tbody id="tableBodyFaturas" class="border-top-0" data-url="{{ url_for('webui.requestCompras') }}">
                     <!-- Renderizado pelo JS -->
                 </tbody>
             </table>
@@ -146,6 +121,9 @@
             </div>
             <div class="modal-body">
                 <div class="col-12 col-lg-10 mx-auto mt-3">
+                    <div id="tabelaCompra">
+                        <h1>teste</h1>
+                    </div>
                     <div class="card p-lg-3 shadow-sm border-0 rounded-3">
                         <div class="card-body">
                             <form id="formCompra" action="{{ url_for('webui.comprasForm') }}" method="post">

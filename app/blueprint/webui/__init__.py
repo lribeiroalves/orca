@@ -18,6 +18,7 @@ bp.add_url_rule('/saldos', view_func=saldosForm, methods=['POST'])
 bp.add_url_rule('/faturas', view_func=faturasView)
 bp.add_url_rule('/faturas-request', view_func=faturasRequest)
 bp.add_url_rule('/compras-form', view_func=comprasForm, methods=['POST'])
+bp.add_url_rule('/request-compras', view_func=requestCompras)
 bp.add_url_rule('/graficos', view_func=graficosView)
 
 bp.add_url_rule('/manifest.json', view_func=serve_manifest)
