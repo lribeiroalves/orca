@@ -198,7 +198,10 @@ class Compras(db.Model):
             'banco_id': self.banco_id,
             'banco': self.banco.nome,
             'fatura_id': self.fatura_id,
+            'fatura_mes': self.fatura.mes,
+            'fatura_ano': self.fatura.ano,
             'data': self.data,
+            'categoria_id': self.categoria_id,
             'categoria': self.categoria.nome,
             'hash': self.hash,
         }

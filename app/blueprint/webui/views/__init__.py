@@ -457,7 +457,27 @@ def comprasForm():
 
 
 def requestCompras():
-    return ''
+    hash = request.args['hash']
+    if hash:
+        compras = db.session.scalars(db.select(Compras).where(Compras.hash == hash)).all()
+        if compras:
+            return jsonify({
+                'status': 'success',
+                'message': 'ok',
+                'data': [c.to_dict() for c in compras]
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Nenhuma compra encontrada para esse hash',
+                'data': None
+            })
+    else:
+        return jsonify({
+            'status': 'error',
+            'message': 'Nenhum hash recebido',
+            'data': None
+        })
 
 
 def graficosView():

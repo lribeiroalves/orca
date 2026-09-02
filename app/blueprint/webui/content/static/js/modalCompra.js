@@ -183,29 +183,69 @@ $(function() {
         $('#hashCompra').val(0);
         $('#formCompra')[0].reset();
         $('#faturaCompra').empty().append('<option value="">...</option>');
-        $('#tabelaCompra').hide();
+        $('#divTabelaCompra').hide();
     })
 
     $('#tableBodyFaturas').on('click', 'tr', function(event) {
-        $('#tabelaCompra').show();
+        $('#divTabelaCompra').show();
         $('#modalCompraLabel').text($(this).data('titulo'));
         $('#modalCompra').modal('show');
 
         const hash = $(this).data('hash');
         const url = $('#tableBodyFaturas').data('url');
         
+        const data = $(this).find('td').eq(1).text().trim();
+        const parcelas = $(this).find('td').eq(6).text().split('/')[1].trim();
+        
         $.ajax({
             url: url,
             method: 'GET',
             data: {hash: hash},
             success: function(resposta) {
+                const linhas = resposta.data;
+                let tableContent = '';
 
+                for (let linha of linhas) {
+                    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+                    const faturaFormatada = `${meses[linha.fatura_mes-1]}-${linha.fatura_ano}`;
+                    const valTotalFormatado = parseFloat(linha['valor_total']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+                    tableContent += `
+                    <tr>
+                        <td class="text-start text-truncate" style="max-width: 150px;" title="${linha['descricao']}">
+                            ${linha['descricao']}
+                        </td>
+                        <td class="text-start text-muted text-nowrap">
+                            ${faturaFormatada}
+                        </td>
+                        <td class="text-end fw-medium text-nowrap">
+                            R$ ${valTotalFormatado}
+                        </td>
+                        <td class="text-center text-muted">
+                            <small>${`${linha['parcelas']}`.slice(0, -2)} / ${Number(`${linha['parcelas']}`.slice(-2))}</small>
+                        </td>
+                    </tr>`;
+                }
+                $('#tableBodyCompras').html(tableContent);
             },
             error: function(resposta) {
-
+                console.error(resposta.message);
             },
-            complete: function() {
-                
+            complete: function(resposta) {
+                if (resposta.responseJSON.status == 'success') {
+                    const dados = resposta.responseJSON.data[0];
+                    console.log(dados.categoria_id)
+                    $('#userCompra').val(dados.user_id);
+                    $('#bancoCompra').val(dados.banco_id);
+                    $('#categoriaCompra').val(dados.categoria_id);
+                    $('#dataCompra').val(data);
+                    $('#dataCompra').trigger('input');
+                    $('#valorCompra').val(dados.valor_total);             
+                    $('#valorCompra').trigger('input');
+                    $('#descCompra').val(dados.descricao);
+                    $('#hashCompra').val(dados.hash);
+                    $('#parcelaCompra').val(parcelas);
+                }
             }
         })
     });
