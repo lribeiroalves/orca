@@ -178,13 +178,13 @@ $(function() {
     $('#dataCompra').on('input keydown', inputDataCompra);
 
     $('#btnNovaCompra').on('click', function(event) {
-        $('#modalNovaCompra').modal('show');
+        $('#modalCompra').modal('show');
         $('#hashCompra').val(0);
-        $('#formNovaCompra')[0].reset();
+        $('#formCompra')[0].reset();
         $('#faturaCompra').empty().append('<option value="">...</option>');
     })
 
-    $('#formNovaCompra').on('submit', function(event) {
+    $('#formCompra').on('submit', function(event) {
         event.preventDefault();
 
         const dadosFormulario = $(this).serialize();
@@ -201,7 +201,7 @@ $(function() {
             success: function(resposta) {
                 if (resposta.status === 'success') {
                     atualizarFatura(resposta.ano, resposta.mes, 'mes');
-                    $('#modalNovaCompra').modal('hide');
+                    $('#modalCompra').modal('hide');
                 } else if (resposta.status === 'error') {
 
                     alert('Houve um erro!')
