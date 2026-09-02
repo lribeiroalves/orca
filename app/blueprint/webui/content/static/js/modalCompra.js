@@ -207,19 +207,16 @@ $(function() {
 
                 for (let linha of linhas) {
                     const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-                    const faturaFormatada = `${meses[linha.fatura_mes-1]}-${linha.fatura_ano}`;
-                    const valTotalFormatado = parseFloat(linha['valor_total']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                    const faturaFormatada = `${meses[linha.fatura_mes-1]} - ${linha.fatura_ano}`;
+                    const valFormatado = parseFloat(linha['valor_parcela']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
                     tableContent += `
                     <tr>
-                        <td class="text-start text-truncate" style="max-width: 150px;" title="${linha['descricao']}">
-                            ${linha['descricao']}
-                        </td>
                         <td class="text-start text-muted text-nowrap">
                             ${faturaFormatada}
                         </td>
                         <td class="text-end fw-medium text-nowrap">
-                            R$ ${valTotalFormatado}
+                            R$ ${valFormatado}
                         </td>
                         <td class="text-center text-muted">
                             <small>${`${linha['parcelas']}`.slice(0, -2)} / ${Number(`${linha['parcelas']}`.slice(-2))}</small>
