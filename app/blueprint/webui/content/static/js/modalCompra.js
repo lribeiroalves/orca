@@ -190,12 +190,13 @@ $(function() {
         $('#divTabelaCompra').show();
         $('#modalCompraLabel').text($(this).data('titulo'));
         $('#modalCompra').modal('show');
-
+        
         const hash = $(this).data('hash');
         const url = $('#tableBodyFaturas').data('url');
         
         const data = $(this).find('td').eq(1).text().trim();
         const parcelas = $(this).find('td').eq(6).text().split('/')[1].trim();
+        $('#btnConfirmaExclusao').attr('data-hash', hash);
         
         $.ajax({
             url: url,
@@ -280,5 +281,14 @@ $(function() {
                 btn.prop('disabled', false).text(textoOriginal);
             }
         });
+    });
+
+    $('#btnCompraExcluir').on('click', function() {
+        $('#modalCompra').modal('hide');
+        $('#modalExclusao').modal('show');
+    });
+
+    $('#modalExclusao').on('hidden.bs.modal', function() {
+        $('#modalCompra').modal('show');
     });
 });

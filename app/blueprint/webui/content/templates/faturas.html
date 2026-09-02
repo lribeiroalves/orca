@@ -111,8 +111,32 @@
     </div>
 </div>
 
+
+<!-- MODAL EXCLUSAO -->
+<div class="modal fade" id="modalExclusao" tabindex="-1" aria-labelledby="modalExclusaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header ps-4">
+                <h5 class="modal-title" id="modalExclusaoLabel">Excluir Compra</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+                    <p>Tem certeza que quer excluir essa compra?</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex justify-content-end">
+                    <button id="btnConfirmaExclusao" data-hash="0" class="btn btn-danger" type="button">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- MODAL NOVA COMPRA -->
-<div class="modal fade" id="modalCompra" aria-labelledby="modalCompraLabel" aria-hidden="true">
+<div class="modal fade" id="modalCompra" tabindex="-1" aria-labelledby="modalCompraLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header ps-4">
@@ -206,7 +230,7 @@
                                 </div>
 
                                 <div class="col-12 mt-4 d-flex justify-content-between justify-content-lg-evenly">
-                                    <button id="formCompraExcluir" class="btn btn-danger px-4 py-2 col-5 col-lg-4" type="button">
+                                    <button id="btnCompraExcluir" class="btn btn-danger px-4 py-2 col-5 col-lg-4" type="button">
                                         Excluir
                                     </button>
                                     <button id="formCompraSubmit" class="btn btn-primary px-4 py-2 col-5 col-lg-4" type="submit">
