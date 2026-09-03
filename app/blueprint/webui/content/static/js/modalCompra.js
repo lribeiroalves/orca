@@ -1,4 +1,5 @@
 import { atualizarFatura } from "./filtro_faturas.js";
+import { exibirMensagem } from "./flash_messages.js";
 
 function inputValorCompra(event) {
     let valorAtual = $(this).val();
