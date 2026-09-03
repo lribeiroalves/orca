@@ -1,5 +1,10 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-  <h5 class="text-center">Interface Administrativa</h1>
+  <h5 class="text-center">Interface Administrativa</h5>
+  <div class="col-12 d-flex justify-content-center">
+    <button class="btn btn-primary col-10 mt-5" type="button">
+      <a class="text-decoration-none text-reset" href="{{ url_for('webui.indexView') }}">Retornar a pagina inicial</a>
+    </button>
+  </div>
 {% endblock %}
