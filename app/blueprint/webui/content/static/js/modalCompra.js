@@ -184,12 +184,18 @@ $(function() {
         $('#formCompra')[0].reset();
         $('#faturaCompra').empty().append('<option value="">...</option>');
         $('#divTabelaCompra').hide();
+        $('#btnCompraExcluir').hide();
+        $('#divBotoesCompra').removeClass('justify-content-between justify-content-lg-evenly');
+        $('#divBotoesCompra').addClass('justify-content-end');
     })
 
     $('#tableBodyFaturas').on('click', 'tr', function(event) {
         $('#divTabelaCompra').show();
         $('#modalCompraLabel').text($(this).data('titulo'));
         $('#modalCompra').modal('show');
+        $('#btnCompraExcluir').show();
+        $('#divBotoesCompra').addClass('justify-content-between justify-content-lg-evenly');
+        $('#divBotoesCompra').removeClass('justify-content-end');
         
         const hash = $(this).data('hash');
         const url = $('#tableBodyFaturas').data('url');
@@ -213,10 +219,10 @@ $(function() {
 
                     tableContent += `
                     <tr>
-                        <td class="text-start text-muted text-nowrap">
+                        <td class="text-center text-muted text-nowrap">
                             ${faturaFormatada}
                         </td>
-                        <td class="text-end fw-medium text-nowrap">
+                        <td class="text-center fw-medium text-nowrap">
                             R$ ${valFormatado}
                         </td>
                         <td class="text-center text-muted">
