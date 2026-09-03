@@ -77,6 +77,19 @@ def consulta_banco(user=1, ano=1, mes=1) -> dict:
 
 
 def indexView():
+    exist_users = db.session.scalars(db.select(Users)).first()
+    exist_bancos = db.session.scalars(db.select(Bancos)).first()
+    exist_categorias = db.session.scalars(db.select(Categorias)).first()
+
+    verificacao = False
+    for k, v in {'users': exist_users, 'bancos': exist_bancos, 'categorias': exist_categorias}.items():
+        if not v:
+            flash(f'Tabela {k.capitalize()} vazia!')
+            verificacao = True
+            
+    if verificacao:
+        return redirect(url_for('admin.index'))
+    
     return render_template('index.html')
 
 
