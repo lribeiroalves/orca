@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 import os
-import locale
+from babel.numbers import format_currency
 
 from .ext import configuration
 
@@ -25,8 +25,7 @@ def create_app():
 
     @app.template_filter()
     def format_real(value):
-        locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-        return locale.currency(value, grouping=True)
+        return format_currency(value, 'BRL', locale='pt_BR')
 
     return app
 

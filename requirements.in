@@ -7,3 +7,4 @@ flask_migrate
 flask_wtf
 python-dateutil
 flask_admin
+Babel
