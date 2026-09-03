@@ -6,6 +6,8 @@
 #
 alembic==1.19.1
     # via flask-migrate
+babel==2.18.0
+    # via -r requirements.in
 blinker==1.9.0
     # via flask
 click==8.4.2
