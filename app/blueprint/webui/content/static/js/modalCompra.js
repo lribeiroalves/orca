@@ -199,6 +199,7 @@ $(function() {
         
         const hash = $(this).data('hash');
         const url = $('#tableBodyFaturas').data('url');
+        const linha_id = $(this).data('id');
         
         const data = $(this).find('td').eq(1).text().trim();
         const parcelas = $(this).find('td').eq(6).text().split('/')[1].trim();
@@ -238,7 +239,6 @@ $(function() {
             complete: function(resposta) {
                 if (resposta.responseJSON.status == 'success') {
                     const dados = resposta.responseJSON.data[0];
-                    console.log(dados.categoria_id)
                     $('#userCompra').val(dados.user_id);
                     $('#bancoCompra').val(dados.banco_id);
                     $('#categoriaCompra').val(dados.categoria_id);
@@ -249,6 +249,8 @@ $(function() {
                     $('#descCompra').val(dados.descricao);
                     $('#hashCompra').val(dados.hash);
                     $('#parcelaCompra').val(parcelas);
+
+                    $('#btnConfirmaExclusao').attr('data-id', linha_id);
                 }
             }
         })
@@ -295,6 +297,35 @@ $(function() {
     });
 
     $('#modalExclusao').on('hidden.bs.modal', function() {
-        $('#modalCompra').modal('show');
+        if ($(this).data('ignorar-retorno') === true) {
+            $(this).data('ignorar-retorno', false);
+        } else {
+            $('#modalCompra').modal('show');
+        }
+    });
+
+    $('#btnConfirmaExclusao').on('click', function() {
+        const url = $(this).data('url');
+        const hash = $(this).data('hash');
+        const id = $(this).data('id');
+        const parametros = {hash: hash, id: id}
+
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: parametros,
+            success: function(resposta) {
+                atualizarFatura(resposta.ano, resposta.mes, 'mes');
+            },
+            error: function(resposta) {
+                console.error(resposta);
+            },
+            complete: function(r) {
+                const resposta = r.responseJSON;
+                $('#modalExclusao').data('ignorar-retorno', true);
+                $('#modalExclusao').modal('hide');
+            }
+        });
     });
 });

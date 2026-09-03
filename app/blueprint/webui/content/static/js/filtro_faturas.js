@@ -40,7 +40,7 @@ function construirTabela() {
             let userName = item['user_name'].charAt(0).toUpperCase() + item['user_name'].slice(1);
     
             tableContent += `
-            <tr data-titulo="Editar Compra" data-hash="${item['hash']}">
+            <tr data-titulo="Editar Compra" data-hash="${item['hash']}" data-id="${item['id']}">
                 <td class="text-start">
                     <span id=user-tabela class="badge" style="background-color: ${users_global[item['user_id']][1]}; color: ${users_global[item['user_id']][2]}">${userName}</span>
                 </td>

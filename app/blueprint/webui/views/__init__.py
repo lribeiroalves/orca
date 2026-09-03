@@ -215,8 +215,6 @@ def excluirForm():
                 db.session.delete(saldo)
                 aba = 'saldo'
                 flash('Saldo apagado com sucesso.')
-            case 'compra':
-                pass
             case _:
                 raise Exception('Houve um Erro de Tipo.')
 
@@ -476,6 +474,45 @@ def requestCompras():
         return jsonify({
             'status': 'error',
             'message': 'Nenhum hash recebido',
+            'data': None
+        })
+
+
+def excluirCompras():
+    try:
+        hash = request.args['hash']
+        id = int(request.args['id'])
+        if hash and hash != '0' and id:
+            compras = db.session.scalars(db.select(Compras).where(Compras.hash == hash)).all()
+            if compras:
+                dict_compras = [c.to_dict() for c in compras]
+                mes, ano = [[c.fatura.mes, c.fatura.ano] for c in compras if c.id == id][0]
+                for c in compras:
+                    db.session.delete(c)
+                db.session.commit()
+                return jsonify({
+                    'status': 'success',
+                    'message': 'Compras encontradas e removidas',
+                    'data': dict_compras,
+                    'mes': mes,
+                    'ano': ano
+                })
+            else:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Nenhum compra encontrada com esse hash',
+                    'data': None,
+                })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Nenhum hash ou ID foi recebido',
+                'data': None
+            })
+    except Exception as err:
+        return jsonify({
+            'status': 'error',
+            'message': f'Erro: {err}',
             'data': None
         })
 
