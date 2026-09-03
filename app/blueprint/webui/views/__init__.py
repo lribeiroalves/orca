@@ -410,7 +410,7 @@ def nova_compra(dados:dict, hashcode: str):
             nova_compra.valor_total = dados['valor']
             nova_compra.valor_parcela = dados['valor'] / dados['parcelas']
             nova_compra.descricao = dados['desc']
-            nova_compra.parcelas = int(f'{i+1}{dados['parcelas']:02}')
+            nova_compra.parcelas = int(f"{i+1}{dados['parcelas']:02}")
             nova_compra.data = dados['data']
             nova_compra.hash = hashcode
             nova_compra.user_id = dados['user']
