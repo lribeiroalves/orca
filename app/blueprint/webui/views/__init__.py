@@ -350,7 +350,7 @@ def faturasRequest():
         resposta['meses'] = list(set([meses[f.mes - 1] for f in faturas if f.ano == ano]))
 
         if tipo == 'mes':
-            compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes)).all()
+            compras = db.session.scalars(db.select(Compras).join(Compras.fatura).where(Faturas.ano == ano, Faturas.mes == mes).order_by(Compras.data)).all()
             usuarios = list(set([c.user_id for c in compras]))
 
             if compras:

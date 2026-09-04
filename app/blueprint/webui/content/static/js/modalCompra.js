@@ -254,7 +254,7 @@ $(function() {
                     $('#btnConfirmaExclusao').attr('data-id', linha_id);
                 }
             }
-        })
+        });
     });
 
     $('#formCompra').on('submit', function(event) {

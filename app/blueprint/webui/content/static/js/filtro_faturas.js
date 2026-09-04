@@ -1,9 +1,17 @@
+import { exibirMensagem } from "./flash_messages.js";
+
 let bancoSelected = null;
 let userSelected = null;
 let dados_global;
 let users_global;
 
-function construirDropdown(anos, meses) {
+function construirDropdown(anos, meses, vazio=false) {
+    if (vazio) {
+        $('#mesesDropdownMenu').html('');
+        $('#anosDropdownMenu').html('');
+        return;
+    }
+
     const meses_nomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     
     // Dropdown Anos
@@ -138,24 +146,47 @@ export function atualizarFatura(ano, mes, tipo) {
     };
 
     const url = $('#dropItemsMes').data('url');
-    return $.get(url, parametros, function(resposta) {
-        construirDropdown(resposta['anos'], resposta['meses']);
-        if (tipo === "mes"){
-            construirDashboard(resposta);
-        }
 
-        $('#dropItemsAno').text(ano);
-        $('#dropItemsMes').text('Selecione...');
-        if (tipo === "mes") {
-            $('#dropItemsMes').text(meses[mes-1]);
+    return $.ajax({
+        url: url,
+        method: 'GET',
+        data: parametros,
+        success: function(resposta) {
+            construirDropdown(resposta['anos'], resposta['meses']);
+            if (tipo === "mes"){
+                construirDashboard(resposta);
+            }
+            $('#dropItemsAno').text(ano);
+            $('#dropItemsMes').text('Selecione...');
+            if (tipo === "mes") {
+                $('#dropItemsMes').text(meses[mes-1]);
+                $('#identificadorFatura').text(`${meses[mes-1]} / ${ano}`);
+                let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
+                $('#arrowLeft').data('mes', prev_mes);
+                $('#arrowLeft').data('ano', prev_ano);
+                $('#arrowRight').data('mes', next_mes);
+                $('#arrowRight').data('ano', next_ano);
+                $('#arrowLeft').show();
+                $('#arrowRight').show();
+            }
+        },
+        error: function(resposta) {
+            construirDropdown(0, 0, true);
+            construirDashboard({dados: null});
+            $('#dropItemsAno').text('Selecione...');
+            $('#dropItemsMes').text('Selecione...');
+
+            const hoje = new Date();
+            const mes = hoje.getUTCMonth()+1;
+            const ano = hoje.getUTCFullYear();
             $('#identificadorFatura').text(`${meses[mes-1]} / ${ano}`);
-            let [prev_mes, prev_ano, next_mes, next_ano] = calc_data(mes, ano);
-            $('#arrowLeft').data('mes', prev_mes);
-            $('#arrowLeft').data('ano', prev_ano);
-            $('#arrowRight').data('mes', next_mes);
-            $('#arrowRight').data('ano', next_ano);
+            $('#arrowLeft').hide();
+            $('#arrowRight').hide();
+        },
+        complete: function(r) {
+
         }
-    });    
+    });  
 }
 
 function calc_data(mes, ano) {
