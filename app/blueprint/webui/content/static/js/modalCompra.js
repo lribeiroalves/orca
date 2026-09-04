@@ -275,7 +275,7 @@ $(function() {
                 if (resposta.status === 'success') {
                     atualizarFatura(resposta.ano, resposta.mes, 'mes');
                     $('#modalCompra').modal('hide');
-                    exibirMensagem('Compra Registrada/Atualizada com Sucesso!')
+                    exibirMensagem('Compra Registrada/Atualizada com Sucesso!', 800);
                 } else if (resposta.status === 'error') {
                     alert('Houve um erro!')
                 } else {
@@ -318,7 +318,7 @@ $(function() {
             data: parametros,
             success: function(resposta) {
                 atualizarFatura(resposta.ano, resposta.mes, 'mes');
-                exibirMensagem('Compra Excluída com Sucesso!')
+                exibirMensagem('Compra Excluída com Sucesso!', 1000)
             },
             error: function(resposta) {
                 console.error(resposta);
