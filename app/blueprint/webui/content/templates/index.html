@@ -18,16 +18,16 @@
 </div>
 <div class="mt-5 pt-lg-5 row">
     <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
-        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Nova Entrada</a>
+        <a href="{{ url_for('admin.index') }}" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Interface Administrativa</a>
     </div>
     <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
-        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Nova Saída</a>
+        <a href="{{ url_for('webui.tabelasView') }}" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Tabelas</a>
     </div>
     <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
-        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Novo Saldo</a>
+        <a href="{{ url_for('webui.faturasView') }}" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Faturas</a>
     </div>
     <div class="col-12 col-md-6 my-3 mt-md-1 my-lg-5 d-flex justify-content-center">
-        <a href="#" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Nova Compra</a>
+        <a href="{{ url_for('webui.graficosView') }}" class="btn btn-xl btn-primary active col-12 col-lg-6 btn-inicio" role="button">Relatórios</a>
     </div>
 </div>
 {% endblock %}
