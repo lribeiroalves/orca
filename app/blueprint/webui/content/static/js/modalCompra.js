@@ -307,10 +307,9 @@ $(function() {
 
     $('#btnConfirmaExclusao').on('click', function() {
         const url = $(this).data('url');
-        const hash = $(this).data('hash');
-        const id = $(this).data('id');
-        const parametros = {hash: hash, id: id}
-
+        let hash = $(this).attr('data-hash');
+        let id = $(this).attr('data-id');
+        let parametros = {hash: hash, id: id};
 
         $.ajax({
             url: url,
