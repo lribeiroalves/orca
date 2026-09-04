@@ -3,8 +3,10 @@
 {% block body %}
   <h5 class="text-center">Interface Administrativa</h5>
   <div class="col-12 d-flex justify-content-center">
-    <button class="btn btn-primary col-10 mt-5" type="button">
-      <a class="text-decoration-none text-reset" href="{{ url_for('webui.indexView') }}">Retornar a pagina inicial</a>
-    </button>
+      <a class="text-decoration-none text-reset col-12 text-center" href="{{ url_for('webui.indexView') }}">
+        <button class="btn btn-primary col-10 mt-5" type="button">
+          Retornar a pagina inicial
+        </button>
+      </a>
   </div>
 {% endblock %}
