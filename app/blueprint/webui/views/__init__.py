@@ -31,7 +31,9 @@ def consulta_banco(user=1, ano=1, mes=1) -> dict:
 
         saldos_ant = db.session.scalars(db.select(Saldos).where(Saldos.ano == ano_ant, Saldos.mes == mes_ant, Saldos.user_id == int(user))).all()
 
-        user_nome = db.session.scalars(db.select(Users).where(Users.id == user)).first().nome
+        user_nome = db.session.scalars(db.select(Users).where(Users.id == user)).first()
+        if user_nome:
+            user_nome = user_nome.nome
 
         total_entradas = 0
         total_saidas = 0
@@ -53,6 +55,7 @@ def consulta_banco(user=1, ano=1, mes=1) -> dict:
         labels_saldos = ['Mês Passado', 'Mês Atual']
         values_saldos = [total_saldos_ant, total_saldos]
     except Exception as e:
+        print('Erro', e)
         return None
 
     return {
@@ -109,7 +112,8 @@ def tabelasView():
     if req_ano and req_mes and req_user:
         dados = consulta_banco(req_user, req_ano, req_mes)
     else:
-        dados = consulta_banco(1, datetime.now().year, datetime.now().month)
+        first_user = db.session.scalars(db.select(Users)).first().id
+        dados = consulta_banco(first_user, datetime.now().year, datetime.now().month)
 
     return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, formExcluir=form_excluir, formSaldo=form_saldos, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
 
