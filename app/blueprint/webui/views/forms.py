@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, TextAreaField, StringField, HiddenField
+from wtforms import SelectField, TextAreaField, StringField, HiddenField, SelectMultipleField
 from wtforms.validators import DataRequired
 from datetime import datetime
 
@@ -8,7 +8,7 @@ from app.ext.database.models import *
 
 
 class FormCompra(FlaskForm):
-    userCompra = SelectField('Usuário', choices=[], validators=[DataRequired()])
+    userCompra = SelectMultipleField('Usuário', choices=[], coerce=int)
     bancoCompra = SelectField('Banco', choices=[], validators=[DataRequired()])
     faturaCompra = SelectField('Fatura', description='Aguardando a data da compra.', choices=[('', '...')], validators=[DataRequired()], validate_choice=False)
     valorCompra = StringField('Valor', validators=[DataRequired()])
@@ -17,12 +17,12 @@ class FormCompra(FlaskForm):
     descCompra = TextAreaField('Descrição', validators=[DataRequired()], render_kw={'rows': 5, 'style': 'height: 100%;'})
     dataCompra = StringField('Data da Compra', validators=[DataRequired()])
     hashCompra = HiddenField('hashCompra', validators=[DataRequired()])
+    selectedUsersCompra = HiddenField('selectedUsers')
 
     def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             users = db.session.scalars(db.select(Users)).all()
             self.userCompra.choices = [(str(u.id), str(u.nome).title()) for u in users]
-            self.userCompra.choices.insert(0, ('', 'Selecione...'))
 
             bancos = db.session.scalars(db.select(Bancos).where(Bancos.cartao == True)).all()
             self.bancoCompra.choices = [(str(b.id), str(b.nome).title()) for b in bancos]

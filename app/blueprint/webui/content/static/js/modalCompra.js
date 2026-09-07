@@ -171,12 +171,34 @@ function inputDataCompra(event) {
     $(this).val(valorAtual);
 };
 
+let userSelection = [];
 
 $(function() {
     $('#valorCompra').on('input', inputValorCompra);
     $('#parcelaCompra').on('input', inputParcelaCompra);
     $('#descCompra').on('keydown', inputDescCompra);
     $('#dataCompra').on('input keydown', inputDataCompra);
+    $('#fakeSelect')[0].setCustomValidity("Campo obrigatório");
+
+    $('#userOptions li span').on('click', function(event) {
+        console.log($(this).data('value'));
+        $(this).toggleClass('bg-primary');
+        const userValue = $(this).data('value');
+        let index = userSelection.indexOf(userValue);
+        if (index === -1) {
+            userSelection.push(userValue);
+        } else {
+            userSelection.splice(index, 1);
+        }
+        if (userSelection.length) {
+            $('#fakeSelect').val(`${userSelection.length} Usuário(s)`);
+            $('#fakeSelect')[0].setCustomValidity("");
+        } else {
+            $('#fakeSelect').val('Selecione...');
+            $('#fakeSelect')[0].setCustomValidity("Campo obrigatório");
+        }
+        $('#userCompra').val(userSelection);
+    });
 
     $('#btnNovaCompra').on('click', function(event) {
         $('#modalCompra').modal('show');
