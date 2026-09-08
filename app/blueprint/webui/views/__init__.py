@@ -410,18 +410,19 @@ def nova_compra(dados:dict, hashcode: str):
         fatura = consulta_fatura(dados['ano_fatura'], dados['mes_fatura'], i)
 
         if fatura:
-            nova_compra = Compras()
-            nova_compra.valor_total = dados['valor']
-            nova_compra.valor_parcela = dados['valor'] / dados['parcelas']
-            nova_compra.descricao = dados['desc']
-            nova_compra.parcelas = int(f"{i+1}{dados['parcelas']:02}")
-            nova_compra.data = dados['data']
-            nova_compra.hash = hashcode
-            nova_compra.user_id = dados['user']
-            nova_compra.banco_id = dados['banco']
-            nova_compra.categoria_id = dados['categoria']
-            nova_compra.fatura_id = fatura
-            db.session.add(nova_compra)
+            for id in dados['user']:
+                nova_compra = Compras()
+                nova_compra.valor_total = dados['valor']
+                nova_compra.valor_parcela = dados['valor'] / dados['parcelas'] / len(dados['user'])
+                nova_compra.descricao = dados['desc']
+                nova_compra.parcelas = int(f"{i+1}{dados['parcelas']:02}")
+                nova_compra.data = dados['data']
+                nova_compra.hash = hashcode
+                nova_compra.user_id = id
+                nova_compra.banco_id = dados['banco']
+                nova_compra.categoria_id = dados['categoria']
+                nova_compra.fatura_id = fatura
+                db.session.add(nova_compra)
         else:
             raise Exception('Não foi possível verificar a fatura!')
 
@@ -432,7 +433,7 @@ def comprasForm():
     try:
         if form.validate_on_submit():
             dados = {
-            'user': int(form.userCompra.data),
+            'user': form.userCompra.data,
             'banco': int(form.bancoCompra.data),
             'categoria': int(form.categoriaCompra.data),
             'data': datetime.strptime(form.dataCompra.data, '%d/%m/%Y'),
