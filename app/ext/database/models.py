@@ -138,6 +138,9 @@ class Faturas(db.Model):
     mes: Mapped[int] = mapped_column(nullable=False)
     status_paga: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
+    # relacoes
+    compras: Mapped[list['Compras']] = relationship('Compras', back_populates='fatura')
+
     def __repr__(self):
         return f'Fatura(id: {self.id}, ano: {self.ano}, mes: {self.mes}, status_paga: {self.status_paga})'
 
@@ -179,7 +182,7 @@ class Compras(db.Model):
     banco_id: Mapped[int] = mapped_column(ForeignKey('bancos.id'))
     banco: Mapped['Bancos'] = relationship('Bancos')
     fatura_id: Mapped[int] = mapped_column(ForeignKey('faturas.id'))
-    fatura: Mapped['Faturas'] = relationship('Faturas')
+    fatura: Mapped['Faturas'] = relationship('Faturas', back_populates='compras')
     categoria_id: Mapped[int] = mapped_column(ForeignKey('categorias.id'))
     categoria: Mapped['Categorias'] = relationship('Categorias')
 

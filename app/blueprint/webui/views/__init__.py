@@ -347,7 +347,7 @@ def faturasRequest():
 
     resposta = {}
 
-    faturas = db.session.scalars(db.select(Faturas)).all()
+    faturas = db.session.scalars(db.select(Faturas).where(Faturas.compras.any())).all()
 
     if faturas:
         resposta['anos'] = list(set([f.ano for f in faturas]))

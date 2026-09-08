@@ -146,6 +146,7 @@ export function atualizarFatura(ano, mes, tipo) {
     };
 
     const url = $('#dropItemsMes').data('url');
+    console.log(url)
 
     return $.ajax({
         url: url,
