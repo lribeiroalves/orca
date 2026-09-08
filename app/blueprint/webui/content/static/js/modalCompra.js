@@ -172,6 +172,30 @@ function inputDataCompra(event) {
 };
 
 let userSelection = [];
+let userNames = [];
+
+function controlFakeSelect(userValue, userName) {
+    let indexValue = userSelection.indexOf(userValue);
+    let indexName = userNames.indexOf(userName);
+    if (indexValue === -1) {
+        userSelection.push(userValue);
+        userNames.push(userName);
+    } else {
+        userSelection.splice(indexValue, 1);
+        userNames.splice(indexName, 1);
+    }
+    if (userSelection.length === 1) {
+        $('#fakeSelect').val(`${userNames[0]}`);
+        $('#fakeSelect')[0].setCustomValidity("");
+    }
+    else if (userSelection.length > 1) {
+        $('#fakeSelect').val(`${userSelection.length} Usuário(s)`);
+        $('#fakeSelect')[0].setCustomValidity("");
+    } else {
+        $('#fakeSelect').val('Selecione...');
+        $('#fakeSelect')[0].setCustomValidity("Campo obrigatório");
+    }
+}
 
 $(function() {
     $('#valorCompra').on('input', inputValorCompra);
@@ -180,26 +204,16 @@ $(function() {
     $('#dataCompra').on('input keydown', inputDataCompra);
     $('#fakeSelect')[0].setCustomValidity("Campo obrigatório");
 
+    // Campo usuario do formulario
     $('#userOptions li span').on('click', function(event) {
-        console.log($(this).data('value'));
-        $(this).toggleClass('bg-primary');
+        $(this).toggleClass('user-selected');
         const userValue = $(this).data('value');
-        let index = userSelection.indexOf(userValue);
-        if (index === -1) {
-            userSelection.push(userValue);
-        } else {
-            userSelection.splice(index, 1);
-        }
-        if (userSelection.length) {
-            $('#fakeSelect').val(`${userSelection.length} Usuário(s)`);
-            $('#fakeSelect')[0].setCustomValidity("");
-        } else {
-            $('#fakeSelect').val('Selecione...');
-            $('#fakeSelect')[0].setCustomValidity("Campo obrigatório");
-        }
+        const userName = $(this).text();
+        controlFakeSelect(userValue, userName);
         $('#userCompra').val(userSelection);
     });
 
+    // botao de adicionar nova compra
     $('#btnNovaCompra').on('click', function(event) {
         $('#modalCompra').modal('show');
         $('#modalCompraLabel').text($(this).data('titulo'));
@@ -210,8 +224,12 @@ $(function() {
         $('#btnCompraExcluir').hide();
         $('#divBotoesCompra').removeClass('justify-content-between justify-content-lg-evenly');
         $('#divBotoesCompra').addClass('justify-content-end');
+        $('#userOptions li span').removeClass('user-selected');
+        userNames = [];
+        userSelection = [];
     })
 
+    // Clicar em uma compra para edicao/remocao
     $('#tableBodyFaturas').on('click', 'tr', function(event) {
         $('#divTabelaCompra').show();
         $('#modalCompraLabel').text($(this).data('titulo'));
@@ -237,6 +255,9 @@ $(function() {
                 let tableContent = '';
 
                 for (let linha of linhas) {
+                    if (Object.hasOwn(linha, 'usuarios')) {
+                        continue;
+                    }
                     const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
                     const faturaFormatada = `${meses[linha.fatura_mes-1]} - ${linha.fatura_ano}`;
                     const valFormatado = parseFloat(linha['valor_parcela']).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -261,8 +282,17 @@ $(function() {
             },
             complete: function(resposta) {
                 if (resposta.responseJSON.status == 'success') {
-                    const dados = resposta.responseJSON.data[0];
-                    $('#userCompra').val(dados.user_id);
+                    const dados = resposta.responseJSON.data[1];
+                    const usuarios = Object.entries(resposta.responseJSON.data[0]).slice(0, -1);
+                    const idsUsuarios = Object.keys(resposta.responseJSON.data[0]).slice(0, -1);
+                    userSelection = [];
+                    userNames = [];
+                    $('#userOptions li span').removeClass('user-selected');
+                    for (const user of usuarios) {
+                        $(`#opt${user[1]}`).addClass('user-selected');
+                        controlFakeSelect(user[0], user[1]);
+                    }
+                    $('#userCompra').val(idsUsuarios);
                     $('#bancoCompra').val(dados.banco_id);
                     $('#categoriaCompra').val(dados.categoria_id);
                     $('#dataCompra').val(data);
@@ -279,6 +309,7 @@ $(function() {
         });
     });
 
+    // submissao do formulario de compra 
     $('#formCompra').on('submit', function(event) {
         event.preventDefault();
 
@@ -314,11 +345,13 @@ $(function() {
         });
     });
 
+    // botao de exclusao do formulario de compra
     $('#btnCompraExcluir').on('click', function() {
         $('#modalCompra').modal('hide');
         $('#modalExclusao').modal('show');
     });
 
+    // modal de exclusao
     $('#modalExclusao').on('hidden.bs.modal', function() {
         if ($(this).data('ignorar-retorno') === true) {
             $(this).data('ignorar-retorno', false);
@@ -327,6 +360,7 @@ $(function() {
         }
     });
 
+    // botao de confirmacao de exclusao do formulario de exclusao
     $('#btnConfirmaExclusao').on('click', function() {
         const url = $(this).data('url');
         let hash = $(this).attr('data-hash');

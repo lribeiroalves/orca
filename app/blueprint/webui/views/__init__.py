@@ -487,11 +487,15 @@ def requestCompras():
     hash = request.args['hash']
     if hash:
         compras = db.session.scalars(db.select(Compras).where(Compras.hash == hash)).all()
+        users = {str(c.user_id): c.user.nome.capitalize() for c in compras}
+        users['usuarios'] = True;
+        data = [c.to_dict() for c in compras]
+        data.insert(0, users)
         if compras:
             return jsonify({
                 'status': 'success',
                 'message': 'ok',
-                'data': [c.to_dict() for c in compras]
+                'data': data
             })
         else:
             return jsonify({
