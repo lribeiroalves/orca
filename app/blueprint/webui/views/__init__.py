@@ -115,7 +115,7 @@ def tabelasView():
         first_user = db.session.scalars(db.select(Users)).first().id
         dados = consulta_banco(first_user, datetime.now().year, datetime.now().month)
 
-    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, formExcluir=form_excluir, formSaldo=form_saldos, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
+    return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, formExcluir=form_excluir, formSaldo=form_saldos, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba, labels_es=dados['labels_resultado'], values_es=dados['values_resultado'], labels_p=dados['labels_saldo'], values_p=dados['values_saldo'])
 
 
 def filtroTabelasForm():

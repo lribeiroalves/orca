@@ -260,8 +260,19 @@
     <!-- ABA RESULTADO   -->
     <div class="tab-content">
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'resultado' %}show active{% endif %}" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
-            <div>
-                RESULTADO
+            <div class="row">
+                <div class="col-12 col-lg-6 mt-3">
+                    <h3 class="text-center mb-3">Entradas/Saídas</h3>
+                    <div class="col-12 d-flex justify-content-center">
+                        <canvas class="col-8" id="graf-es" height="100" data-label='{{ labels_es|tojson }}' data-values='{{ values_es|tojson }}'></canvas>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 mt-5 mt-lg-3">
+                    <h3 class="text-center mb-3">Patrimônio</h3>
+                    <div class="col-12 d-flex justify-content-center">
+                        <canvas class="col-8" id="graf-p" height="100" data-label='{{ labels_p|tojson }}' data-values='{{ values_p|tojson }}'></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -489,4 +500,8 @@
 <script src="{{url_for('webui.static', filename='js/modalEntradaSaida.js')}}"></script>
 <script src="{{url_for('webui.static', filename='js/modalSaldos.js')}}"></script>
 <script src="{{url_for('webui.static', filename='js/form-excluir.js')}}"></script>
+<script src="{{url_for('webui.static', filename='js/graficos_tabelas.js')}}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 {% endblock %}
