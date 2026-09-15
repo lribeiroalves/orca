@@ -260,17 +260,17 @@
     <!-- ABA RESULTADO   -->
     <div class="tab-content">
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'resultado' %}show active{% endif %}" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
-            <div class="row">
+            <div class="row pt-3">
                 <div class="col-12 col-lg-6 mt-3">
-                    <h3 class="text-center mb-3">Entradas/Saídas</h3>
-                    <div class="col-12 d-flex justify-content-center">
-                        <canvas class="col-8" id="graf-es" height="100" data-label='{{ labels_es|tojson }}' data-values='{{ values_es|tojson }}'></canvas>
+                    <h1 class="dm-mono text-center mb-3 mb-lg-5">Entradas/Saídas</h1>
+                    <div class="mx-auto pt-lg-3" style="position: relative; height: 350px; width: 100%; max-width: 600px;">
+                        <canvas id="graf-es" data-label='{{ labels_es|tojson }}' data-values='{{ values_es|tojson }}'></canvas>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 mt-5 mt-lg-3">
-                    <h3 class="text-center mb-3">Patrimônio</h3>
-                    <div class="col-12 d-flex justify-content-center">
-                        <canvas class="col-8" id="graf-p" height="100" data-label='{{ labels_p|tojson }}' data-values='{{ values_p|tojson }}'></canvas>
+                    <h1 class="dm-mono text-center mb-3 mb-lg-5">Patrimônio</h1>
+                    <div class="mx-auto pt-lg-3" style="position: relative; height: 350px; width: 100%; max-width: 600px;">
+                        <canvas id="graf-p" data-label='{{ labels_p|tojson }}' data-values='{{ values_p|tojson }}'></canvas>
                     </div>
                 </div>
             </div>

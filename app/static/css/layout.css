@@ -73,3 +73,9 @@ body {
     text-decoration: none;
     color: white;
 }
+
+.dm-mono {
+  font-family: "DM Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
