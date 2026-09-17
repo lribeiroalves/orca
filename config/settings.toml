@@ -6,5 +6,6 @@ EXTENSIONS = [
     'app.ext.admin:init_app',
     'app.seeders:init_app',
 
-    'app.blueprint.webui:init_app'
+    'app.blueprint.webui:init_app',
+    'app.blueprint.graficos:init_app'
 ]

@@ -2,7 +2,6 @@ from flask import render_template, abort, redirect, url_for, jsonify, flash, req
 import os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import extract
 import random
 import colorsys
 import hashlib
