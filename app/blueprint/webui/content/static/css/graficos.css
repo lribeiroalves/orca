@@ -1,0 +1,21 @@
+.menu-item {
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+.menu-item:hover {
+    font-weight: bolder;
+    background-color: rgba(135, 206, 250, 0.233);
+    border-radius: 20px;
+}
+
+/* Seleciona todos os itens da lista, exceto o último */
+.nav.flex-column .flex-item:not(:last-child)::after {
+    content: '';
+    display: block;
+    width: 100%; /* Largura da linha (não encosta nas bordas) */
+    height: 1px;
+    margin: 0 auto; /* Centraliza a linha */
+    /* Efeito degradê: transparente nas pontas, visível no meio */
+    background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 20%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.15) 80%, rgba(0,0,0,0) 100%);
+}

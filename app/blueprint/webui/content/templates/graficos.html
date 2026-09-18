@@ -13,7 +13,50 @@
 {% endblock %}
 
 {% block main %}
-GRAFICOS
+<div class="container-fluid p-3 p-lg-4 h-100 d-flex flex-column">
+    <div class="card border-o shadow-sm flex-grow-1">
+        <div class="card-header bg-white border-bottom py-2 px-4 px-lg-5 d-flex justify-content-start align-items-center">
+            <button class="btn btn-outline-primary rounded-circle shadow-sm me-3" style="width: 40px; height: 40px; font-size: 0.85rem;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" title="Selecionar Gráfico"><i class="bi bi-bar-chart-line-fill"></i></button>
+            <h5 id="tituloGrafico" class="text-secondary fw-bold mt-auto">Visão Geral</h5>
+        </div>
+        <div class="card-body w-100 d-flex justify-content-center align-items-center overflow-auto">
+            <div class="chart-container" style="position: relative; height: 100%; width: 100%; min-height: 300px;">
+                <canvas id="graf" class="bg-primary bg-opacity-10 rounded-3"></canvas> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold text-primary" id="offcanvasLabel">Gráficos Disponíveis</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div id="menu" class="col-12">
+        <ul class="nav flex-column mt-3">
+            <li class="flex-item">
+                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                    <h5 class="mb-0">Patrimônio</h5>
+                </a>
+            </li>
+            <li class="flex-item">
+                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                    <h5 class="mb-0">Entradas/Saídas</h5>
+                </a>
+            </li>
+            <li class="flex-item">
+                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                    <h5 class="mb-0">Cartão de Crédito</h5>
+                </a>
+            </li>
+            <li class="flex-item">
+                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                    <h5 class="mb-0">Faturas</h5>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
 
 {% block js %}
