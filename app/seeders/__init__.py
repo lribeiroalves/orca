@@ -8,6 +8,7 @@ from .saldos import seed_saldos
 from .faturas import seed_faturas
 from .categorias import seed_categorias
 from .compras import seed_compras
+from .geral import seed_geral
 
 
 @click.command('populate-development')
@@ -27,7 +28,7 @@ def populate_development():
 
 def init_app(app):
     if app.config['ENV'] == 'development':
-        for command in [seed_users, seed_bancos, seed_entradas, seed_saidas, seed_saldos, seed_faturas, seed_compras, seed_categorias, populate_development]:
+        for command in [seed_users, seed_bancos, seed_entradas, seed_saidas, seed_saldos, seed_faturas, seed_compras, seed_categorias, populate_development, seed_geral]:
             app.cli.add_command(command)
 
     

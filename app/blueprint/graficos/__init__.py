@@ -10,6 +10,7 @@ base_path = get_base_path()
 bp = Blueprint('graficos', __name__, static_folder=os.path.join(base_path, 'app', 'blueprint', 'graficos', 'content', 'static'), template_folder=os.path.join(base_path, 'app', 'blueprint', 'graficos', 'content', 'templates'), static_url_path='/graficos/static', url_prefix='/graficos')
 
 bp.add_url_rule('/', view_func=index_test)
+bp.add_url_rule('/patrimonio', view_func=get_patrimonio)
 
 
 def init_app(app):

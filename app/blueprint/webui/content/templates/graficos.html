@@ -35,22 +35,22 @@
     <div id="menu" class="col-12">
         <ul class="nav flex-column mt-3">
             <li class="flex-item">
-                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                <a id="btnPatrimonio" data-url="{{ url_for('graficos.get_patrimonio') }}" href="#" class="nav-link text-center text-dark py-4 menu-item">
                     <h5 class="mb-0">Patrimônio</h5>
                 </a>
             </li>
             <li class="flex-item">
-                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                <a id="btnInOut" href="#" class="nav-link text-center text-dark py-4 menu-item">
                     <h5 class="mb-0">Entradas/Saídas</h5>
                 </a>
             </li>
             <li class="flex-item">
-                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                <a id="btnCredito" href="#" class="nav-link text-center text-dark py-4 menu-item">
                     <h5 class="mb-0">Cartão de Crédito</h5>
                 </a>
             </li>
             <li class="flex-item">
-                <a href="#" class="nav-link text-center text-dark py-4 menu-item">
+                <a id="btnFaturas" href="#" class="nav-link text-center text-dark py-4 menu-item">
                     <h5 class="mb-0">Faturas</h5>
                 </a>
             </li>
@@ -60,4 +60,5 @@
 {% endblock %}
 
 {% block js %}
+<script type="module" src="{{url_for('graficos.static', filename='js/grafico_patrimonio.js')}}"></script>
 {% endblock %}
