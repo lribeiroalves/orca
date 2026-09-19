@@ -30,8 +30,9 @@ class FormCompra(FlaskForm):
 
             categorias = db.session.scalars(db.select(Categorias).order_by(Categorias.nome)).all()
             self.categoriaCompra.choices = [(str(c.id), str(c.nome).title()) for c in categorias if c.nome.lower() != 'outros']
-            cat_outros = [(str(c.id), str(c.nome).title()) for c in categorias if c.nome.lower() == 'outros'][0]
-            self.categoriaCompra.choices.append(cat_outros)
+            cat_outros = [(str(c.id), str(c.nome).title()) for c in categorias if c.nome.lower() == 'outros']
+            if cat_outros:
+                self.categoriaCompra.choices.append(cat_outros[0])
             self.categoriaCompra.choices.insert(0, ('', 'Selecione...'))
 
 
