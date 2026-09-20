@@ -21,7 +21,7 @@
         </div>
         <div class="card-body w-100 d-flex justify-content-center align-items-center overflow-auto">
             <div class="chart-container" style="position: relative; height: 100%; width: 100%; min-height: 300px;">
-                <canvas id="graf" class="bg-primary bg-opacity-10 rounded-3"></canvas> 
+                <canvas id="graf" class="rounded-3"></canvas> 
             </div>
         </div>
     </div>
@@ -61,4 +61,7 @@
 
 {% block js %}
 <script type="module" src="{{url_for('graficos.static', filename='js/grafico_patrimonio.js')}}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 {% endblock %}
