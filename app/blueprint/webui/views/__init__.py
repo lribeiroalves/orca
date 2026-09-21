@@ -131,7 +131,7 @@ def filtroTabelasForm():
         if len(aba) > 1 and aba[1] == 'p':
             usuarios = db.session.scalars(db.select(Users.id)).all()
             index = usuarios.index(user)
-            user = (index + 1) % len(usuarios) + 1
+            user = usuarios[(index + 1) % len(usuarios)]
 
         aba = aba[0] if aba else 'entrada'
 

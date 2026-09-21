@@ -58,10 +58,11 @@ $(function() {
                                     padding: 5,
                                     color: '#666',
                                     callback: function(value, index) {
-                                        if (index % 12 === 6) {
+                                        if (index === 0 || resposta.anos[index] !== resposta.anos[index - 1]) {
+                                            console.log(index)
                                             return resposta.anos[index];
                                         }
-                                        return ''; 
+                                        return '';
                                     }
                                 }
                             },

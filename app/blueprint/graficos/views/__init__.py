@@ -39,17 +39,28 @@ def get_patrimonio():
 
     users = list(set([s[2].nome for s in saldos]))
 
-    anos = [s[0] for s in saldos]
-    anos = [v for i, v in enumerate(anos) if i % len(users) == 0]
-    meses = [s[1] for s in saldos]
-    meses = [MESES[v] for i, v in enumerate(meses) if i % len(users) == 0]
+    anos_base = [s[0] for s in saldos]
+    anos = []
+    meses = []
+    for ano in range(min(anos_base), max(anos_base)+1):
+        anos += [ano] * 12
+        meses += MESES.values()
+
 
     series = [{'label': u.capitalize(), 'valores': []} for u in users]
-    for linha in saldos:
-        for item in series:
-            if linha[2].nome == item['label'].lower():
-                item['valores'].append(linha[3])
-                continue
+    for i in range(len(anos)):
+        for u in users:
+            saldo_encontrado = False
+            for linha in saldos:
+                if linha[0] == anos[i] and MESES[linha[1]] == meses[i] and linha[2].nome == u:
+                    saldo_encontrado = True
+                    valor = linha[3]
+            if not saldo_encontrado:
+                valor = 0
+            for item in series:
+                if u == item['label'].lower():
+                    item['valores'].append(valor)
+                    break
 
     resposta = {
         'status': 'ok',
