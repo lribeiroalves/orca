@@ -18,6 +18,15 @@
         <div class="card-header bg-white border-bottom py-2 px-4 px-lg-5 d-flex justify-content-start align-items-center">
             <button class="btn btn-outline-primary rounded-circle shadow-sm me-3" style="width: 40px; height: 40px; font-size: 0.85rem;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" title="Selecionar Gráfico"><i class="bi bi-bar-chart-line-fill"></i></button>
             <h5 id="tituloGrafico" class="text-secondary fw-bold mt-auto">Visão Geral</h5>
+            <div id="divPatrimonio" class="ms-auto d-none">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="btnDropDownPatrimonio" data-bs-toggle="dropdown" aria-expanded="false">
+                        Selecionar ano...
+                    </button>
+                    <ul id="dropDownPatrimonio" class="dropdown-menu" aria-labelledby="btnDropDownPatrimonio">
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="card-body w-100 d-flex justify-content-center align-items-center overflow-auto">
             <div class="chart-container" style="position: relative; height: 100%; width: 100%; min-height: 300px;">
@@ -61,6 +70,7 @@
 
 {% block js %}
 <script type="module" src="{{url_for('graficos.static', filename='js/grafico_patrimonio.js')}}"></script>
+<script type="module" src="{{url_for('webui.static', filename='js/flash_messages.js')}}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>

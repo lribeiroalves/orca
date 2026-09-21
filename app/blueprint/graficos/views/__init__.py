@@ -1,4 +1,4 @@
-from flask import abort, jsonify
+from flask import abort, jsonify, request
 from sqlalchemy import func
 
 from app.ext.database import db
@@ -25,6 +25,13 @@ def index_test():
 
 
 def get_patrimonio():
+    try:
+        r_ano = int(request.args['ano'])
+        r_user = int(request.args['user'])
+        print(r_user)
+    except:
+        r_ano, r_user = (0, 0, 0)
+
     stmt = (
         db.select(
                 Saldos.ano,
@@ -35,7 +42,20 @@ def get_patrimonio():
             .join(Saldos.user)
             .group_by(Saldos.ano, Saldos.mes, Users)
     )
+    filtros = []
+    if r_ano:
+        filtros.append(Saldos.ano == r_ano)
+    if r_user:
+        filtros.append(Saldos.user_id == r_user)
+
+    if filtros:
+        stmt = stmt.where(*filtros)
+
     saldos = db.session.execute(statement=stmt).all()
+    if not saldos:
+        return jsonify({
+            'status': 'error'
+        })
 
     users = list(set([s[2].nome for s in saldos]))
 
