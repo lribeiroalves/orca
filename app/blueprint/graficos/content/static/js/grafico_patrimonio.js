@@ -1,3 +1,5 @@
+let graficoCriado;
+
 $(function() {
     $('#btnPatrimonio').on('click', function(event) {
         event.preventDefault();
@@ -10,9 +12,8 @@ $(function() {
             data: {},
             success: function(resposta) {
                 const paletaCores = [
-                    'rgba(75, 192, 192, 0.7)', // Verde
-                    'rgba(255, 99, 132, 0.7)', // Vermelho
                     'rgba(54, 162, 235, 0.7)', // Azul
+                    'rgba(255, 99, 132, 0.7)', // Vermelho
                     'rgba(255, 206, 86, 0.7)', // Amarelo
                     'rgba(153, 102, 255, 0.7)' // Roxo
                 ];
@@ -30,7 +31,11 @@ $(function() {
                     };
                 });
 
-                new Chart($('#graf'), {
+                if (graficoCriado) {
+                    graficoCriado.destroy();
+                }
+
+                graficoCriado = new Chart($('#graf'), {
                     type: 'bar',
                     data: {
                         labels: resposta.meses,
@@ -53,10 +58,10 @@ $(function() {
                                     padding: 5,
                                     color: '#666',
                                     callback: function(value, index) {
-                                    if (index % 12 === 6) {
-                                        return resposta.anos[index];
-                                    }
-                                    return ''; 
+                                        if (index % 12 === 6) {
+                                            return resposta.anos[index];
+                                        }
+                                        return ''; 
                                     }
                                 }
                             },
