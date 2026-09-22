@@ -13,14 +13,14 @@
 {% endblock %}
 
 {% block main %}
-<div class="container-fluid p-3 p-lg-4 h-100 d-flex flex-column">
+<div id="containerGraf" class="container-fluid p-lg-4 h-100 d-flex flex-column">
     <div class="card border-o shadow-sm flex-grow-1">
-        <div class="card-header bg-white border-bottom py-2 px-4 px-lg-5 d-flex justify-content-start align-items-center">
+        <div class="card-header bg-white border-bottom py-2 px-lg-5 d-flex flex-wrap justify-content-start align-items-center gap-2">
             <button class="btn btn-outline-primary rounded-circle shadow-sm me-3" style="width: 40px; height: 40px; font-size: 0.85rem;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" title="Selecionar Gráfico"><i class="bi bi-bar-chart-line-fill"></i></button>
             <h5 id="tituloGrafico" class="text-secondary fw-bold mt-auto">Visão Geral</h5>
             <div id="divPatrimonio" class="ms-auto d-none">
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="btnDropDownPatrimonio" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn dropdown-toggle text-truncate" type="button" id="btnDropDownPatrimonio" data-bs-toggle="dropdown" aria-expanded="false">
                         Selecionar ano...
                     </button>
                     <ul id="dropDownPatrimonio" class="dropdown-menu" aria-labelledby="btnDropDownPatrimonio">
@@ -28,9 +28,13 @@
                 </div>
             </div>
         </div>
-        <div class="card-body w-100 d-flex justify-content-center align-items-center overflow-auto">
-            <div class="chart-container" style="position: relative; height: 100%; width: 100%; min-height: 300px;">
-                <canvas id="graf" class="rounded-3"></canvas> 
+        <div class="card-body w-100 p-2 overflow-hidden d-flex flex-column">
+            <!-- Wrapper que permite a rolagem horizontal no mobile -->
+            <div class="w-100 h-100" style="overflow-x: auto; overflow-y: hidden;">
+                <!-- Note o ID 'chartWrapper' adicionado aqui para controle via JS -->
+                <div id="chartWrapper" class="chart-container" style="position: relative; height: 100%; min-height: 300px;">
+                    <canvas id="graf" class="rounded-3"></canvas> 
+                </div>
             </div>
         </div>
     </div>

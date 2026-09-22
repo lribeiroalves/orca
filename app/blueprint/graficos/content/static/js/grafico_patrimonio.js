@@ -44,6 +44,20 @@ function graficoPatrimonio(ano=0, user=0) {
                 graficoCriado.destroy();
             }
 
+            // Calcula a largura ideal (ex: 50 pixels por cada mês no eixo X)
+            const quantidadeMeses = resposta.meses.length;
+            const larguraIdealMobile = quantidadeMeses * 50; 
+
+            // Se a tela for pequena (< 990px), aplica a largura dinâmica forçando o scroll
+            if (window.innerWidth < 990) {
+
+                $('#containerGraf').parent().removeClass('p-3');
+                $('#chartWrapper').css('min-width', `${larguraIdealMobile}px`);
+            } else {
+                // No desktop, volta ao comportamento padrão preenchendo a tela
+                $('#chartWrapper').css('min-width', '100%');
+            }
+
             graficoCriado = new Chart($('#graf'), {
                 type: 'bar',
                 data: {
