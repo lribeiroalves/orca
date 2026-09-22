@@ -1,5 +1,7 @@
 from flask import abort, jsonify, request
 from sqlalchemy import func
+import random
+import colorsys
 
 from app.ext.database import db
 from app.ext.database.models import *
@@ -19,6 +21,36 @@ MESES = {
     12: 'Dezembro'
 }
 
+def gerar_cores_aleatorias(usuarios):
+    if not usuarios:
+        return []
+
+    n = len(usuarios)
+
+    cores = []
+
+    matiz_inicial = random.random()
+
+    salto = 1.0 / n
+
+    for i, id in enumerate(usuarios):
+        matiz = (matiz_inicial + i*salto) % 1.0
+        saturacao = 0.8
+        brilho = 0.9
+
+        r_float, g_float, b_float = colorsys.hsv_to_rgb(matiz, saturacao, brilho)
+        r = int(r_float * 255)
+        g = int(g_float * 255)
+        b = int(b_float * 255)
+
+        luminosidade = (r * 299 + g * 587 + b * 114) / 1000
+
+        cor_formatada = f'rgb({r}, {g}, {b}, 0.7)'
+
+        cores.append(cor_formatada)
+        
+    return cores
+
 
 def index_test():
     return 'hello world!'
@@ -28,7 +60,6 @@ def get_patrimonio():
     try:
         r_ano = int(request.args['ano'])
         r_user = int(request.args['user'])
-        print(r_user)
     except:
         r_ano, r_user = (0, 0, 0)
 
@@ -82,11 +113,14 @@ def get_patrimonio():
                     item['valores'].append(valor)
                     break
 
+    cores = gerar_cores_aleatorias(users)
+
     resposta = {
         'status': 'ok',
         'anos': anos,
         'meses': meses,
-        'series': series
+        'series': series,
+        'cores': cores
     }
 
     return jsonify(resposta)

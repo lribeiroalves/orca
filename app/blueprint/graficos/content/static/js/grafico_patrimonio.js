@@ -20,17 +20,9 @@ function graficoPatrimonio(ano=0, user=0) {
                 return;
             }
 
-            const paletaCores = [
-                'rgba(54, 162, 235, 0.7)', // Azul
-                'rgba(255, 99, 132, 0.7)', // Vermelho
-                'rgba(255, 206, 86, 0.7)', // Amarelo
-                'rgba(153, 102, 255, 0.7)' // Roxo
-            ];
-
             const datasetsConstruidos = resposta.series.map((item, index) => {
-                // Usa o resto da divisão (%) para recomeçar as cores se houverem mais barras que cores na paleta
-                const cor = paletaCores[index % paletaCores.length]; 
-                
+                const cor = resposta.cores[index];
+
                 return {
                 label: item.label,
                 data: item.valores,
@@ -48,8 +40,8 @@ function graficoPatrimonio(ano=0, user=0) {
             const quantidadeMeses = resposta.meses.length;
             const larguraIdealMobile = quantidadeMeses * 50; 
 
-            // Se a tela for pequena (< 990px), aplica a largura dinâmica forçando o scroll
-            if (window.innerWidth < 990) {
+            // Se a tela for pequena (< 1057px), aplica a largura dinâmica forçando o scroll
+            if (window.innerWidth < 1057) {
 
                 $('#containerGraf').parent().removeClass('p-3');
                 $('#chartWrapper').css('min-width', `${larguraIdealMobile}px`);
@@ -111,6 +103,8 @@ function graficoPatrimonio(ano=0, user=0) {
         },
         complete: function(r) {
             const resposta = r.responseJSON;
+            $('#placeholder').addClass('d-none');
+            $('#chartWrapper').removeClass('d-none');
             $('#offcanvas').offcanvas('hide');
         }
     });
