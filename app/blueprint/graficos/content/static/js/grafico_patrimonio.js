@@ -1,6 +1,7 @@
 import { exibirMensagem } from "/webui/static/js/flash_messages.js";
 
 let graficoCriado;
+let options = null;
 
 function graficoPatrimonio(ano=0, user=0) {
     const url = $('#btnPatrimonio').data('url');
@@ -79,14 +80,16 @@ function graficoPatrimonio(ano=0, user=0) {
                     }
                 }
             });
-            $('#tituloGrafico').text('Patrimônio');
+            $('#tituloGrafico').text('Patrimônio Líquido');
             const anos_unicos = [...new Set(resposta.anos)];
-            let options = ``;
-            for (ano of anos_unicos) {
-                options += `<li><a class="dropdown-item" href="#" data-value=${ano}>${ano}</a></li>`
+            if (!options) {
+                options = '';
+                for (ano of anos_unicos) {
+                    options += `<li><a class="dropdown-item" href="#" data-value=${ano}>${ano}</a></li>`
+                }
+                options += `<li><a class="dropdown-item" href="#" data-value="0">Todo o período</a></li>`;
+                $('#dropDownPatrimonio').html(options);
             }
-            options += `<li><a class="dropdown-item" href="#" data-value="0">Todo o período</a></li>`;
-            $('#dropDownPatrimonio').html(options);
             $('#divPatrimonio').removeClass('d-none');
         },
         error: function(resposta) {
@@ -104,4 +107,9 @@ $(function() {
         event.preventDefault();
         graficoPatrimonio();
     })
+    $('#dropDownPatrimonio').on('click', '.dropdown-item', function(event) {
+        event.preventDefault();
+        const ano = $(this).data('value');
+        graficoPatrimonio(ano);
+    });
 })
