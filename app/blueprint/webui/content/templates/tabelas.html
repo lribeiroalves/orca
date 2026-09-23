@@ -260,6 +260,16 @@
     <!-- ABA RESULTADO   -->
     <div class="tab-content">
         <div class="tab-pane fade p-lg-4 p-2 {% if aba == 'resultado' %}show active{% endif %}" id="resultado" role="tabpanel" aria-labelledby="resultadoLabel">
+            {% if mes %}
+                <div class="row mt-1 mb-3 justify-content-center">
+                    <div class="col-12">
+                        <h5 class="text-center user-name" onclick="submeterNovaData('{{ mes|int }}', '{{ ano|int }}', '{{ user_id|int }}', 'resultado-p')">{{ user|title }}</h5>
+                    </div>
+                    <i class="col-4 text-end bi bi-caret-left-fill arrow" onclick="submeterNovaData('{{ prev_mes }}', '{{ prev_ano }}', '{{ user_id }}', 'resultado')"></i>
+                    <h5 class="col-4 text-center">{{ mes }}/{{ ano }}</h5>
+                    <i class="col-4 bi bi-caret-right-fill arrow" onclick="submeterNovaData('{{ next_mes }}', '{{ next_ano }}', '{{ user_id }}', 'resultado')"></i>
+                </div>
+            {% endif %}
             <div class="row pt-3">
                 <div class="col-12 col-lg-6 mt-3">
                     <h1 class="dm-mono text-center mb-3 mb-lg-5">Entradas/Saídas</h1>
