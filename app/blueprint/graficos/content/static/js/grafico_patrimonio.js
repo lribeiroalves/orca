@@ -24,13 +24,41 @@ function graficoPatrimonio(ano=0, user=0) {
                 const cor = resposta.cores[index];
 
                 return {
-                label: item.label,
-                data: item.valores,
-                backgroundColor: cor,
-                borderColor: cor.replace('0.7', '1'), // Remove a transparência para a borda
-                borderWidth: 1
+                    type: 'bar',    
+                    label: item.label,
+                    data: item.valores,
+                    backgroundColor: cor,
+                    borderColor: cor.replace('0.7', '1'), // Remove a transparência para a borda
+                    borderWidth: 1,
+                    order: 1
                 };
             });
+
+            // Calcula a soma total para cada mês
+            const quantMeses = resposta.meses.length;
+            const somaTotalMeses = new Array(quantMeses).fill(0);
+
+            resposta.series.forEach(serie => {
+                serie.valores.forEach((valor, i) => {
+                    somaTotalMeses[i] += parseFloat(parseFloat(valor).toFixed(2));
+                });
+            });
+
+            // Cria o dataset da linha com a soma
+            const datasetLinha = {
+                type: 'line', // Define este dataset específico como linha
+                label: 'Patrimônio Total',
+                data: somaTotalMeses,
+                borderColor: 'rgba(108, 117, 125, 1)', // Cor da linha (ex: cinza chumbo)
+                backgroundColor: 'rgba(108, 117, 125, 1)', // Cor dos pontinhos na linha
+                borderWidth: 2,
+                tension: 0.3, // Suaviza a linha deixando-a levemente curva (opcional, 0 = reta)
+                fill: false, // Garante que o fundo da linha não será preenchido
+                pointRadius: 3, // Tamanho dos pontos
+                order: 0 // Ordem 0: desenha por cima das barras
+            };
+
+            datasetsConstruidos.push(datasetLinha);
 
             if (graficoCriado) {
                 graficoCriado.destroy();
