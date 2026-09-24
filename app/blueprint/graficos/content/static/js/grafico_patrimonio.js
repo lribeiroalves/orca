@@ -1,6 +1,5 @@
 import { exibirMensagem } from "/webui/static/js/flash_messages.js";
 
-let graficoCriado;
 let options = null;
 
 function graficoPatrimonio(ano=0, user=0) {
@@ -18,6 +17,11 @@ function graficoPatrimonio(ano=0, user=0) {
             if (resposta.status !== 'ok') {
                 exibirMensagem('Houve um erro na criação do gráfico!');
                 return;
+            }
+
+            const graficoCriado = Chart.getChart('graf');
+            if (graficoCriado) {
+                graficoCriado.destroy();
             }
 
             const datasetsConstruidos = resposta.series.map((item, index) => {
@@ -60,10 +64,6 @@ function graficoPatrimonio(ano=0, user=0) {
 
             datasetsConstruidos.push(datasetLinha);
 
-            if (graficoCriado) {
-                graficoCriado.destroy();
-            }
-
             // Calcula a largura ideal (ex: 50 pixels por cada mês no eixo X)
             const quantidadeMeses = resposta.meses.length;
             const larguraIdealMobile = quantidadeMeses * 50; 
@@ -78,7 +78,7 @@ function graficoPatrimonio(ano=0, user=0) {
                 $('#chartWrapper').css('min-width', '100%');
             }
 
-            graficoCriado = new Chart($('#graf'), {
+            new Chart($('#graf'), {
                 type: 'bar',
                 data: {
                     labels: resposta.meses,
@@ -114,7 +114,6 @@ function graficoPatrimonio(ano=0, user=0) {
                     }
                 }
             });
-            $('#tituloGrafico').text('Patrimônio Líquido');
             const anos_unicos = [...new Set(resposta.anos)];
             if (!options) {
                 options = '';
@@ -124,16 +123,18 @@ function graficoPatrimonio(ano=0, user=0) {
                 options += `<li><a class="dropdown-item" href="#" data-value="0">Todo o período</a></li>`;
                 $('#dropDownPatrimonio').html(options);
             }
-            $('#divPatrimonio').removeClass('d-none');
         },
         error: function(resposta) {
             console.log(resposta);
         },
         complete: function(r) {
             const resposta = r.responseJSON;
+            $('#tituloGrafico').text('Patrimônio Líquido');
             $('#placeholder').addClass('d-none');
             $('#chartWrapper').removeClass('d-none');
             $('#offcanvas').offcanvas('hide');
+            $('#divPatrimonio').removeClass('d-none');
+            $('#divPatrimonioDetalhado').addClass('d-none');
         }
     });
 }

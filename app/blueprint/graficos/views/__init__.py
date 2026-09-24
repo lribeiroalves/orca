@@ -127,4 +127,12 @@ def get_patrimonio():
 
 
 def get_patrimonio_detalhado():
-    return jsonify({'status': 'ok'})
+    """
+        Criar grafico que mostra o saldo de conta que o usuario possui em cada mes
+        O grafico vai mostrar um usuario de cada vez
+        O grafico mostra um ano de cada vez ou detalha um mes de um ano especifico
+        O grafico vai ter selecao de ano, de mes e de usuario
+        requisicoes genericas retornam o ano mais recente, até o mes mais recente
+        atualizar o dropdown de mes ao selecionar um ano com as opcoes disponiveis
+    """
+    return jsonify({'status': 'nok'})
