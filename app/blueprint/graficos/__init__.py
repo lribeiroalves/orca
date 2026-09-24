@@ -11,6 +11,7 @@ bp = Blueprint('graficos', __name__, static_folder=os.path.join(base_path, 'app'
 
 bp.add_url_rule('/', view_func=index_test)
 bp.add_url_rule('/patrimonio', view_func=get_patrimonio)
+bp.add_url_rule('/patrimonio-detalhado', view_func=get_patrimonio_detalhado)
 
 
 def init_app(app):

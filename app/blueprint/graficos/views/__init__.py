@@ -124,3 +124,7 @@ def get_patrimonio():
     }
 
     return jsonify(resposta)
+
+
+def get_patrimonio_detalhado():
+    return jsonify({'status': 'ok'})
