@@ -28,7 +28,29 @@
                 </div>
             </div>
             <div id="divPatrimonioDetalhado" class="ms-auto d-none">
-                
+                <div class="row">
+                    <div id="divDropPatDetUsers" class="dropdown col-12 col-md-4 d-flex d-lg-inline justify-content-end">
+                        <button class="btn dropdown-toggle text-truncate" type="button" id="btnDropPatDetUsers" data-bs-toggle="dropdown" aria-expanded="false">
+                            Selecionar usuário...
+                        </button>
+                        <ul id="dropPatDetUsers" class="dropdown-menu" aria-labelledby="btnDropPatDetUsers">
+                        </ul>
+                    </div>
+                    <div id="divDropPatDetAnos" class="dropdown col-12 col-md-4 d-flex d-lg-inline justify-content-end">
+                        <button class="btn dropdown-toggle text-truncate" type="button" id="btnDropPatDetAnos" data-bs-toggle="dropdown" aria-expanded="false">
+                            Selecionar ano...
+                        </button>
+                        <ul id="dropPatDetAnos" class="dropdown-menu" aria-labelledby="btnDropPatDetAnos">
+                        </ul>
+                    </div>
+                    <div id="divDropPatDetMeses" class="dropdown col-12 col-md-4 d-flex d-lg-inline justify-content-end">
+                        <button class="btn dropdown-toggle text-truncate" type="button" id="btnDropPatDetMeses" data-bs-toggle="dropdown" aria-expanded="false">
+                            Selecionar mês...
+                        </button>
+                        <ul id="dropPatDetMeses" class="dropdown-menu" aria-labelledby="btnDropPatDetMeses">
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-body w-100 p-2 overflow-hidden d-flex flex-column">
@@ -84,6 +106,7 @@
 {% endblock %}
 
 {% block js %}
+<script type="module" src="{{url_for('graficos.static', filename='js/ajustes_graficos.js')}}"></script>
 <script type="module" src="{{url_for('graficos.static', filename='js/grafico_patrimonio.js')}}"></script>
 <script type="module" src="{{url_for('graficos.static', filename='js/grafico_patrimonio_detalhado.js')}}"></script>
 <script type="module" src="{{url_for('webui.static', filename='js/flash_messages.js')}}"></script>

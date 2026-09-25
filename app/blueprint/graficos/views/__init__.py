@@ -135,4 +135,53 @@ def get_patrimonio_detalhado():
         requisicoes genericas retornam o ano mais recente, até o mes mais recente
         atualizar o dropdown de mes ao selecionar um ano com as opcoes disponiveis
     """
-    return jsonify({'status': 'nok'})
+
+    try:
+        ano = int(request.args['ano'])
+        mes = int(request.args['mes'])
+        user = int(request.args['user'])
+        tipo = request.args['tipo']
+        print(tipo, user, ano, mes)
+    except:
+        return jsonify({
+            'status': 'error',
+            'message': 'Argumentos inválidos.'
+        })
+
+    resposta = {
+        'status': 'ok',
+        'tipo': '',
+        'message': '',
+        'dados': {
+            'users': None,
+            'anos': None,
+            'meses': None,
+            'series': None,
+            'cores': None,
+        },
+    }
+
+    match tipo:
+        case 'users':
+            users = db.session.execute(db.select(Users.nome, Users.id)).all()
+            if users:
+                resposta['tipo'] = 'users'
+                resposta['dados']['users'] = [{'nome': u[0].capitalize(), 'id': u[1]} for u in users]
+            else:
+                return jsonify(
+                    {
+                        'status': 'nok',
+                        'message': 'Nenhum usuario encontrado.'
+                    }
+                )
+        case 'anos':
+            pass
+        case 'meses':
+            pass
+        case 'grafico':
+            pass
+        case _:
+            pass
+
+    
+    return jsonify(resposta)
