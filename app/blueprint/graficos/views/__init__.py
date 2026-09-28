@@ -175,7 +175,17 @@ def get_patrimonio_detalhado():
                     }
                 )
         case 'anos':
-            pass
+            anos = db.session.scalars(db.select(Saldos.ano).where(Saldos.user_id == user)).all()
+            if anos:
+                resposta['tipo'] = 'anos'
+                resposta['dados']['anos'] = list(set(anos))
+            else:
+                return jsonify(
+                    {
+                        'status': 'nok',
+                        'message': 'Esse usuarios não tem dados.'
+                    }
+                )
         case 'meses':
             pass
         case 'grafico':

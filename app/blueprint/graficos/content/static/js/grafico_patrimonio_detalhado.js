@@ -37,6 +37,7 @@ function graficoPatrimonioDetalhado(tipo='users', ano=0, mes=0, user=0) {
                     break;
                 case 'anos':
                     //
+                    console.log(resposta)
                     break;
                 case 'meses':
                     //
