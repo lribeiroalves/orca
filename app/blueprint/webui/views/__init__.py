@@ -118,6 +118,91 @@ def tabelasView():
     return render_template('tabelas.html', form_filtros=form_filtros, formInOut=form_entrada_saida, formExcluir=form_excluir, formSaldo=form_saldos, entradas=dados['entrada'], saidas=dados['saida'], saldos=dados['saldo'], user=dados['user'], user_id=dados['user_id'], ano=req_ano if req_ano else str(datetime.now().year), mes=f'{req_mes:02}' if req_mes else f'{datetime.now().month:02}', total_entradas=dados['total_entrada'], total_saidas=dados['total_saida'], total_saldos=dados['total_saldo'], prev_mes=dados['prev_mes'], prev_ano=dados['prev_ano'], next_mes=dados['next_mes'], next_ano=dados['next_ano'], aba=req_aba)
 
 
+def copiar_mes_anterior():
+    try:
+        ano = int(request.args['ano'])
+        ano_prev = int(request.args['ano_prev'])
+        mes = int(request.args['mes'])
+        mes_prev = int(request.args['mes_prev'])
+        user = int(request.args['user'])
+        aba = request.args['aba']
+    except Exception as err:
+        print(err)
+        abort(400)
+
+    error_msg = None
+
+    match aba:
+        case 'entrada':
+            stmt = (
+                db.select(Entradas)
+                .where(Entradas.ano == ano_prev,
+                       Entradas.mes == mes_prev,
+                       Entradas.user_id == user)
+            )
+            data_prev = db.session.scalars(stmt).all()
+            if data_prev:
+                for item in data_prev:
+                    new_data = Entradas()
+                    new_data.ano = ano
+                    new_data.mes = mes
+                    new_data.descricao = item.descricao
+                    new_data.valor = 0
+                    new_data.user_id = user
+
+                    db.session.add(new_data)
+            else:
+                error_msg = 'NEnhuma entrada encontrada no mes anterior'
+        case 'saida':
+            stmt = (
+                db.select(Saidas)
+                .where(Saidas.ano == ano_prev,
+                        Saidas.mes == mes_prev,
+                        Saidas.user_id == user)
+            )
+            data_prev = db.session.scalars(stmt).all()
+            if data_prev:
+                for item in data_prev:
+                    new_data = Saidas()
+                    new_data.ano = ano
+                    new_data.mes = mes
+                    new_data.descricao = item.descricao
+                    new_data.valor = 0
+                    new_data.user_id = user
+
+                    db.session.add(new_data)
+            else:
+                error_msg = 'Nenhuma saída encontrada no mes anterior'
+        case 'saldo':
+            stmt = (
+                db.select(Saldos)
+                .where(Saldos.ano == ano_prev,
+                        Saldos.mes == mes_prev,
+                        Saldos.user_id == user)
+            )
+            data_prev = db.session.scalars(stmt).all()
+            if data_prev:
+                for item in data_prev:
+                    new_data = Saldos()
+                    new_data.ano = ano
+                    new_data.mes = mes
+                    new_data.valor = 0
+                    new_data.user_id = user
+                    new_data.banco_id = item.banco_id
+
+                    db.session.add(new_data)
+            else:
+                error_msg = 'Nenhum saldo encontrado no mes anterior'
+        case _:
+            abort(400)
+
+    if error_msg: flash(error_msg)
+
+    db.session.commit()
+
+    return redirect(url_for('webui.tabelasView', ano=ano, mes=mes, user=user, aba=aba))
+
+
 def filtroTabelasForm():
     form = FormFiltroTabelas()
     ano, mes, user = (None, None, None)

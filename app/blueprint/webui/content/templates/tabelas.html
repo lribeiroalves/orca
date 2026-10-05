@@ -101,10 +101,13 @@
             {% endif %}
             
             <!-- Botão alinhado ao centro, um pouco menor e mais elegante -->
-            <div class="row justify-content-center">
+            <div class="row justify-content-evenly g-3">
                 <button id="btnNovaEntrada" type="button" class="btn btn-primary col-12 col-md-5 rounded-pill shadow-sm" onclick="abrirModalInOut('Nova Entrada', 'entrada', '0')">
                     Nova Entrada
                 </button>
+                <a href="{{ url_for('webui.copiar_mes_anterior', ano=ano, ano_prev=prev_ano, mes=mes, mes_prev=prev_mes, user=user_id, aba='entrada') }}" class="{% if entradas %}d-none {% endif %}btn btn-primary col-12 col-md-5 rounded-pill shadow-sm">
+                    Copiar Mês Anterior
+                </a>
             </div>
             
         </div>
@@ -176,10 +179,13 @@
                     <p>Nenhuma saída encontrada.</p>
                 </div>
             {% endif %}
-            <div class="row justify-content-center">
+            <div class="row justify-content-evenly g-3">
                 <button id="btnNovaSaida" type="button" class="btn btn-primary col-12 col-md-5 rounded-pill shadow-sm" onclick="abrirModalInOut('Nova Saida', 'saida', '0')">
                     Nova Saída
                 </button>
+                <a href="{{ url_for('webui.copiar_mes_anterior', ano=ano, ano_prev=prev_ano, mes=mes, mes_prev=prev_mes, user=user_id, aba='saida') }}" class="{% if saidas %}d-none {% endif %}btn btn-primary col-12 col-md-5 rounded-pill shadow-sm">
+                    Copiar Mês Anterior
+                </a>
             </div>
         </div>
     </div>
@@ -247,13 +253,16 @@
             {% else %}
                 <!-- Estado Vazio (Empty State) para quando não houver dados -->
                 <div class="text-center py-5 text-muted">
-                    <p>Nenhuma saída encontrada.</p>
+                    <p>Nenhum saldo encontrado.</p>
                 </div>
             {% endif %}
-            <div class="row justify-content-center">
+            <div class="row justify-content-evenly g-3">
                 <button id="btnNovoSaldo" type="button" class="btn btn-primary col-12 col-md-5 rounded-pill shadow-sm" onclick="abrirModalSaldos('Nova Saldo', '0')">
                     Novo Saldo
                 </button>
+                <a href="{{ url_for('webui.copiar_mes_anterior', ano=ano, ano_prev=prev_ano, mes=mes, mes_prev=prev_mes, user=user_id, aba='saldo') }}" class="{% if saldos %}d-none {% endif %}btn btn-primary col-12 col-md-5 rounded-pill shadow-sm">
+                    Copiar Mês Anterior
+                </a>
             </div>
         </div>
     </div>
